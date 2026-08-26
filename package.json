@@ -1,7 +1,7 @@
 {
-  "name": "woodworkingshop",
+  "name": "tiferet-carpentry",
   "version": "5.32.0",
-  "description": "Browser-based woodworking cabinet planner — parametric design, MaxRects cut-sheet optimizer, PDF/DXF/G-code export, 6-view SVG preview, bilingual EN+HE, PWA offline",
+  "description": "Hebrew-first apartment and custom-carpentry planner for the Tiferet residential project in Ramla",
   "keywords": [
     "woodworking",
     "cabinet-design",
@@ -24,13 +24,13 @@
     "woodworking-tools",
     "cabinet-maker"
   ],
-  "homepage": "https://rajwanyair.github.io/WoodworkingShop/",
+  "homepage": "https://huxhkuh.github.io/tiferet-carpentry/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RajwanYair/WoodworkingShop.git"
+    "url": "https://github.com/huxhkuh/tiferet-carpentry.git"
   },
   "bugs": {
-    "url": "https://github.com/RajwanYair/WoodworkingShop/issues"
+    "url": "https://github.com/huxhkuh/tiferet-carpentry/issues"
   },
   "type": "module",
   "private": true,

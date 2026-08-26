@@ -4,7 +4,7 @@
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
-import App from '../../src/App';
+import WoodworkingShopApp from '../../src/WoodworkingShopApp';
 import { useCabinetStore } from '../../src/store/cabinet-store';
 import { DEFAULT_CONFIG } from '../../src/engine/materials';
 
@@ -32,11 +32,12 @@ beforeAll(() => {
 
 describe('Ctrl+R reset shortcut — Sprint 66', () => {
   beforeEach(() => {
+    window.history.replaceState({}, '', '/?app=workshop');
     useCabinetStore.getState().resetConfig();
   });
 
   it('Ctrl+R fires without throwing', async () => {
-    render(<App />);
+    render(<WoodworkingShopApp />);
     expect(() => {
       fireEvent.keyDown(window, { key: 'r', ctrlKey: true });
     }).not.toThrow();
@@ -47,7 +48,7 @@ describe('Ctrl+R reset shortcut — Sprint 66', () => {
 
   it('Ctrl+R resets a modified config back to defaults', async () => {
     useCabinetStore.getState().setConfig({ width: 1800 });
-    render(<App />);
+    render(<WoodworkingShopApp />);
     fireEvent.keyDown(window, { key: 'r', ctrlKey: true });
     await waitFor(() => {
       expect(useCabinetStore.getState().config.width).toBe(DEFAULT_CONFIG.width);
@@ -56,13 +57,13 @@ describe('Ctrl+R reset shortcut — Sprint 66', () => {
 
   it('Ctrl+R with capital R also resets', () => {
     useCabinetStore.getState().setConfig({ width: 1800 });
-    render(<App />);
+    render(<WoodworkingShopApp />);
     fireEvent.keyDown(window, { key: 'R', ctrlKey: true });
     expect(useCabinetStore.getState().config.width).toBe(DEFAULT_CONFIG.width);
   });
 
   it('Ctrl+R entry appears in ShortcutsModal', async () => {
-    render(<App />);
+    render(<WoodworkingShopApp />);
     // Open shortcuts modal with ?
     fireEvent.keyDown(window, { key: '?' });
     // The modal should list Ctrl + R

@@ -136,7 +136,7 @@ Two supplementary stores:
 
 - **Bundler**: Vite 8 with React plugin + Tailwind CSS plugin
 - **Code splitting**: `@react-pdf/renderer` is split into a separate chunk via `manualChunks` and lazy-loaded
-- **Deploy target**: GitHub Pages (base path: `/WoodworkingShop/`)
+- **Deploy target**: GitHub Pages (base path: `/tiferet-carpentry/`)
 - **PWA**: service worker in `public/sw.js` with cache-first strategy
 
 Intermediate artifact policy:

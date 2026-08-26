@@ -39,7 +39,7 @@ function sanitizeStack(stack: string | undefined): string {
   return stack
     .split('\n')
     .slice(0, 10)
-    .map((line) => line.replace(/https?:\/\/[^/]+\/WoodworkingShop\//g, ''))
+    .map((line) => line.replace(/https?:\/\/[^/]+\/(?:WoodworkingShop|tiferet-carpentry)\//g, ''))
     .join('\n');
 }
 

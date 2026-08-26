@@ -8,6 +8,18 @@ import os from 'node:os';
 import { sriPlugin } from './scripts/vite-plugin-sri';
 
 const { version } = JSON.parse(readFileSync('./package.json', 'utf-8')) as { version: string };
+const DEFAULT_BASE_PATH = '/tiferet-carpentry/';
+
+function normalizeBasePath(value: string): string {
+  const withLeadingSlash = value.startsWith('/') ? value : `/${value}`;
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+const APP_BASE_PATH = normalizeBasePath(process.env['VITE_BASE_PATH'] ?? DEFAULT_BASE_PATH);
 
 /**
  * Phase 12 / Sprint 15 — Cloudflare Web Analytics beacon injection.
@@ -29,16 +41,16 @@ function cloudflareAnalyticsPlugin() {
 // https://vite.dev/config/
 export default defineConfig({
   cacheDir: resolve(os.tmpdir(), 'WoodworkingShop', '.vite_cache'),
-  base: '/WoodworkingShop/',
+  base: APP_BASE_PATH,
   plugins: [
     react(),
     tailwindcss(),
     cloudflareAnalyticsPlugin(),
-    sriPlugin(),
+    sriPlugin(APP_BASE_PATH),
     VitePWA({
       registerType: 'prompt',
       strategies: 'generateSW',
-      base: '/WoodworkingShop/',
+      base: APP_BASE_PATH,
       injectRegister: false, // handled manually in useSwUpdate / main.tsx
       manifest: false, // keep the existing public/manifest.json
       workbox: {
@@ -47,8 +59,8 @@ export default defineConfig({
         skipWaiting: false,
         clientsClaim: false,
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        navigateFallback: '/WoodworkingShop/index.html',
-        navigateFallbackDenylist: [/^\/WoodworkingShop\/api\//],
+        navigateFallback: `${APP_BASE_PATH}index.html`,
+        navigateFallbackDenylist: [new RegExp(`^${escapeRegExp(APP_BASE_PATH)}api/`)],
         // Sprint 149 — offline fallback for navigation requests when cache is empty
         offlineGoogleAnalytics: false,
         runtimeCaching: [
@@ -79,7 +91,7 @@ export default defineConfig({
           {
             // Sprint 149 — cache locale JSON files for offline i18n
             urlPattern: ({ url }: { url: URL }) =>
-              url.pathname.startsWith('/WoodworkingShop/') && url.pathname.endsWith('.json'),
+              url.pathname.startsWith(APP_BASE_PATH) && url.pathname.endsWith('.json'),
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'app-json-data',
@@ -89,7 +101,7 @@ export default defineConfig({
           {
             // Sprint 149 — cache app images/SVGs for offline use
             urlPattern: ({ url }: { url: URL }) =>
-              url.pathname.startsWith('/WoodworkingShop/') && /\.(?:png|jpg|svg|webp)$/i.test(url.pathname),
+              url.pathname.startsWith(APP_BASE_PATH) && /\.(?:png|jpg|svg|webp)$/i.test(url.pathname),
             handler: 'CacheFirst',
             options: {
               cacheName: 'app-images',
@@ -102,6 +114,7 @@ export default defineConfig({
   ],
   define: {
     __APP_VERSION__: JSON.stringify(version),
+    'import.meta.env.VITE_APP_BASE_PATH': JSON.stringify(APP_BASE_PATH),
   },
   resolve: {
     alias: {

@@ -15,6 +15,6 @@
 
 ## 🚀 Quick Links
 
-- **Live app**: [GitHub Pages](https://rajwanyair.github.io/WoodworkingShop/)
-- **Source**: [github.com/RajwanYair/WoodworkingShop](https://github.com/RajwanYair/WoodworkingShop)
-- **Releases**: [GitHub Releases](https://github.com/RajwanYair/WoodworkingShop/releases)
+- **Live app**: [GitHub Pages](https://huxhkuh.github.io/tiferet-carpentry/)
+- **Source**: [github.com/huxhkuh/tiferet-carpentry](https://github.com/huxhkuh/tiferet-carpentry)
+- **Releases**: [GitHub Releases](https://github.com/huxhkuh/tiferet-carpentry/releases)

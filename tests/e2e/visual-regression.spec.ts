@@ -24,10 +24,11 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('configurator tab — default view screenshot', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   await page.waitForLoadState('networkidle');
   // Ensure the configurator panel is visible before snapping.
   await expect(page.getByRole('tablist')).toBeVisible();
+  await page.getByRole('tab', { name: /configure/i }).click();
   await expect(page.getByRole('slider').first()).toBeVisible();
 
   await expect(page).toHaveScreenshot('configurator-default.png', {
@@ -37,7 +38,7 @@ test('configurator tab — default view screenshot', async ({ page }) => {
 });
 
 test('preview tab — cabinet SVG screenshot', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   await page.waitForLoadState('networkidle');
 
   // Navigate to Preview (Alt+2) and wait for the SVG to render.
@@ -51,7 +52,7 @@ test('preview tab — cabinet SVG screenshot', async ({ page }) => {
 });
 
 test('optimizer tab — cut sheets screenshot', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   await page.waitForLoadState('networkidle');
 
   // Navigate to Optimizer (Alt+3).
@@ -66,7 +67,7 @@ test('optimizer tab — cut sheets screenshot', async ({ page }) => {
 });
 
 test('dark mode toggle — header appearance', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   await page.waitForLoadState('networkidle');
 
   // Activate dark mode via Alt+D shortcut.

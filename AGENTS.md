@@ -1,7 +1,7 @@
 # Cabinet Planner — AI Agent Context
 
 > Browser-based woodworking design tool · React 19 + TypeScript 6 + Vite 8
-> **v5.32.0** · MIT · Node ≥ 22 · [Live demo](https://rajwanyair.github.io/WoodworkingShop/)
+> **v5.32.0** · MIT · Node ≥ 22 · [Live demo](https://huxhkuh.github.io/tiferet-carpentry/)
 
 ## What It Does
 

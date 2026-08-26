@@ -9,7 +9,7 @@ vi.mock('zustand/middleware', async (importActual) => {
   return { ...actual, persist: (fn: unknown) => fn };
 });
 
-import App from '../../src/App';
+import WoodworkingShopApp from '../../src/WoodworkingShopApp';
 import { useCabinetStore } from '../../src/store/cabinet-store';
 import { useToastStore } from '../../src/store/toast-store';
 
@@ -66,7 +66,7 @@ describe('Ctrl+Shift+N — add cabinet shortcut (Sprint 86)', () => {
   });
 
   it('Ctrl+Shift+N adds a new cabinet to the store', async () => {
-    render(<App />);
+    render(<WoodworkingShopApp />);
     const before = useCabinetStore.getState().cabinets.length;
     await Promise.resolve();
     fireEvent.keyDown(window, { key: 'N', ctrlKey: true, shiftKey: true });
@@ -76,7 +76,7 @@ describe('Ctrl+Shift+N — add cabinet shortcut (Sprint 86)', () => {
   }, 15000);
 
   it('Ctrl+Shift+n (lowercase) also triggers the shortcut', async () => {
-    render(<App />);
+    render(<WoodworkingShopApp />);
     const before = useCabinetStore.getState().cabinets.length;
     await Promise.resolve();
     fireEvent.keyDown(window, { key: 'n', ctrlKey: true, shiftKey: true });
@@ -86,7 +86,7 @@ describe('Ctrl+Shift+N — add cabinet shortcut (Sprint 86)', () => {
   });
 
   it('shows a success toast after adding a cabinet', async () => {
-    render(<App />);
+    render(<WoodworkingShopApp />);
     fireEvent.keyDown(window, { key: 'N', ctrlKey: true, shiftKey: true });
     await waitFor(() => {
       const toasts = useToastStore.getState().toasts;
@@ -95,7 +95,7 @@ describe('Ctrl+Shift+N — add cabinet shortcut (Sprint 86)', () => {
   });
 
   it('ShortcutsModal lists Ctrl+Shift+N', async () => {
-    render(<App />);
+    render(<WoodworkingShopApp />);
     // Open shortcuts modal with '?'
     fireEvent.keyDown(window, { key: '?' });
     expect(await screen.findByText('Ctrl + Shift + N')).toBeInTheDocument();

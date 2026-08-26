@@ -26,20 +26,21 @@ test.afterEach(() => {
 });
 
 test('app boots and renders header', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   await expect(page.getByRole('banner')).toBeVisible();
   await expect(page).toHaveTitle(/cabinet|wood/i);
 });
 
 test('configurator tab is reachable and renders dimension controls', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   await expect(page.getByRole('tablist')).toBeVisible();
+  await page.getByRole('tab', { name: /configure/i }).click();
   // At least one dimension slider must be on the page.
   await expect(page.getByRole('slider').first()).toBeVisible();
 });
 
 test('keyboard shortcut Alt+2 switches to preview', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   await expect(page.getByRole('tablist')).toBeVisible();
   await page.keyboard.press('Alt+2');
   // Preview tab content exposes the cabinet drawing SVG (role="img").
@@ -48,7 +49,7 @@ test('keyboard shortcut Alt+2 switches to preview', async ({ page }) => {
 });
 
 test('PWA service worker registers', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   // Registration happens inside a load-event listener; poll for activation.
   await expect
     .poll(
@@ -64,7 +65,7 @@ test('PWA service worker registers', async ({ page }) => {
 });
 
 test('PDF panel renders generate button and content summary', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   // Switch to the PDF tab explicitly to avoid focus/timing variance in CI.
   await page.getByRole('tab', { name: /pdf/i }).click();
   // The lazy-loaded PDF panel includes @react-pdf/renderer (~1.6 MB); give it
@@ -79,4 +80,13 @@ test('PDF panel renders generate button and content summary', async ({ page }) =
   // (strict-mode violation when two elements resolve to the same locator).
   await expect(page.getByRole('listitem').filter({ hasText: /parts list/i })).toBeVisible();
   await expect(page.getByRole('listitem').filter({ hasText: /cut sheet/i })).toBeVisible();
+});
+
+test('mobile workshop assets resolve under the deployment base path', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/?app=workshop');
+
+  const sparkle = page.locator('nav img[src*="tab-sparkle.svg"]');
+  await expect(sparkle).toBeVisible();
+  await expect.poll(() => sparkle.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
 });

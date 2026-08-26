@@ -4,7 +4,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
 import { act } from 'react';
-import App from '../../src/App';
+import WoodworkingShopApp from '../../src/WoodworkingShopApp';
 import { useCabinetStore } from '../../src/store/cabinet-store';
 
 beforeAll(() => {
@@ -41,7 +41,7 @@ describe('Ctrl+L share link shortcut — Sprint 71', () => {
       configurable: true,
     });
 
-    render(<App />);
+    render(<WoodworkingShopApp />);
     fireEvent.keyDown(window, { key: 'l', ctrlKey: true });
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
@@ -57,7 +57,7 @@ describe('Ctrl+L share link shortcut — Sprint 71', () => {
       configurable: true,
     });
 
-    render(<App />);
+    render(<WoodworkingShopApp />);
     fireEvent.keyDown(window, { key: 'l', ctrlKey: true });
     const arg: string = writeText.mock.calls[0][0];
     expect(typeof arg).toBe('string');
@@ -65,7 +65,7 @@ describe('Ctrl+L share link shortcut — Sprint 71', () => {
   });
 
   it('Ctrl+L entry appears in ShortcutsModal', async () => {
-    render(<App />);
+    render(<WoodworkingShopApp />);
     fireEvent.keyDown(window, { key: '?' });
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
@@ -81,7 +81,7 @@ describe('Ctrl+L share link shortcut — Sprint 71', () => {
       configurable: true,
     });
 
-    render(<App />);
+    render(<WoodworkingShopApp />);
     fireEvent.keyDown(window, { key: 'L', ctrlKey: true });
     expect(writeText).toHaveBeenCalledTimes(1);
   });

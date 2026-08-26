@@ -2,62 +2,59 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/WoodworkingShop/favicon.svg" />
-    <link rel="apple-touch-icon" href="/WoodworkingShop/icon-192.png" />
-    <link rel="manifest" href="/WoodworkingShop/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="apple-touch-icon" href="%BASE_URL%icon-192.png" />
+    <link rel="manifest" href="%BASE_URL%manifest.json" />
     <meta name="theme-color" content="#5a4218" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Interactive woodworking cabinet design tool with smart cut optimization, PDF export, and bilingual support."
+      content="מתכנן הדירה והנגרות של פרויקט תפארת ברמלה — תכנון חדרים, ארונות וריהוט בתצוגות דו־ממד ותלת־ממד."
     />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://rajwanyair.github.io/WoodworkingShop/" />
+    <link rel="canonical" href="https://huxhkuh.github.io/tiferet-carpentry/" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Cabinet Planner — Woodworking Design Tool" />
-    <meta
-      property="og:description"
-      content="Design custom cabinets and bookshelves with smart cut optimization, 3D preview, DXF export, and step-by-step assembly guides."
-    />
-    <meta property="og:url" content="https://rajwanyair.github.io/WoodworkingShop/" />
-    <meta property="og:site_name" content="Cabinet Planner" />
-    <meta property="og:image" content="https://rajwanyair.github.io/WoodworkingShop/icon-512.png" />
+    <meta property="og:title" content="תפארת — מתכנן דירה ונגרות" />
+    <meta property="og:description" content="תכנון אינטראקטיבי של דירת תפארת ונגרות בהתאמה אישית, עם תצוגות 2D ו־3D." />
+    <meta property="og:url" content="https://huxhkuh.github.io/tiferet-carpentry/" />
+    <meta property="og:site_name" content="תפארת — מתכנן דירה ונגרות" />
+    <meta property="og:image" content="https://huxhkuh.github.io/tiferet-carpentry/icon-512.png" />
     <meta property="og:image:width" content="512" />
     <meta property="og:image:height" content="512" />
-    <meta property="og:image:alt" content="Cabinet Planner — woodworking design tool icon" />
+    <meta property="og:image:alt" content="תפארת — מתכנן דירה ונגרות" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Cabinet Planner — Woodworking Design Tool" />
-    <meta name="twitter:description" content="Design custom cabinets with smart cut optimization and PDF export." />
-    <meta name="twitter:image" content="https://rajwanyair.github.io/WoodworkingShop/icon-512.png" />
+    <meta name="twitter:title" content="תפארת — מתכנן דירה ונגרות" />
+    <meta name="twitter:description" content="תכנון דירת תפארת ונגרות מותאמת בתצוגות 2D ו־3D." />
+    <meta name="twitter:image" content="https://huxhkuh.github.io/tiferet-carpentry/icon-512.png" />
 
     <!-- Structured Data -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Cabinet Planner",
-        "description": "Interactive woodworking cabinet design tool with smart cut optimization, 3D preview, DXF export, and bilingual support.",
-        "url": "https://rajwanyair.github.io/WoodworkingShop/",
+        "name": "תפארת — מתכנן דירה ונגרות",
+        "description": "מתכנן אינטראקטיבי לדירת תפארת ולנגרות בהתאמה אישית.",
+        "url": "https://huxhkuh.github.io/tiferet-carpentry/",
         "applicationCategory": "DesignApplication",
         "operatingSystem": "Any",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "inLanguage": ["en", "he"]
+        "inLanguage": ["he", "en"]
       }
     </script>
 
     <!-- v3.24.0: preload static assets to eliminate render-blocking fetches -->
-    <link rel="preload" href="/WoodworkingShop/manifest.json" as="fetch" crossorigin="anonymous" />
-    <link rel="preload" href="/WoodworkingShop/icon-192.png" as="image" type="image/png" />
+    <link rel="preload" href="%BASE_URL%manifest.json" as="fetch" crossorigin="anonymous" />
+    <link rel="preload" href="%BASE_URL%icon-192.png" as="image" type="image/png" />
 
     <!-- v3.40.0: preconnect to CDNs used at runtime (react-pdf Twemoji, cdnjs) -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous" />
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
 
-    <title>Cabinet Planner — Woodworking Design Tool</title>
+    <title>תפארת — מתכנן דירה ונגרות</title>
 
     <!-- Content Security Policy (v3.62.0 — Phase 12 / Sprint 16: added CSP report-to via _headers)
          Authoritative CSP lives in public/_headers (Cloudflare Pages HTTP header) and includes
@@ -77,7 +74,7 @@
   <body>
     <div id="root"></div>
     <noscript>
-      <p class="noscript-msg">Cabinet Planner requires JavaScript to run. Please enable JavaScript in your browser.</p>
+      <p class="noscript-msg">המתכנן דורש JavaScript. יש להפעיל JavaScript בדפדפן כדי להשתמש בו.</p>
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
     <!-- SW registration moved to external file to avoid unsafe-inline in script-src -->

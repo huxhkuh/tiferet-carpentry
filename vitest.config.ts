@@ -8,9 +8,11 @@ const { version } = JSON.parse(readFileSync('./package.json', 'utf-8')) as { ver
 const tmpDir = path.join(os.tmpdir(), 'WoodworkingShop');
 
 export default defineConfig({
+  base: '/tiferet-carpentry/',
   plugins: [react()],
   define: {
     __APP_VERSION__: JSON.stringify(version),
+    'import.meta.env.VITE_APP_BASE_PATH': JSON.stringify('/tiferet-carpentry/'),
   },
   resolve: {
     alias: {

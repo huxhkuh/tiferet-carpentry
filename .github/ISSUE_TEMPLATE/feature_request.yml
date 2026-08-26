@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         Thanks for suggesting an improvement to Cabinet Planner!
-        Check the [Roadmap](https://github.com/RajwanYair/WoodworkingShop/blob/main/ROADMAP.md) — your idea may already be planned.
+        Check the [Roadmap](https://github.com/huxhkuh/tiferet-carpentry/blob/main/ROADMAP.md) — your idea may already be planned.
 
   - type: dropdown
     id: area

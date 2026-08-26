@@ -23,7 +23,7 @@
 
 ## Getting Started
 
-Open the app at <https://rajwanyair.github.io/WoodworkingShop/>.
+Open the app at <https://huxhkuh.github.io/tiferet-carpentry/>.
 
 No account or installation required. All data is stored locally in your browser
 (`localStorage`). The app works offline once cached by the service worker.

@@ -8,6 +8,8 @@ import { SnapshotPanel } from './SnapshotPanel';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { IconBarChart, IconX } from './Icons';
 
+const PUBLIC_ASSET_BASE = import.meta.env.BASE_URL;
+
 export function Sidebar() {
   const { parts, hardware, optimization } = useCabinetStore();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -18,7 +20,13 @@ export function Sidebar() {
   const content = (
     <>
       <div className="mb-2 flex items-center justify-between">
-        <img src="/woodgrain-spark.svg" alt="" aria-hidden="true" className="h-4 w-24 opacity-80" loading="lazy" />
+        <img
+          src={`${PUBLIC_ASSET_BASE}woodgrain-spark.svg`}
+          alt=""
+          aria-hidden="true"
+          className="h-4 w-24 opacity-80"
+          loading="lazy"
+        />
         <span className="text-xs" aria-hidden="true">
           ✨🪵✨
         </span>

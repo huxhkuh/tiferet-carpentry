@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
 
 test('optimizer view exposes a yield meter for at least one sheet', async ({ page }) => {
   test.setTimeout(60_000);
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   await expect(page.getByRole('tablist')).toBeVisible();
   await page.keyboard.press('Alt+3');
   // OptimizerView is lazy-loaded; wait for the Suspense boundary to resolve.

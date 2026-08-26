@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         Thanks for filing a performance issue!
-        Check [Lighthouse CI results](https://github.com/RajwanYair/WoodworkingShop/actions) and the [Changelog](https://github.com/RajwanYair/WoodworkingShop/blob/main/CHANGELOG.md) first — the regression may already be fixed.
+        Check [Lighthouse CI results](https://github.com/huxhkuh/tiferet-carpentry/actions) and the [Changelog](https://github.com/huxhkuh/tiferet-carpentry/blob/main/CHANGELOG.md) first — the regression may already be fixed.
 
   - type: dropdown
     id: area

@@ -1,0 +1,1774 @@
+@font-face {
+  font-family: 'Tiferet Sans';
+  src: url('/tiferet-carpentry/fonts/NotoSansHebrew-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tiferet Sans';
+  src: url('/tiferet-carpentry/fonts/NotoSansHebrew-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.ng-site {
+  --ng-cream: #f2efe9;
+  --ng-paper: #faf8f4;
+  --ng-charcoal: #2b2b2b;
+  --ng-ink: #1e1e1c;
+  --ng-walnut: #6b4e3d;
+  --ng-walnut-dark: #47352b;
+  --ng-taupe: #d8cfc2;
+  --ng-line: #c9bca9;
+  --ng-muted: #716b64;
+  --ng-wide: 88rem;
+  --ng-content: 76rem;
+
+  min-width: 0;
+  min-height: 100vh;
+  overflow-x: clip;
+  color: var(--ng-charcoal);
+  background: var(--ng-cream);
+  font-family: 'Tiferet Sans', Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.ng-site *,
+.ng-site *::before,
+.ng-site *::after {
+  box-sizing: border-box;
+}
+
+.ng-site :focus-visible {
+  outline: 0.18rem solid var(--ng-charcoal);
+  outline-offset: 0.22rem;
+}
+
+.ng-site :where(a) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ng-site button,
+.ng-site input,
+.ng-site select,
+.ng-site textarea {
+  font: inherit;
+}
+
+.ng-site button,
+.ng-site a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ng-site-header {
+  position: sticky;
+  z-index: 50;
+  inset-block-start: 0;
+  border-block-end: 0.0625rem solid rgb(107 78 61 / 18%);
+  background: rgb(250 248 244 / 96%);
+  backdrop-filter: blur(1rem);
+}
+
+.ng-header-inner {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr) auto;
+  align-items: center;
+  width: min(100%, var(--ng-wide));
+  min-height: 6.3rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 4.5rem);
+}
+
+.ng-brand-link {
+  justify-self: start;
+}
+
+.ng-brand-mark {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 5.5rem;
+  min-height: 12rem;
+  border: 0.0625rem solid var(--ng-line);
+  color: var(--ng-ink);
+  background: var(--ng-paper);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.14em;
+}
+
+.ng-brand-mark::before,
+.ng-brand-mark::after {
+  position: absolute;
+  inset-inline-start: 50%;
+  width: 0.34rem;
+  height: 0.34rem;
+  background: #a7987c;
+  content: '';
+  transform: translateX(50%) rotate(45deg);
+}
+
+.ng-brand-mark::before {
+  inset-block-start: -0.2rem;
+}
+
+.ng-brand-mark::after {
+  inset-block-end: -0.2rem;
+}
+
+.ng-brand-mark--compact {
+  width: 3.65rem;
+  min-height: 4.9rem;
+  font-size: 1.35rem;
+}
+
+.ng-desktop-nav {
+  display: flex;
+  justify-content: center;
+  gap: clamp(1rem, 2.4vw, 2.7rem);
+  padding-inline: 1rem;
+  font-size: 0.88rem;
+}
+
+.ng-desktop-nav a {
+  position: relative;
+  padding-block: 2.4rem;
+  color: #4f4a45;
+  white-space: nowrap;
+}
+
+.ng-desktop-nav a::after {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 1.65rem;
+  height: 0.0625rem;
+  background: var(--ng-walnut);
+  content: '';
+  transform: scaleX(0);
+  transition: transform 180ms ease;
+}
+
+.ng-desktop-nav a:hover::after,
+.ng-desktop-nav a[aria-current='page']::after {
+  transform: scaleX(1);
+}
+
+.ng-desktop-nav a[aria-current='page'] {
+  color: var(--ng-ink);
+  font-weight: 700;
+}
+
+.ng-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  justify-self: end;
+}
+
+.ng-workshop-link {
+  border: 0;
+  color: var(--ng-muted);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.ng-workshop-link:hover {
+  color: var(--ng-walnut);
+}
+
+.ng-menu-button {
+  display: none;
+  width: 3rem;
+  height: 3rem;
+  border: 0.0625rem solid var(--ng-line);
+  background: transparent;
+}
+
+.ng-menu-button span {
+  display: block;
+  width: 1.25rem;
+  height: 0.0625rem;
+  margin: 0.35rem auto;
+  background: currentcolor;
+}
+
+.ng-mobile-menu {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 1.25rem;
+  color: var(--ng-paper);
+  background: var(--ng-ink);
+  animation: ng-panel-in 220ms ease-out both;
+}
+
+.ng-mobile-menu__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.ng-mobile-menu .ng-brand-mark {
+  color: var(--ng-paper);
+  background: transparent;
+}
+
+.ng-mobile-menu__top > button {
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.ng-mobile-nav {
+  display: grid;
+  margin-block: auto;
+}
+
+.ng-mobile-nav a {
+  border-block-end: 0.0625rem solid rgb(250 248 244 / 20%);
+  padding-block: 0.8rem;
+  font-size: clamp(1.4rem, 8vw, 2.6rem);
+}
+
+.ng-mobile-menu .ng-workshop-link {
+  display: block;
+  align-self: start;
+  color: var(--ng-taupe);
+}
+
+.ng-button {
+  display: inline-flex;
+  min-height: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 0.0625rem solid var(--ng-walnut);
+  padding: 0.72rem 1.5rem;
+  color: var(--ng-paper);
+  background: var(--ng-walnut);
+  cursor: pointer;
+  font-weight: 700;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.ng-button:hover {
+  background: var(--ng-walnut-dark);
+  transform: translateY(-0.08rem);
+}
+
+.ng-button--small {
+  min-height: 2.6rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+}
+
+.ng-button--light {
+  border-color: #b8a789;
+  color: var(--ng-paper);
+  background: transparent;
+}
+
+.ng-button--light:hover {
+  color: var(--ng-ink);
+  background: var(--ng-paper);
+}
+
+.ng-button--outline {
+  color: var(--ng-walnut);
+  background: transparent;
+}
+
+.ng-button--outline:hover {
+  color: var(--ng-paper);
+  background: var(--ng-walnut);
+}
+
+.ng-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-block-end: 0.0625rem solid var(--ng-line);
+  padding-block: 0.25rem;
+  color: var(--ng-walnut);
+  font-weight: 700;
+}
+
+.ng-text-link--light {
+  color: var(--ng-paper);
+}
+
+.ng-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0;
+  color: var(--ng-walnut);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.ng-hero__copy > .ng-eyebrow,
+.ng-precision-section > .ng-eyebrow {
+  color: var(--ng-taupe);
+}
+
+.ng-diamond {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  flex: 0 0 auto;
+  background: var(--ng-walnut);
+  transform: rotate(45deg);
+}
+
+.ng-diamond--light {
+  background: #b8a789;
+}
+
+.ng-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(24rem, 0.75fr);
+  width: min(calc(100% - 3rem), var(--ng-wide));
+  min-height: 43rem;
+  margin: 1.7rem auto 0;
+  border: 0.0625rem solid var(--ng-line);
+  background: var(--ng-ink);
+}
+
+.ng-hero__visual {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: #bcb0a2;
+}
+
+.ng-hero-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ng-hero__measure {
+  position: absolute;
+  inset-inline-start: 1.3rem;
+  inset-block-end: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.6rem;
+  color: var(--ng-paper);
+  background: rgb(30 30 28 / 74%);
+  font-size: 0.68rem;
+}
+
+.ng-hero__measure i {
+  width: 3.5rem;
+  height: 0.0625rem;
+  background: currentcolor;
+}
+
+.ng-hero__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(2.2rem, 5vw, 5.6rem);
+  color: var(--ng-paper);
+}
+
+.ng-hero__copy h1 {
+  margin: 1.35rem 0 1.6rem;
+  font-size: clamp(3.1rem, 5.4vw, 5.8rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+}
+
+.ng-hero__copy > p:not(.ng-eyebrow) {
+  max-width: 29rem;
+  margin: 0;
+  color: #d7d0c5;
+  font-size: 1.05rem;
+  line-height: 2;
+}
+
+.ng-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.4rem;
+  margin-block-start: 2.4rem;
+}
+
+.ng-value-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: min(calc(100% - 3rem), var(--ng-wide));
+  margin-inline: auto;
+  border-inline: 0.0625rem solid var(--ng-line);
+  border-block-end: 0.0625rem solid var(--ng-line);
+  background: var(--ng-paper);
+}
+
+.ng-value-strip article {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 8.6rem;
+  padding: 1.4rem;
+  border-inline-end: 0.0625rem solid var(--ng-line);
+}
+
+.ng-value-strip article:last-child {
+  border-inline-end: 0;
+}
+
+.ng-value-icon {
+  display: grid;
+  width: 2.8rem;
+  height: 2.8rem;
+  place-items: center;
+  border: 0.0625rem solid var(--ng-walnut);
+  border-radius: 50%;
+  color: var(--ng-walnut);
+  font-size: 0.72rem;
+}
+
+.ng-value-strip h2 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.ng-value-strip p {
+  margin: 0.2rem 0 0;
+  color: var(--ng-muted);
+  font-size: 0.78rem;
+}
+
+.ng-section {
+  width: min(calc(100% - 3rem), var(--ng-content));
+  margin: clamp(6rem, 11vw, 10rem) auto;
+}
+
+.ng-section-heading {
+  max-width: 46rem;
+}
+
+.ng-section-heading h2 {
+  margin: 1rem 0 0;
+  font-size: clamp(2.4rem, 4.4vw, 4.35rem);
+  font-weight: 400;
+  line-height: 1.16;
+  letter-spacing: -0.05em;
+}
+
+.ng-section-heading.is-light h2 {
+  color: var(--ng-paper);
+}
+
+.ng-section-intro {
+  max-width: 38rem;
+  margin-block-start: 1.2rem;
+  color: var(--ng-muted);
+  font-size: 1.05rem;
+}
+
+.ng-section-intro p {
+  margin: 0;
+}
+
+.ng-apartment-intro {
+  display: grid;
+  grid-template-columns: minmax(20rem, 0.8fr) minmax(28rem, 1.2fr);
+  align-items: center;
+  gap: clamp(3rem, 8vw, 8rem);
+}
+
+.ng-quiet-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 2rem 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ng-muted);
+}
+
+.ng-quiet-list li {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.ng-quiet-list li::before {
+  width: 1.8rem;
+  height: 0.0625rem;
+  background: var(--ng-walnut);
+  content: '';
+}
+
+.ng-plan-frame {
+  position: relative;
+  height: min(48rem, 70vw);
+  min-height: 35rem;
+  border: 0.0625rem solid var(--ng-line);
+  padding: 4.2rem 2rem 2rem;
+  background: var(--ng-paper);
+}
+
+.ng-plan-frame svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ng-plan-frame__meta {
+  position: absolute;
+  inset-inline: 1.2rem;
+  inset-block-start: 1rem;
+  display: flex;
+  justify-content: space-between;
+  border-block-end: 0.0625rem solid var(--ng-line);
+  padding-block-end: 0.6rem;
+  color: var(--ng-muted);
+  font-size: 0.72rem;
+}
+
+.ng-plan-frame__scale {
+  position: absolute;
+  inset-inline-end: 1.2rem;
+  inset-block-end: 0.8rem;
+  color: var(--ng-muted);
+  font-size: 0.68rem;
+}
+
+.ng-process-preview {
+  text-align: center;
+}
+
+.ng-process-preview > .ng-text-link {
+  margin-block-start: 2rem;
+}
+
+.ng-process-line {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 4rem 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: start;
+}
+
+.ng-process-line li {
+  position: relative;
+  min-height: 16rem;
+  border-block-start: 0.0625rem solid var(--ng-line);
+  padding: 2rem 1.2rem;
+}
+
+.ng-process-line li > span {
+  color: var(--ng-walnut);
+  font-size: 0.75rem;
+}
+
+.ng-process-line .ng-diamond {
+  position: absolute;
+  inset-block-start: -0.25rem;
+  inset-inline-start: 1.2rem;
+}
+
+.ng-process-line h3 {
+  margin: 2.3rem 0 0.7rem;
+  font-size: 1.35rem;
+}
+
+.ng-process-line p {
+  margin: 0;
+  color: var(--ng-muted);
+  font-size: 0.9rem;
+}
+
+.ng-spaces-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  margin-block-start: 4rem;
+}
+
+.ng-spaces-grid article {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(12rem, 0.75fr);
+  min-height: 24rem;
+  border: 0.0625rem solid var(--ng-line);
+  background: var(--ng-paper);
+}
+
+.ng-spaces-grid article.is-wide {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1.55fr) minmax(18rem, 0.45fr);
+}
+
+.ng-spaces-grid article > div {
+  align-self: center;
+  padding: 2rem;
+}
+
+.ng-spaces-grid h3 {
+  margin: 0.5rem 0;
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+.ng-spaces-grid p {
+  color: var(--ng-muted);
+}
+
+.ng-index {
+  margin: 0;
+  color: var(--ng-walnut) !important;
+  font-size: 0.72rem;
+}
+
+.ng-cabinet-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 20rem;
+  object-fit: cover;
+}
+
+.ng-material-showcase {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  width: min(calc(100% - 3rem), var(--ng-wide));
+  margin: 10rem auto;
+  border: 0.0625rem solid var(--ng-line);
+  background: var(--ng-paper);
+}
+
+.ng-material-showcase__art {
+  display: grid;
+  min-height: 45rem;
+  place-items: center;
+  padding: clamp(1.5rem, 5vw, 5rem);
+  color: #675c51;
+  background: #e8e2da;
+}
+
+.ng-elevation {
+  width: 100%;
+}
+
+.ng-material-showcase__copy {
+  align-self: center;
+  padding: clamp(2rem, 5vw, 5rem);
+}
+
+.ng-material-swatches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2.3rem 0;
+}
+
+.ng-material-swatches div {
+  min-width: 0;
+}
+
+.ng-material-swatches span {
+  display: block;
+  aspect-ratio: 1;
+  border: 0.0625rem solid rgb(43 43 43 / 12%);
+  background: var(--material-color);
+}
+
+.ng-material-swatches .has-grain,
+.ng-material-library .has-grain {
+  background-color: var(--material-color);
+  background-image: repeating-linear-gradient(88deg, transparent 0 0.65rem, rgb(30 20 14 / 11%) 0.7rem 0.76rem);
+}
+
+.ng-material-swatches strong,
+.ng-material-swatches small {
+  display: block;
+  overflow: hidden;
+  margin-block-start: 0.4rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ng-material-swatches small {
+  margin-block-start: 0;
+  color: var(--ng-muted);
+}
+
+.ng-precision-section {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.7fr) minmax(24rem, 1.3fr);
+  gap: 5rem;
+  width: min(100%, var(--ng-wide));
+  margin-inline: auto;
+  padding: clamp(4rem, 10vw, 9rem);
+  color: var(--ng-paper);
+  background: var(--ng-ink);
+}
+
+.ng-precision-section > .ng-eyebrow {
+  grid-column: 1 / -1;
+}
+
+.ng-precision-section h2 {
+  margin: 0;
+  font-size: clamp(4rem, 9vw, 9rem);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: -0.07em;
+}
+
+.ng-precision-section__copy {
+  align-self: end;
+  max-width: 34rem;
+  border-inline-start: 0.0625rem solid #746a5b;
+  padding-inline-start: 2.5rem;
+  color: #d2cbc0;
+  font-size: 1.05rem;
+}
+
+.ng-final-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(calc(100% - 3rem), var(--ng-content));
+  margin: 9rem auto;
+  text-align: center;
+}
+
+.ng-final-cta h2 {
+  margin: 1.5rem 0 2rem;
+  font-size: clamp(2.8rem, 6vw, 5.8rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+}
+
+.ng-site-footer {
+  color: var(--ng-paper);
+  background: var(--ng-ink);
+}
+
+.ng-footer-grid {
+  display: grid;
+  grid-template-columns: 1.35fr repeat(3, 1fr);
+  gap: 3rem;
+  width: min(calc(100% - 3rem), var(--ng-content));
+  margin-inline: auto;
+  padding-block: 5rem;
+}
+
+.ng-footer-grid > div:not(.ng-footer-brand) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+
+.ng-footer-brand {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+}
+
+.ng-footer-brand .ng-brand-mark {
+  color: var(--ng-paper);
+  background: transparent;
+}
+
+.ng-footer-brand p {
+  max-width: 13rem;
+  color: #bdb4a8;
+}
+
+.ng-footer-title {
+  margin: 0 0 0.8rem;
+  color: #bfae91;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.ng-footer-grid a {
+  color: #d7d0c7;
+}
+
+.ng-footer-grid a:hover {
+  color: #fff;
+}
+
+.ng-footer-note {
+  max-width: 13rem;
+  color: #999188;
+  font-size: 0.72rem;
+}
+
+.ng-footer-legal {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 1.2rem;
+  align-items: center;
+  border-block-start: 0.0625rem solid rgb(250 248 244 / 16%);
+  padding: 1rem clamp(1rem, 5vw, 5rem);
+  color: #a9a198;
+  font-size: 0.68rem;
+}
+
+.ng-footer-legal p {
+  margin: 0;
+}
+
+.ng-page {
+  min-height: 60vh;
+}
+
+.ng-page-hero {
+  width: min(calc(100% - 3rem), var(--ng-content));
+  margin: 0 auto;
+  padding-block: clamp(5rem, 9vw, 8.5rem) clamp(3rem, 6vw, 5.5rem);
+}
+
+.ng-page-hero h1 {
+  max-width: 64rem;
+  margin: 1rem 0;
+  font-size: clamp(3.1rem, 7vw, 7rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.065em;
+}
+
+.ng-page-hero > p:last-child {
+  max-width: 42rem;
+  margin: 1.7rem 0 0;
+  color: var(--ng-muted);
+  font-size: 1.1rem;
+}
+
+.ng-page-hero--plan::after {
+  display: block;
+  width: 10rem;
+  height: 0.0625rem;
+  margin-block-start: 2.3rem;
+  background: var(--ng-line);
+  content: '';
+}
+
+.ng-page-hero--material {
+  background: linear-gradient(90deg, transparent 0 55%, rgb(107 78 61 / 7%) 55% 100%);
+}
+
+.ng-apartment-catalog,
+.ng-gallery-section,
+.ng-material-library,
+.ng-process-page,
+.ng-about-grid,
+.ng-contact-layout,
+.ng-spec-sheet {
+  width: min(calc(100% - 3rem), var(--ng-content));
+  margin: 0 auto 8rem;
+}
+
+.ng-selection-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  border-block: 0.0625rem solid var(--ng-line);
+  padding-block: 1.2rem;
+}
+
+.ng-selection-strip label {
+  color: var(--ng-muted);
+  font-size: 0.76rem;
+}
+
+.ng-selection-strip select {
+  width: 100%;
+  margin-block-start: 0.4rem;
+  border: 0;
+  border-block-end: 0.0625rem solid var(--ng-line);
+  padding: 0.55rem 0;
+  color: var(--ng-ink);
+  background: transparent;
+}
+
+.ng-apartment-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
+  margin-block-start: 2rem;
+  border: 0.0625rem solid var(--ng-line);
+  background: var(--ng-paper);
+}
+
+.ng-apartment-card__plan {
+  min-height: 44rem;
+  padding: 2rem;
+  background: #e8e1d6;
+}
+
+.ng-apartment-card__plan svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ng-apartment-card__details {
+  align-self: center;
+  padding: clamp(2rem, 6vw, 5rem);
+}
+
+.ng-apartment-card__details h2 {
+  margin: 0.8rem 0 0;
+  font-size: 4.5rem;
+  font-weight: 400;
+}
+
+.ng-apartment-type {
+  color: var(--ng-muted);
+}
+
+.ng-apartment-card dl {
+  margin-block: 2rem;
+}
+
+.ng-apartment-card dl > div {
+  display: flex;
+  justify-content: space-between;
+  border-block-end: 0.0625rem solid var(--ng-line);
+  padding-block: 0.65rem;
+}
+
+.ng-apartment-card dt {
+  color: var(--ng-muted);
+}
+
+.ng-data-note {
+  color: var(--ng-muted);
+  font-size: 0.78rem;
+}
+
+.ng-my-apartment {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(20rem, 0.75fr);
+  width: min(calc(100% - 3rem), var(--ng-wide));
+  margin: 0 auto 8rem;
+  border: 0.0625rem solid var(--ng-line);
+  background: var(--ng-paper);
+}
+
+.ng-my-apartment__plan {
+  position: relative;
+  min-height: 54rem;
+  padding: 4rem 2rem 2rem;
+  background: #e8e1d6;
+}
+
+.ng-my-apartment__plan svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ng-plan-toolbar {
+  position: absolute;
+  inset-inline: 1.5rem;
+  inset-block-start: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  color: var(--ng-muted);
+  font-size: 0.72rem;
+}
+
+.ng-room-index {
+  padding: 2.5rem;
+}
+
+.ng-room-index__header {
+  display: flex;
+  justify-content: space-between;
+  border-block-end: 0.0625rem solid var(--ng-line);
+  padding-block-end: 0.8rem;
+}
+
+.ng-room-index__header p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.ng-room-index__header span {
+  color: var(--ng-muted);
+  font-size: 0.7rem;
+}
+
+.ng-room-index ol {
+  margin: 1rem 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.ng-room-index li a {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  gap: 0.8rem;
+  align-items: center;
+  border-block-end: 0.0625rem solid #e2dbd2;
+  padding-block: 0.85rem;
+}
+
+.ng-room-index li a > span {
+  color: var(--ng-walnut);
+  font-size: 0.68rem;
+}
+
+.ng-room-index li a:hover strong {
+  color: var(--ng-walnut);
+}
+
+.ng-room-index i {
+  font-style: normal;
+}
+
+.ng-spec-sheet {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 0.0625rem solid var(--ng-line);
+  background: var(--ng-paper);
+}
+
+.ng-spec-sheet__plan {
+  min-height: 40rem;
+  padding: 2rem;
+  background: #e5ddd2;
+}
+
+.ng-spec-sheet__plan svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ng-spec-sheet__details {
+  padding: clamp(2rem, 6vw, 5rem);
+}
+
+.ng-spec-number {
+  border-block-end: 0.0625rem solid var(--ng-line);
+  padding-block-end: 0.6rem;
+  color: var(--ng-muted);
+  font-size: 0.72rem;
+}
+
+.ng-spec-sheet__details h2 {
+  margin: 1.5rem 0;
+  font-size: 2.4rem;
+  font-weight: 400;
+}
+
+.ng-spec-list {
+  padding: 0;
+  list-style: none;
+}
+
+.ng-spec-list li {
+  display: flex;
+  gap: 1rem;
+  border-block-end: 0.0625rem solid var(--ng-line);
+  padding-block: 0.8rem;
+}
+
+.ng-spec-list li > span {
+  color: var(--ng-walnut);
+  font-size: 0.72rem;
+}
+
+.ng-spec-list p {
+  margin: 0;
+  color: var(--ng-muted);
+}
+
+.ng-empty-copy {
+  color: var(--ng-muted);
+}
+
+.ng-price-placeholder {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block: 2rem;
+  border-block: 0.0625rem solid var(--ng-line);
+  padding-block: 1rem;
+}
+
+.ng-price-placeholder strong {
+  text-align: end;
+}
+
+.ng-spec-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.ng-measurement-disclaimer {
+  width: min(calc(100% - 3rem), var(--ng-content));
+  margin: -5rem auto 8rem;
+  color: var(--ng-muted);
+  font-size: 0.75rem;
+}
+
+.ng-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block-end: 2rem;
+}
+
+.ng-filter-row button {
+  border: 0.0625rem solid var(--ng-line);
+  padding: 0.5rem 1rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ng-filter-row button[aria-pressed='true'] {
+  color: var(--ng-paper);
+  background: var(--ng-ink);
+}
+
+.ng-editorial-gallery {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+.ng-editorial-gallery > button {
+  grid-column: span 5;
+  border: 0;
+  padding: 0;
+  text-align: start;
+  background: var(--ng-paper);
+  cursor: pointer;
+}
+
+.ng-editorial-gallery > button:nth-child(2n) {
+  grid-column: span 7;
+}
+
+.ng-editorial-gallery > button.is-large {
+  grid-column: span 7;
+}
+
+.ng-editorial-gallery .ng-cabinet-art {
+  min-height: 22rem;
+}
+
+.ng-editorial-gallery > button > span {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.8rem;
+  padding: 1rem;
+}
+
+.ng-editorial-gallery small {
+  color: var(--ng-walnut);
+}
+
+.ng-editorial-gallery i {
+  font-style: normal;
+}
+
+.ng-gallery-dialog {
+  position: fixed;
+  z-index: 70;
+  inset: 5vh 5vw;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  border: 0.0625rem solid var(--ng-line);
+  background: var(--ng-paper);
+  box-shadow: 0 2rem 6rem rgb(30 30 28 / 35%);
+}
+
+.ng-gallery-dialog > button {
+  position: absolute;
+  z-index: 2;
+  inset-inline-end: 1rem;
+  inset-block-start: 0.5rem;
+  border: 0;
+  background: transparent;
+  font-size: 2.5rem;
+}
+
+.ng-gallery-dialog > div {
+  align-self: center;
+  padding: 3rem;
+}
+
+.ng-gallery-dialog h2 {
+  font-size: 3.4rem;
+  font-weight: 400;
+}
+
+.ng-material-library {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.ng-material-library article {
+  border-block-end: 0.0625rem solid var(--ng-line);
+  padding-block-end: 1rem;
+}
+
+.ng-material-library article > div {
+  position: relative;
+  aspect-ratio: 1.25;
+  background: var(--material-color);
+}
+
+.ng-material-library article > div span {
+  position: absolute;
+  inset-inline-start: 0.8rem;
+  inset-block-end: 0.6rem;
+  color: rgb(255 255 255 / 78%);
+  font-size: 0.72rem;
+}
+
+.ng-material-library h2 {
+  margin: 0.9rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.ng-material-library p {
+  margin: 0.2rem 0;
+  color: var(--ng-muted);
+}
+
+.ng-hardware-band {
+  width: min(calc(100% - 3rem), var(--ng-content));
+  margin: 0 auto 8rem;
+  border-block: 0.0625rem solid var(--ng-line);
+  padding-block: 5rem;
+}
+
+.ng-hardware-icons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 3rem 0;
+}
+
+.ng-hardware-icons div {
+  display: grid;
+  place-items: center;
+  gap: 0.7rem;
+  border-inline-end: 0.0625rem solid var(--ng-line);
+  text-align: center;
+}
+
+.ng-hardware-icons div:first-child {
+  border-inline-end: 0;
+}
+
+.ng-hardware-icons span {
+  display: grid;
+  width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  border: 0.0625rem solid var(--ng-walnut);
+  border-radius: 50%;
+  color: var(--ng-walnut);
+}
+
+.ng-process-page {
+  display: grid;
+  grid-template-columns: 1fr 20rem;
+  gap: 5rem;
+}
+
+.ng-process-page ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ng-process-page li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4rem 1fr auto;
+  gap: 1rem;
+  min-height: 9rem;
+  border-block-start: 0.0625rem solid var(--ng-line);
+  padding-block: 1.6rem;
+}
+
+.ng-process-page li > span {
+  color: var(--ng-walnut);
+  font-size: 0.75rem;
+}
+
+.ng-process-page h2 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 400;
+}
+
+.ng-process-page li p {
+  margin: 0.5rem 0;
+  color: var(--ng-muted);
+}
+
+.ng-process-page aside {
+  align-self: start;
+  border: 0.0625rem solid var(--ng-line);
+  padding: 2rem;
+  background: var(--ng-paper);
+}
+
+.ng-about-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  border-block-start: 0.0625rem solid var(--ng-line);
+}
+
+.ng-about-grid > div {
+  min-height: 18rem;
+  border-inline-end: 0.0625rem solid var(--ng-line);
+  border-block-end: 0.0625rem solid var(--ng-line);
+  padding: 2.5rem;
+}
+
+.ng-about-grid h2 {
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.ng-about-grid p {
+  color: var(--ng-muted);
+}
+
+.ng-large-quote {
+  margin: 0;
+  color: var(--ng-ink) !important;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  line-height: 1.1;
+}
+
+.ng-contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 22rem;
+  gap: 5rem;
+}
+
+.ng-contact-layout form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.3rem;
+}
+
+.ng-contact-layout label {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--ng-muted);
+  font-size: 0.8rem;
+}
+
+.ng-contact-layout label.is-wide {
+  grid-column: 1 / -1;
+}
+
+.ng-contact-layout input,
+.ng-contact-layout textarea {
+  width: 100%;
+  border: 0;
+  border-block-end: 0.0625rem solid var(--ng-line);
+  border-radius: 0;
+  padding: 0.8rem 0;
+  color: var(--ng-ink);
+  background: transparent;
+}
+
+.ng-contact-layout textarea {
+  border: 0.0625rem solid var(--ng-line);
+  padding: 0.8rem;
+  resize: vertical;
+}
+
+.ng-contact-layout form > .ng-button {
+  justify-self: start;
+}
+
+.ng-form-notice {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--ng-walnut);
+}
+
+.ng-contact-layout aside {
+  border-inline-start: 0.0625rem solid var(--ng-line);
+  padding-inline-start: 2rem;
+}
+
+.ng-contact-layout aside h2 {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.ng-contact-layout aside ul {
+  padding-inline-start: 1.2rem;
+  color: var(--ng-muted);
+}
+
+.ng-not-found {
+  display: grid;
+  min-height: 70vh;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.ng-not-found > p {
+  margin: 0;
+  color: var(--ng-walnut);
+  font-size: 1rem;
+}
+
+.ng-not-found h1 {
+  margin: 1rem;
+  font-size: 4rem;
+  font-weight: 400;
+}
+
+@keyframes ng-panel-in {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (width <= 72rem) {
+  .ng-header-inner {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .ng-desktop-nav {
+    display: none;
+  }
+
+  .ng-menu-button {
+    display: block;
+  }
+
+  .ng-workshop-link {
+    display: none;
+  }
+
+  .ng-hero {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+
+  .ng-hero__copy {
+    padding: 2.6rem;
+  }
+
+  .ng-value-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ng-apartment-intro {
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+  }
+
+  .ng-footer-grid {
+    grid-template-columns: 1.4fr 1fr 1fr;
+  }
+
+  .ng-footer-grid > div:last-child {
+    grid-column: 2 / -1;
+  }
+}
+
+@media (width <= 52rem) {
+  .ng-header-inner {
+    min-height: 5.4rem;
+    padding-inline: 1rem;
+  }
+
+  .ng-header-actions .ng-button {
+    display: none;
+  }
+
+  .ng-brand-mark--compact {
+    min-height: 4rem;
+  }
+
+  .ng-hero {
+    grid-template-columns: 1fr;
+    width: 100%;
+    margin-block-start: 0;
+    border-inline: 0;
+  }
+
+  .ng-hero__visual {
+    min-height: 28rem;
+  }
+
+  .ng-hero__copy {
+    grid-row: 1;
+    padding: 3.2rem 1.4rem;
+  }
+
+  .ng-hero__copy h1 {
+    font-size: clamp(3.15rem, 14vw, 5rem);
+  }
+
+  .ng-value-strip {
+    width: 100%;
+    border-inline: 0;
+  }
+
+  .ng-value-strip article {
+    border-block-end: 0.0625rem solid var(--ng-line);
+  }
+
+  .ng-section,
+  .ng-page-hero,
+  .ng-apartment-catalog,
+  .ng-gallery-section,
+  .ng-material-library,
+  .ng-process-page,
+  .ng-about-grid,
+  .ng-contact-layout,
+  .ng-spec-sheet {
+    width: min(calc(100% - 2rem), var(--ng-content));
+  }
+
+  .ng-apartment-intro,
+  .ng-material-showcase,
+  .ng-precision-section,
+  .ng-apartment-card,
+  .ng-my-apartment,
+  .ng-spec-sheet,
+  .ng-process-page,
+  .ng-contact-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-plan-frame {
+    height: 40rem;
+    min-height: 0;
+  }
+
+  .ng-process-line {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ng-spaces-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-spaces-grid article,
+  .ng-spaces-grid article.is-wide {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .ng-material-showcase {
+    width: 100%;
+  }
+
+  .ng-material-showcase__art {
+    min-height: 30rem;
+  }
+
+  .ng-precision-section {
+    gap: 3rem;
+    padding: 4rem 1.4rem;
+  }
+
+  .ng-precision-section__copy {
+    border-inline-start: 0;
+    border-block-start: 0.0625rem solid #746a5b;
+    padding: 2rem 0 0;
+  }
+
+  .ng-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ng-footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .ng-footer-grid > div:last-child {
+    grid-column: auto;
+  }
+
+  .ng-selection-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-apartment-card__plan,
+  .ng-my-apartment__plan {
+    min-height: 36rem;
+  }
+
+  .ng-editorial-gallery > button,
+  .ng-editorial-gallery > button:nth-child(2n),
+  .ng-editorial-gallery > button.is-large {
+    grid-column: span 6;
+  }
+
+  .ng-gallery-dialog {
+    inset: 2vh 2vw;
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .ng-gallery-dialog .ng-cabinet-art {
+    max-height: 45vh;
+  }
+
+  .ng-material-library {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ng-hardware-icons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .ng-hardware-icons div {
+    border: 0;
+  }
+
+  .ng-process-page aside {
+    grid-row: 1;
+  }
+
+  .ng-about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-contact-layout aside {
+    grid-row: 1;
+    border-inline-start: 0;
+    border-block-end: 0.0625rem solid var(--ng-line);
+    padding: 0 0 2rem;
+  }
+}
+
+@media (width <= 32rem) {
+  .ng-value-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-value-strip article {
+    border-inline-end: 0;
+  }
+
+  .ng-process-line {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-process-line li {
+    min-height: 12rem;
+  }
+
+  .ng-plan-frame {
+    height: 32rem;
+    padding-inline: 0.7rem;
+  }
+
+  .ng-material-swatches {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ng-footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-footer-grid > div:last-child,
+  .ng-footer-brand {
+    grid-column: auto;
+  }
+
+  .ng-footer-legal {
+    grid-template-columns: auto 1fr;
+  }
+
+  .ng-footer-legal > span:last-child {
+    grid-column: 2;
+  }
+
+  .ng-apartment-card__plan,
+  .ng-my-apartment__plan,
+  .ng-spec-sheet__plan {
+    min-height: 29rem;
+    padding-inline: 0.6rem;
+  }
+
+  .ng-apartment-card__details h2 {
+    font-size: 3.4rem;
+  }
+
+  .ng-editorial-gallery {
+    display: block;
+  }
+
+  .ng-editorial-gallery > button {
+    width: 100%;
+    margin-block-end: 1rem;
+  }
+
+  .ng-material-library {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-contact-layout form {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-contact-layout label.is-wide,
+  .ng-form-notice {
+    grid-column: auto;
+  }
+
+  .ng-price-placeholder {
+    flex-direction: column;
+  }
+
+  .ng-price-placeholder strong {
+    text-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ng-site *,
+  .ng-site *::before,
+  .ng-site *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

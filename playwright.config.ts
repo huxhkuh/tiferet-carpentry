@@ -3,6 +3,8 @@ import os from 'node:os';
 import path from 'node:path';
 
 const tmpDir = path.join(os.tmpdir(), 'WoodworkingShop');
+const localPort = process.env.PLAYWRIGHT_PORT ?? '5173';
+const localBaseUrl = `http://localhost:${localPort}/tiferet-carpentry/`;
 
 /**
  * Playwright E2E config for WoodworkingShop SPA.
@@ -19,7 +21,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   updateSnapshots: 'missing',
-  workers: process.env.CI ? 1 : undefined,
+  // Both applications mount worker-backed panels and WebGL canvases. Running
+  // browsers serially keeps interaction, axe and screenshot tests deterministic
+  // across Chromium, Firefox and lower-powered developer machines.
+  workers: 1,
   reporter: process.env.CI
     ? // In CI: write the HTML report to the workspace so actions/upload-artifact can find it.
       // The 'github' reporter posts annotations directly to the PR without a file.
@@ -29,7 +34,7 @@ export default defineConfig({
   use: {
     // In CI: preview server serves the pre-built dist on port 4173.
     // Locally: dev server on port 5173.
-    baseURL: process.env.CI ? 'http://localhost:4173/WoodworkingShop/' : 'http://localhost:5173/WoodworkingShop/',
+    baseURL: process.env.CI ? 'http://localhost:4173/tiferet-carpentry/' : localBaseUrl,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -41,8 +46,10 @@ export default defineConfig({
   webServer: {
     // CI: serve the pre-built dist artifact via `vite preview` (no rebuild needed).
     // Local: use the hot-reload dev server.
-    command: process.env.CI ? 'npm run preview -- --port 4173 --strictPort' : 'npm run dev',
-    url: process.env.CI ? 'http://localhost:4173/WoodworkingShop/' : 'http://localhost:5173/WoodworkingShop/',
+    command: process.env.CI
+      ? 'npm run preview -- --port 4173 --strictPort'
+      : `npm run dev -- --port ${localPort} --strictPort`,
+    url: process.env.CI ? 'http://localhost:4173/tiferet-carpentry/' : localBaseUrl,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
     stdout: 'ignore',

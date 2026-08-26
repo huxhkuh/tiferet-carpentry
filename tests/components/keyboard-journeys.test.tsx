@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import App from '../../src/App';
+import WoodworkingShopApp from '../../src/WoodworkingShopApp';
 import { useCabinetStore } from '../../src/store/cabinet-store';
 import type { CabinetState } from '../../src/store/cabinet-store';
 
@@ -28,6 +28,7 @@ beforeAll(() => {
 
 describe('keyboard journeys — sprint 252', () => {
   beforeEach(() => {
+    window.history.replaceState({}, '', '/?app=workshop');
     useCabinetStore.getState().resetConfig();
     useCabinetStore.getState().setActiveTab('configurator');
     if (useCabinetStore.getState().darkMode) {
@@ -44,7 +45,7 @@ describe('keyboard journeys — sprint 252', () => {
     { key: '6', tab: 'calculators' },
   ] as const)('switches to $tab using Alt+$key', async ({ key, tab }) => {
     const user = userEvent.setup();
-    render(<App />);
+    render(<WoodworkingShopApp />);
 
     await user.keyboard(`{Alt>}${key}{/Alt}`);
 
@@ -53,7 +54,7 @@ describe('keyboard journeys — sprint 252', () => {
 
   it('toggles dark mode using Alt+D and Alt+Shift+D', async () => {
     const user = userEvent.setup();
-    render(<App />);
+    render(<WoodworkingShopApp />);
 
     expect(useCabinetStore.getState().darkMode).toBe(false);
     await user.keyboard('{Alt>}d{/Alt}');
@@ -65,7 +66,7 @@ describe('keyboard journeys — sprint 252', () => {
 
   it('opens and closes shortcuts modal with ?', async () => {
     const user = userEvent.setup();
-    render(<App />);
+    render(<WoodworkingShopApp />);
 
     await user.keyboard('?');
     expect(screen.getByText('Ctrl + L')).toBeInTheDocument();

@@ -14,6 +14,8 @@ const TABS: { id: Tab; icon: string; labelKey: string }[] = [
   { id: 'calculators', icon: '🧮📏', labelKey: 'tabs.calculators' },
 ];
 
+const PUBLIC_ASSET_BASE = import.meta.env.BASE_URL;
+
 /**
  * Sprint 82 — sticky bottom tab bar for mobile.
  * Visible only on small screens (< lg breakpoint).
@@ -48,7 +50,13 @@ export function MobileTabBar() {
             ].join(' ')}
           >
             {isActive ? (
-              <img src="/tab-sparkle.svg" alt="" aria-hidden="true" className="h-3 w-8 opacity-90" loading="lazy" />
+              <img
+                src={`${PUBLIC_ASSET_BASE}tab-sparkle.svg`}
+                alt=""
+                aria-hidden="true"
+                className="h-3 w-8 opacity-90"
+                loading="lazy"
+              />
             ) : null}
             <span aria-hidden="true" className="text-lg leading-none">
               {tab.icon}

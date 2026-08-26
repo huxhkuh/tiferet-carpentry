@@ -10,13 +10,27 @@ import {
 } from '../../src/engine/materials';
 
 describe('materials', () => {
-  it('has 12 materials total', () => {
-    expect(MATERIALS).toHaveLength(12);
+  it('has 17 materials total', () => {
+    expect(MATERIALS).toHaveLength(17);
   });
 
-  it('has 9 panel materials and 2 back materials', () => {
-    expect(panelMaterials()).toHaveLength(9);
+  it('has 14 panel materials and 2 back materials', () => {
+    expect(panelMaterials()).toHaveLength(14);
     expect(backMaterials()).toHaveLength(2);
+  });
+
+  it('includes five distinct 18 mm visual melamine finishes', () => {
+    const finishKeys = [
+      'melamine-oak-18',
+      'melamine-walnut-18',
+      'melamine-sage-18',
+      'melamine-sand-18',
+      'melamine-navy-18',
+    ];
+    const finishes = finishKeys.map((key) => getMaterial(key));
+
+    expect(finishes.every((material) => material.thickness === 18 && material.category === 'panel')).toBe(true);
+    expect(new Set(finishes.map((material) => material.color)).size).toBe(5);
   });
 
   it('SAW_KERF is 4 mm', () => {

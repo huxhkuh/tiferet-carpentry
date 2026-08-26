@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
 
 test('homepage passes axe WCAG 2.1 AA checks', async ({ page }) => {
   test.setTimeout(60_000);
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   // Wait for the app to fully render (header must be present).
   await expect(page.getByRole('banner')).toBeVisible();
 
@@ -50,7 +50,7 @@ test('homepage passes axe WCAG 2.1 AA checks', async ({ page }) => {
 
 test('configurator tab passes axe WCAG 2.1 AA checks', async ({ page }) => {
   test.setTimeout(60_000);
-  await page.goto('/');
+  await page.goto('/?app=workshop');
   await expect(page.getByRole('tablist')).toBeVisible();
 
   // Navigate to the configurator tab (first tab)

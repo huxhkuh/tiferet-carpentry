@@ -1,9 +1,9 @@
 {
-  "name": "Cabinet Planner",
-  "short_name": "Cabinet",
-  "description": "Interactive woodworking cabinet design tool with cut optimization",
-  "start_url": "/WoodworkingShop/",
-  "scope": "/WoodworkingShop/",
+  "name": "תפארת — מתכנן דירה ונגרות",
+  "short_name": "תפארת",
+  "description": "מתכנן אינטראקטיבי לדירת תפארת ולנגרות בהתאמה אישית",
+  "start_url": "/tiferet-carpentry/",
+  "scope": "/tiferet-carpentry/",
   "display": "standalone",
   "background_color": "#fdf8f0",
   "theme_color": "#5a4218",
@@ -41,7 +41,7 @@
   ],
   "file_handlers": [
     {
-      "action": "/WoodworkingShop/",
+      "action": "/tiferet-carpentry/",
       "accept": {
         "application/cabinet-plan": [".cabinetplan"]
       },
@@ -56,7 +56,7 @@
     }
   ],
   "share_target": {
-    "action": "/WoodworkingShop/",
+    "action": "/tiferet-carpentry/",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {

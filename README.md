@@ -1,4 +1,4 @@
-# WoodworkingShop — Free Cabinet Planner & Cut-List Optimizer
+# Tiferet Carpentry — מתכנן דירה ונגרות
 
 <div align="center">
   <img src="docs/banner.svg" alt="Cabinet Planner — Interactive Woodworking Design Tool" width="100%"/>
@@ -6,11 +6,11 @@
 
 <div align="center">
 
-[![CI](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/ci.yml/badge.svg)](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/ci.yml)
-[![Deploy](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/pages.yml/badge.svg)](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/pages.yml)
-[![Cloudflare Pages](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/cloudflare-pages.yml/badge.svg)](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/cloudflare-pages.yml)
-[![CodeQL](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/codeql.yml/badge.svg)](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/codeql.yml)
-[![codecov](https://codecov.io/gh/RajwanYair/WoodworkingShop/graph/badge.svg)](https://codecov.io/gh/RajwanYair/WoodworkingShop)
+[![CI](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/ci.yml/badge.svg)](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/ci.yml)
+[![Deploy](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/pages.yml/badge.svg)](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/pages.yml)
+[![Cloudflare Pages](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/cloudflare-pages.yml/badge.svg)](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/cloudflare-pages.yml)
+[![CodeQL](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/codeql.yml/badge.svg)](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/codeql.yml)
+[![codecov](https://codecov.io/gh/huxhkuh/tiferet-carpentry/graph/badge.svg)](https://codecov.io/gh/huxhkuh/tiferet-carpentry)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
 [![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white)](package.json)
@@ -21,20 +21,20 @@
 [![Tests](https://img.shields.io/badge/tests-950%2B-brightgreen?logo=vitest&logoColor=white)](tests/)
 [![Bundle](https://img.shields.io/badge/bundle-<200KB%20gzip-blue?logo=webpack&logoColor=white)](config/bundle-budget.json)
 [![a11y](https://img.shields.io/badge/a11y-WCAG%202.2%20AA-green?logo=accessibility&logoColor=white)](tests/e2e)
-[![Last Commit](https://img.shields.io/github/last-commit/RajwanYair/WoodworkingShop?logo=github)](https://github.com/RajwanYair/WoodworkingShop/commits/main)
-[![GitHub Stars](https://img.shields.io/github/stars/RajwanYair/WoodworkingShop?style=social)](https://github.com/RajwanYair/WoodworkingShop/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/huxhkuh/tiferet-carpentry?logo=github)](https://github.com/huxhkuh/tiferet-carpentry/commits/main)
+[![GitHub Stars](https://img.shields.io/github/stars/huxhkuh/tiferet-carpentry?style=social)](https://github.com/huxhkuh/tiferet-carpentry/stargazers)
 
-**[🚀 Live Demo](https://rajwanyair.github.io/WoodworkingShop/)** · **[📋 Changelog](CHANGELOG.md)** · **[🗺 Roadmap](ROADMAP.md)** · **[🏛 Architecture](docs/ARCHITECTURE.md)** · **[📖 User Guide](docs/USER-GUIDE.md)** · **[📚 Docs](docs/index.md)**
+**[🚀 אתר חי](https://huxhkuh.github.io/tiferet-carpentry/)** · **[📋 Changelog](CHANGELOG.md)** · **[🗺 Roadmap](ROADMAP.md)** · **[🏛 Architecture](docs/ARCHITECTURE.md)** · **[📖 User Guide](docs/USER-GUIDE.md)** · **[📚 Docs](docs/index.md)**
 
 </div>
 
 ---
 
-> **Cabinet Planner** is a free, open-source, browser-based woodworking design tool
-> and cut-list optimizer: configure any cabinet or furniture piece, see a live
-> 6-view 3D preview, optimize your cut sheets with MaxRects bin-packing, and export
-> a complete PDF build plan, DXF, G-code, or BOM — all without a server, account,
-> or installation. Supports 6 languages including RTL (Hebrew, Arabic).
+> **Tiferet Carpentry** הוא מתכנן דירה ונגרות עברי לפרויקט תפארת ברמלה. הוא מאפשר
+> לבחור את דירה 5-1, לעבור בין חדרים, להציב ריהוט וארונות על קירות מדויקים, לערוך
+> אותם בתצוגות דו־ממד ותלת־ממד ולשמור את התכנון מקומית. מנוע הנגרות מבוסס על
+> [WoodworkingShop](https://github.com/RajwanYair/WoodworkingShop) בקוד פתוח; פרטי
+> הרישוי והייחוס נמצאים ב־[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 <div align="center">
   <img src="docs/features.svg" alt="Cabinet Planner features — Design, Optimize, Export, Preview, Assembly, Platform" width="100%"/>
@@ -113,13 +113,13 @@
 
 ```bash
 # 1 — clone
-git clone https://github.com/RajwanYair/WoodworkingShop.git
-cd WoodworkingShop
+git clone https://github.com/huxhkuh/tiferet-carpentry.git
+cd tiferet-carpentry
 
 # 2 — install (deterministic, uses package-lock.json)
 npm ci
 
-# 3 — dev server  →  http://localhost:5173/WoodworkingShop/
+# 3 — dev server  →  http://localhost:5173/tiferet-carpentry/
 npm run dev
 
 # 4 — run 950+ unit tests
@@ -130,6 +130,16 @@ npm run build
 ```
 
 > **Node.js >= 22** is required.
+
+---
+
+## פריסה אוטומטית ב־GitHub Pages
+
+כל `push` לענף `main` מפעיל את [תהליך הפריסה](.github/workflows/pages.yml):
+היישום נבנה, תיקיית `dist` נשלחת ל־GitHub Pages והאתר מתעדכן בכתובת
+<https://huxhkuh.github.io/tiferet-carpentry/>. אפשר להפעיל את אותה פריסה ידנית גם
+מהלשונית **Actions** באמצעות `Run workflow`. מקור הפריסה בהגדרות Pages צריך להיות
+**GitHub Actions**; אין צורך בשרת, בחשבון בתשלום או בסודות נוספים.
 
 ---
 

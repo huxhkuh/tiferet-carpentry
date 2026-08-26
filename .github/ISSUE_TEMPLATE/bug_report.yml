@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
-        **Please check the [live demo](https://rajwanyair.github.io/WoodworkingShop/) and the [Changelog](https://github.com/RajwanYair/WoodworkingShop/blob/main/CHANGELOG.md) first** — your issue may already be fixed.
+        **Please check the [live demo](https://huxhkuh.github.io/tiferet-carpentry/) and the [Changelog](https://github.com/huxhkuh/tiferet-carpentry/blob/main/CHANGELOG.md) first** — your issue may already be fixed.
 
   - type: dropdown
     id: component

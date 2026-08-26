@@ -10,7 +10,7 @@ import type { Plugin } from 'vite';
  *
  * Only active in production builds (`vite build`). No effect in dev mode.
  */
-export function sriPlugin(): Plugin {
+export function sriPlugin(basePath: string): Plugin {
   return {
     name: 'vite-plugin-sri',
     enforce: 'post',
@@ -31,7 +31,6 @@ export function sriPlugin(): Plugin {
             if (prefix.includes('integrity')) return match;
 
             // Resolve asset path relative to dist/
-            const basePath = '/WoodworkingShop/';
             const relativePath = assetPath.startsWith(basePath)
               ? assetPath.slice(basePath.length)
               : assetPath.startsWith('/')

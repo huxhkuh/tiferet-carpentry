@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="he" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cabinet Planner — Redirecting</title>
+    <title>תפארת — מעבר למתכנן</title>
     <script>
       // SPA redirect: GitHub Pages serves 404.html for unknown paths.
       // Redirect to index with the path as a query param so the SPA can handle routing.
@@ -12,15 +12,15 @@
       var hash = window.location.hash;
       window.location.replace(
         window.location.origin +
-          '/WoodworkingShop/' +
+          '/tiferet-carpentry/' +
           '?p=' +
-          encodeURIComponent(path.replace('/WoodworkingShop/', '')) +
+          encodeURIComponent(path.replace('/tiferet-carpentry/', '')) +
           (search ? '&' + search.slice(1) : '') +
           hash,
       );
     </script>
   </head>
   <body>
-    <p>Redirecting&hellip;</p>
+    <p>מעביר למתכנן&hellip;</p>
   </body>
 </html>

@@ -4,7 +4,7 @@
   <img src="../docs/banner.svg" alt="Cabinet Planner" width="100%"/>
 </div>
 
-[![CI](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/ci.yml/badge.svg)](https://github.com/RajwanYair/WoodworkingShop/actions/workflows/ci.yml)
+[![CI](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/ci.yml/badge.svg)](https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](../tsconfig.json)
 [![ESLint](https://img.shields.io/badge/ESLint-0%20warnings-4b32c3?logo=eslint)](../eslint.config.js)
 [![Prettier](https://img.shields.io/badge/code%20style-prettier-f7b93e?logo=prettier)](../.prettierrc)
@@ -33,13 +33,13 @@ flowchart LR
 
 ```bash
 # 1 — fork on GitHub, then clone your fork
-git clone https://github.com/<your-username>/WoodworkingShop.git
-cd WoodworkingShop
+git clone https://github.com/<your-username>/tiferet-carpentry.git
+cd tiferet-carpentry
 
 # 2 — install
 npm ci
 
-# 3 — start dev server  →  http://localhost:5173/WoodworkingShop/
+# 3 — start dev server  →  http://localhost:5173/tiferet-carpentry/
 npm run dev
 
 # 4 — full gate check (run before every commit)

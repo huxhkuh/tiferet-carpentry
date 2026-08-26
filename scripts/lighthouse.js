@@ -26,7 +26,7 @@ const config = {
   ci: {
     collect: {
       startServerCommand: 'npm run preview -- --port 4173 --strictPort',
-      url: ['http://localhost:4173/WoodworkingShop/'],
+      url: ['http://localhost:4173/tiferet-carpentry/'],
       startServerReadyPattern: 'Local:',
       numberOfRuns: process.env.CI ? 3 : 1,
     },
