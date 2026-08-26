@@ -26,9 +26,12 @@ regexes = [
   '''AKIA[xX]{16}''',
   '''EXAMPLE[_-]?KEY''',
   '''YOUR[_-]?TOKEN[_-]?HERE''',
+  # Stable catalog identifier in src/engine/materials.ts — not a credential.
+  '''melamine-walnut-18''',
   # i18n label keys in validation engine (e.g. fixUsePlywood18) — not secrets
   '''labelKey:\s*['"]fix[A-Za-z0-9]+['"]''',
   # Validation rule IDs — high-entropy kebab-case identifiers used as rule keys
   # in src/engine/validation*.ts.  Pattern: quoted all-caps+hyphen strings ≥16 chars.
   '''['"][A-Z][A-Z0-9_\-]{15,}['"]''',
 ]
+
