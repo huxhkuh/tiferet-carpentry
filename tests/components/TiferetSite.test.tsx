@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../src/apartment/PlannerApp', () => ({
   PlannerApp: ({ initialRoomId }: { initialRoomId?: string | null }) => (
@@ -9,6 +9,18 @@ vi.mock('../../src/apartment/PlannerApp', () => ({
 }));
 
 import { TiferetSite } from '../../src/site/TiferetSite';
+
+beforeAll(async () => {
+  await Promise.all([
+    import('../../src/site/pages/ApartmentsPage'),
+    import('../../src/site/pages/ContactPage'),
+    import('../../src/site/pages/EditorialPages'),
+    import('../../src/site/pages/HomeDetails'),
+    import('../../src/site/pages/MyApartmentPage'),
+    import('../../src/site/pages/NotFoundPage'),
+    import('../../src/site/pages/SummaryPage'),
+  ]);
+});
 
 afterEach(() => {
   window.history.replaceState({}, '', '/');
@@ -58,7 +70,6 @@ describe('Tiferet carpentry website', () => {
   });
 
   it('navigates to apartment selection without reloading the SPA', async () => {
-    await import('../../src/site/pages/ApartmentsPage');
     const user = userEvent.setup();
     window.history.replaceState({}, '', '/tiferet-carpentry/');
     render(<TiferetSite onOpenWorkshop={vi.fn()} />);
