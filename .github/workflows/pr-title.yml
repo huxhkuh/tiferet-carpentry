@@ -39,4 +39,4 @@ jobs:
           ignoreLabels: |
             dependencies
             ci
-          disallowScopes: []
+
