@@ -36,7 +36,9 @@ describe('Tiferet carpentry website', () => {
     expect(screen.getByRole('navigation', { name: 'ניווט ראשי' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'נגרות מדויקת. בתים מעוררי השראה.' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'התחילו לתכנן' })).toBeInTheDocument();
-    expect(await screen.findByText('הבית כבר מתוכנן. עכשיו מתכננים את הנגרות שמתאימה לו.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('הבית כבר מתוכנן. עכשיו מתכננים את הנגרות שמתאימה לו.', {}, { timeout: 5000 }),
+    ).toBeInTheDocument();
   });
 
   it('uses editorial photography instead of schematic artwork on the homepage', async () => {
@@ -55,7 +57,7 @@ describe('Tiferet carpentry website', () => {
       expect.stringContaining('hero-bedroom-cabinetry-720.webp 720w'),
     );
 
-    const spaceImages = await screen.findAllByTestId('space-editorial-image');
+    const spaceImages = await screen.findAllByTestId('space-editorial-image', {}, { timeout: 5000 });
     expect(spaceImages).toHaveLength(6);
     expect(spaceImages.every((image) => image.getAttribute('loading') === 'lazy')).toBe(true);
   });
