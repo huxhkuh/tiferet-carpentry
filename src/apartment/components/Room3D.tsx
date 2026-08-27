@@ -237,6 +237,7 @@ export function Room3D({
         data-camera-yaw={camera.yaw.toFixed(2)}
         data-camera-pitch={camera.pitch.toFixed(2)}
         data-camera-zoom={camera.zoom.toFixed(2)}
+        data-renderer-status={rendererStatus}
         data-selected-object={selectedObjectId ?? undefined}
         onPointerDown={(event) => {
           event.currentTarget.setPointerCapture(event.pointerId);

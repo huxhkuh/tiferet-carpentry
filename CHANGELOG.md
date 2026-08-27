@@ -32,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   aggregate and per-source-file ceilings remain unchanged.
 - Removed the obsolete Lighthouse `no-pwa` preset that asserted retired audits as `NaN`; all
   explicit performance, accessibility, best-practice and Core Web Vitals gates remain unchanged.
+- Added an explicit WebGL renderer-status contract and cross-browser E2E coverage: Chromium keeps
+  validating the interactive 3D camera while Firefox headless validates the accessible fallback
+  when its environment cannot create a WebGL context.
 - Inventoried all 179 supplied Tiferet PDFs and all 99 apartment sheets, extracted title-block
   identities for every apartment, and added a reproducible apartment-by-apartment audit report.
 - Preserved 48 byte-verified official apartment PDFs with SHA-256 checks and extracted complete

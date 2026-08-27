@@ -91,6 +91,7 @@ describe('Room3D', () => {
     render(<Room3D apartment={TIFERET_5_1} roomId="bedroom" placements={[]} />);
 
     expect(screen.getByTestId('apartment-3d-fallback')).toHaveTextContent('הדמיית התלת־ממד אינה זמינה');
+    expect(screen.getByTestId('apartment-3d-canvas')).toHaveAttribute('data-renderer-status', 'unavailable');
   });
 
   it('מרנדר את רצפת החדר, קירותיו והארון באמצעות WebGL', () => {
@@ -100,6 +101,7 @@ describe('Room3D', () => {
     render(<Room3D apartment={TIFERET_5_1} roomId="bedroom" placements={[BEDROOM_PLACEMENT]} />);
 
     const canvas = screen.getByTestId('apartment-3d-canvas');
+    expect(canvas).toHaveAttribute('data-renderer-status', 'ready');
     expect(canvas).toHaveAttribute('data-scene-walls', '4');
     expect(canvas).toHaveAttribute('data-scene-cutaway-walls', '2');
     expect(canvas).toHaveAttribute('data-scene-cabinets', '1');

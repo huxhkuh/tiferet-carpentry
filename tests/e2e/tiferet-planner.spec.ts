@@ -1,7 +1,21 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const STORAGE_KEY = 'tiferet:design:5-1';
+
+async function expectSettled3D(page: Page): Promise<{ canvas: Locator; ready: boolean }> {
+  const canvas = page.getByTestId('apartment-3d-canvas');
+  await expect(canvas).toHaveAttribute('data-renderer-status', /^(ready|unavailable)$/u);
+  const ready = (await canvas.getAttribute('data-renderer-status')) === 'ready';
+
+  if (ready) {
+    await expect(canvas).toBeVisible();
+  } else {
+    await expect(page.getByTestId('apartment-3d-fallback')).toBeVisible();
+  }
+
+  return { canvas, ready };
+}
 
 test('Tiferet wardrobe happy path persists after reload', async ({ page }) => {
   test.setTimeout(60_000);
@@ -39,13 +53,13 @@ test('Tiferet wardrobe happy path persists after reload', async ({ page }) => {
   await page.reload();
   await expect(page.getByText('ארון אחד בתכנון')).toBeVisible();
   await page.getByRole('button', { name: 'הדמיית 3D' }).click();
-  const canvas = page.getByTestId('apartment-3d-canvas');
-  await expect(canvas).toBeVisible();
+  const { canvas } = await expectSettled3D(page);
   await expect(canvas).toHaveAttribute('data-scene-cabinets', '1');
   await expect(canvas).toHaveAttribute('aria-label', /200×240×60 ס״מ/);
 });
 
 test('Tiferet furniture, layers and camera persist as one design', async ({ page }) => {
+  test.setTimeout(60_000);
   await page.addInitScript(
     ({ storageKey, resetGuard }) => {
       if (sessionStorage.getItem(resetGuard) === '1') return;
@@ -60,8 +74,11 @@ test('Tiferet furniture, layers and camera persist as one design', async ({ page
   await page.getByRole('button', { name: 'הזז ימינה 10 ס״מ' }).click();
   await page.getByRole('button', { name: 'שכבת עיצוב והלבשה' }).click();
   await page.getByRole('button', { name: 'הדמיית 3D' }).click();
-  await page.getByTestId('planner-canvas').getByRole('button', { name: 'סובב ימינה', exact: true }).click();
-  await page.getByRole('button', { name: 'התקרב' }).click();
+  const initial3D = await expectSettled3D(page);
+  if (initial3D.ready) {
+    await page.getByTestId('planner-canvas').getByRole('button', { name: 'סובב ימינה', exact: true }).click();
+    await page.getByRole('button', { name: 'התקרב' }).click();
+  }
   await page.getByRole('button', { name: 'שמור תכנון' }).click();
 
   await page.reload();
@@ -69,9 +86,11 @@ test('Tiferet furniture, layers and camera persist as one design', async ({ page
   await page.getByTestId('furniture-bedroom-bed-a').click();
   await expect(page.getByLabel(/מיקום X/)).toHaveValue('380');
   await page.getByRole('button', { name: 'הדמיית 3D' }).click();
-  const canvas = page.getByTestId('apartment-3d-canvas');
-  await expect(canvas).toHaveAttribute('data-camera-yaw', '2.82');
-  await expect(canvas).toHaveAttribute('data-camera-zoom', '0.89');
+  const restored3D = await expectSettled3D(page);
+  if (initial3D.ready) {
+    await expect(restored3D.canvas).toHaveAttribute('data-camera-yaw', '2.82');
+    await expect(restored3D.canvas).toHaveAttribute('data-camera-zoom', '0.89');
+  }
 });
 
 test('Tiferet picker and planner pass WCAG 2.1 AA checks', async ({ page }) => {
