@@ -62,8 +62,22 @@ function interpolateAxis(value: number, anchors: readonly AxisAnchor[]): number 
   return Math.round(start.target + ratio * (end.target - start.target));
 }
 
+function invertAxis(value: number, anchors: readonly AxisAnchor[]): number {
+  const upperIndex = anchors.findIndex((anchor) => anchor.target >= value);
+  const endIndex = upperIndex <= 0 ? 1 : upperIndex === -1 ? anchors.length - 1 : upperIndex;
+  const start = anchors[endIndex - 1];
+  const end = anchors[endIndex];
+  const ratio = (value - start.target) / (end.target - start.target);
+  return Math.round((start.source + ratio * (end.source - start.source)) * 100) / 100;
+}
+
 export function sourcePlanPoint(x: number, top: number): Point {
   return { x: interpolateAxis(x, X_ANCHORS), y: interpolateAxis(top, Y_ANCHORS) };
+}
+
+/** Converts a calibrated millimetre point back into the official PDF page coordinate frame. */
+export function modelPlanPointToSourcePlanPoint(point: Point): Point {
+  return { x: invertAxis(point.x, X_ANCHORS), y: invertAxis(point.y, Y_ANCHORS) };
 }
 
 export function sourcePlanRect(x0: number, top: number, x1: number, bottom: number): Point[] {

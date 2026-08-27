@@ -116,7 +116,7 @@ describe('Tiferet apartment geometry', () => {
       room,
       wall,
       cabinetConfig: { width: 1800, height: 2400, depth: 600 },
-      distanceFromWallStart: 400,
+      distanceFromWallStart: 0,
       id: 'placement-1',
     });
 
@@ -129,7 +129,7 @@ describe('Tiferet apartment geometry', () => {
       height: 2400,
       depth: 600,
     });
-    expect(placement.orientation).toBe(placementTransformForRoom(wall, room, 400).orientation);
+    expect(placement.orientation).toBe(placementTransformForRoom(wall, room, 0).orientation);
   });
 
   it('uses the wardrobe defaults before applying caller overrides', () => {
@@ -188,7 +188,14 @@ describe('design persistence', () => {
       updatedAt: '2026-01-01',
       placements: [],
     };
-    expect(deserializeDesign(serializeDesign(design))).toEqual(design);
+    expect(deserializeDesign(serializeDesign(design))).toEqual({
+      ...design,
+      schemaVersion: 2,
+      furnitureOverrides: [],
+      visibility: { hiddenObjectIds: [], hiddenCategories: [] },
+      furniturePalette: 'warm',
+      cameraByRoom: {},
+    });
     expect(deserializeDesign('{bad')).toBeNull();
   });
 

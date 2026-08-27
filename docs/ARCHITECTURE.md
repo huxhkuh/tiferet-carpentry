@@ -28,6 +28,38 @@ graph LR
   classDef output fill:#fae7c0,stroke:#c08040,color:#3a1806
 ```
 
+## 🏠 Tiferet Apartment Planner Extension
+
+The Tiferet experience is an additional product shell over the existing cabinet engine, not a
+second woodworking engine. `src/App.tsx` selects the Tiferet site/planner or the preserved
+`WoodworkingShopApp`; the apartment planner consumes the pure functions and `CabinetConfig` from
+`src/engine/` through `src/apartment/cabinet/adapter.ts`.
+
+The planner keeps four boundaries explicit:
+
+- `src/apartment/data/` and `types/` — stable project, apartment, room, wall, opening and furniture
+  data in millimetres, including source-plan provenance.
+- `src/apartment/geometry/` — pure wall frames, cabinet footprints, room containment and SAT
+  collision checks. Furniture and cabinet edits are rejected before state is changed when they
+  leave a room or overlap another solid object.
+- `src/apartment/persistence/design.ts` — validated local design schema v2. It stores cabinet
+  placements, immutable furniture overrides, object/category visibility, furniture palette and a
+  camera orbit per room. Schema v1 payloads are migrated to v2 on read.
+- `src/apartment/components/` and `three/` — the same design state drives the interactive SVG plan
+  and the dependency-free WebGL room renderer. The renderer reuses one program/buffer while the
+  camera moves and rebuilds geometry only when the scene changes.
+
+The three planner views have distinct responsibilities: the clean SVG view is interactive and
+dimensionally normalized, the complete view presents the untouched full-resolution source sheet,
+and the WebGL view provides room-focused spatial feedback with cutaway walls, material classes,
+openings, furniture and cabinetry. Selection, movement, visibility and camera changes are all
+part of the same undoable/persisted design model.
+
+Key invariant: apartment geometry remains independent from cabinet configuration. Integration is
+performed only by placement adapters that snap a cabinet to a wall, orient it toward the room,
+find a collision-free offset and then validate its visual footprint against openings, furniture
+and existing cabinetry.
+
 ## 📁 Directory Layout
 
 ```text

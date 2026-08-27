@@ -1,8 +1,17 @@
-import type { KeyboardEvent } from 'react';
-import type { Apartment, CabinetPlacement, FurniturePalette, Room } from '../types';
+import { useRef } from 'react';
+import type { KeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
+import type {
+  Apartment,
+  CabinetPlacement,
+  DesignVisibility,
+  FurniturePalette,
+  FurniturePlacement,
+  Room,
+} from '../types';
 import { cabinetFootprint, wallAngle } from '../geometry/placement';
 import { furnitureFootprint } from '../furniture/geometry';
 import { getFurnitureAppearance } from '../furniture/catalog';
+import { createDefaultVisibility, isSceneObjectVisible, sceneCategoryForFurniture } from '../planner/design-state';
 
 interface Props {
   apartment: Apartment;
@@ -10,11 +19,23 @@ interface Props {
   roomId: string | null;
   wallId: string | null;
   activePlacementId: string | null;
+  activeFurnitureId?: string | null;
+  furniture?: readonly FurniturePlacement[];
+  visibility?: DesignVisibility;
   showFurniture?: boolean;
   furniturePalette?: FurniturePalette;
   onRoom(id: string): void;
   onWall(id: string): void;
   onPlacement(id: string): void;
+  onFurniture?(id: string): void;
+  onFurnitureMoveStart?(id: string): void;
+  onFurnitureMove?(id: string, x: number, y: number): void;
+}
+
+interface FurnitureDrag {
+  id: string;
+  offsetX: number;
+  offsetY: number;
 }
 
 function activateFromKeyboard(event: KeyboardEvent<SVGGElement>, activate: () => void): void {
@@ -44,18 +65,26 @@ export function Plan2D({
   roomId,
   wallId,
   activePlacementId,
+  activeFurnitureId = null,
+  furniture,
+  visibility = createDefaultVisibility(),
   showFurniture = true,
   furniturePalette = 'warm',
   onRoom,
   onWall,
   onPlacement,
+  onFurniture,
+  onFurnitureMoveStart,
+  onFurnitureMove,
 }: Props) {
+  const furnitureDragRef = useRef<FurnitureDrag | null>(null);
+  const resolvedFurniture = furniture ?? apartment.furniture ?? [];
   const allPoints = [
     ...apartment.rooms.flatMap((room) => room.polygon),
     ...apartment.walls.flatMap((wall) => [wall.start, wall.end]),
     ...(apartment.wallMasses ?? []).flatMap((mass) => mass.polygon),
     ...apartment.fixedElements.flatMap((element) => element.polygon),
-    ...(apartment.furniture ?? []).flatMap(furnitureFootprint),
+    ...resolvedFurniture.flatMap(furnitureFootprint),
   ];
   const selectedRoom = apartment.rooms.find((room) => room.id === roomId);
   const visibleRooms = selectedRoom ? [selectedRoom] : apartment.rooms;
@@ -65,11 +94,18 @@ export function Plan2D({
   const visibleFixedElements = selectedRoom
     ? apartment.fixedElements.filter((element) => element.roomId === selectedRoom.id)
     : apartment.fixedElements;
-  const visiblePlacements = selectedRoom
+  const roomPlacements = selectedRoom
     ? placements.filter((placement) => placement.roomId === selectedRoom.id)
     : placements;
+  const visiblePlacements = roomPlacements.filter((placement) =>
+    isSceneObjectVisible(visibility, placement.id, 'cabinetry'),
+  );
   const visibleFurniture = showFurniture
-    ? (apartment.furniture ?? []).filter((item) => !selectedRoom || item.roomId === selectedRoom.id)
+    ? resolvedFurniture.filter(
+        (item) =>
+          (!selectedRoom || item.roomId === selectedRoom.id) &&
+          isSceneObjectVisible(visibility, item.id, sceneCategoryForFurniture(item.kind)),
+      )
     : [];
   const usesSourceWallMasses = (apartment.wallMasses?.length ?? 0) > 0;
   const visiblePoints = selectedRoom
@@ -82,6 +118,16 @@ export function Plan2D({
   const maxY = Math.max(...visiblePoints.map((point) => point.y)) + padding;
   const viewWidth = maxX - minX;
   const viewHeight = maxY - minY;
+  const pointerPlanPoint = (event: ReactPointerEvent<SVGGElement>) => {
+    const svg = event.currentTarget.ownerSVGElement;
+    if (!svg) return null;
+    const bounds = svg.getBoundingClientRect();
+    if (bounds.width <= 0 || bounds.height <= 0) return null;
+    return {
+      x: minX + ((event.clientX - bounds.left) / bounds.width) * viewWidth,
+      y: minY + ((event.clientY - bounds.top) / bounds.height) * viewHeight,
+    };
+  };
   return (
     <svg
       className="h-full min-h-96 w-full"
@@ -168,16 +214,73 @@ export function Plan2D({
           <g
             key={item.id}
             data-testid={`furniture-${item.id}`}
-            role="img"
-            aria-label={item.label}
-            className="pointer-events-none"
+            data-selected={item.id === activeFurnitureId ? 'true' : 'false'}
+            role={onFurniture ? 'button' : 'img'}
+            tabIndex={onFurniture ? 0 : undefined}
+            aria-label={onFurniture ? `בחירת ריהוט ${item.label}` : item.label}
+            className={onFurniture ? 'cursor-pointer' : 'pointer-events-none'}
+            onClick={
+              onFurniture
+                ? (event) => {
+                    event.stopPropagation();
+                    onFurniture(item.id);
+                  }
+                : undefined
+            }
+            onKeyDown={onFurniture ? (event) => activateFromKeyboard(event, () => onFurniture(item.id)) : undefined}
+            onPointerDown={
+              onFurnitureMove
+                ? (event) => {
+                    const point = pointerPlanPoint(event);
+                    if (!point) return;
+                    event.stopPropagation();
+                    onFurniture?.(item.id);
+                    onFurnitureMoveStart?.(item.id);
+                    furnitureDragRef.current = {
+                      id: item.id,
+                      offsetX: item.x - point.x,
+                      offsetY: item.y - point.y,
+                    };
+                    if (typeof event.currentTarget.setPointerCapture === 'function') {
+                      event.currentTarget.setPointerCapture(event.pointerId);
+                    }
+                  }
+                : undefined
+            }
+            onPointerMove={
+              onFurnitureMove
+                ? (event) => {
+                    const drag = furnitureDragRef.current;
+                    if (!drag || drag.id !== item.id) return;
+                    const point = pointerPlanPoint(event);
+                    if (!point) return;
+                    onFurnitureMove(item.id, Math.round(point.x + drag.offsetX), Math.round(point.y + drag.offsetY));
+                  }
+                : undefined
+            }
+            onPointerUp={
+              onFurnitureMove
+                ? (event) => {
+                    furnitureDragRef.current = null;
+                    if (
+                      typeof event.currentTarget.hasPointerCapture === 'function' &&
+                      event.currentTarget.hasPointerCapture(event.pointerId)
+                    ) {
+                      event.currentTarget.releasePointerCapture(event.pointerId);
+                    }
+                  }
+                : undefined
+            }
+            onPointerCancel={() => {
+              furnitureDragRef.current = null;
+            }}
           >
             <polygon
               points={footprint.map((point) => `${point.x},${point.y}`).join(' ')}
               fill={isRug ? appearance.soft : appearance.primary}
               fillOpacity={isRug ? 0.72 : 0.9}
-              stroke={appearance.accent}
-              strokeWidth={isRug ? 22 : 28}
+              stroke={item.id === activeFurnitureId ? '#b45309' : appearance.accent}
+              strokeWidth={item.id === activeFurnitureId ? 52 : isRug ? 22 : 28}
               strokeDasharray={isRug ? '50 28' : undefined}
             />
             {item.kind.includes('bed') ? (

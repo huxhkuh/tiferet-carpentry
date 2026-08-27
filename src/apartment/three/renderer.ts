@@ -10,12 +10,35 @@ export interface SceneRenderHandle {
   dispose: () => void;
 }
 
+export interface ApartmentRoomRenderer extends SceneRenderHandle {
+  setScene: (scene: ApartmentRoomScene) => void;
+  draw: (camera: CameraOrbit, width: number, height: number) => void;
+}
+
+interface AttributeLocations {
+  position: number;
+  normal: number;
+  color: number;
+  material: number;
+}
+
+interface UniformLocations {
+  aspect: WebGLUniformLocation | null;
+  yaw: WebGLUniformLocation | null;
+  pitch: WebGLUniformLocation | null;
+  zoom: WebGLUniformLocation | null;
+  targetHeight: WebGLUniformLocation | null;
+}
+
 const VERTEX_SHADER = `
   attribute vec3 aPosition;
   attribute vec3 aNormal;
   attribute vec3 aColor;
+  attribute float aMaterial;
   varying vec3 vColor;
   varying vec3 vNormal;
+  varying vec3 vPosition;
+  varying float vMaterial;
   uniform float uAspect;
   uniform float uYaw;
   uniform float uPitch;
@@ -46,6 +69,8 @@ const VERTEX_SHADER = `
     );
     vColor = aColor;
     vNormal = normalize(vec3(normalX, normalY, pitchedNormalZ));
+    vPosition = aPosition;
+    vMaterial = aMaterial;
   }
 `;
 
@@ -53,12 +78,35 @@ const FRAGMENT_SHADER = `
   precision mediump float;
   varying vec3 vColor;
   varying vec3 vNormal;
+  varying vec3 vPosition;
+  varying float vMaterial;
+
+  float isMaterial(float id) {
+    return 1.0 - step(0.25, abs(vMaterial - id));
+  }
 
   void main() {
     vec3 lightDirection = normalize(vec3(-0.45, 0.82, 0.38));
     float diffuse = max(dot(normalize(vNormal), lightDirection), 0.0);
-    float wrapLight = 0.58 + diffuse * 0.42;
-    vec3 litColor = vColor * wrapLight + vec3(0.035, 0.03, 0.025);
+    float wrapLight = 0.56 + diffuse * 0.44;
+    float wood = isMaterial(2.0);
+    float metal = isMaterial(3.0);
+    float glass = isMaterial(4.0);
+    float fabric = isMaterial(5.0);
+    float ceramic = isMaterial(6.0);
+    float shadow = isMaterial(7.0);
+    float floorMaterial = isMaterial(0.0);
+    float grain = sin((vPosition.x * 23.0 + vPosition.z * 37.0) * 3.14159265);
+    float floorGrid = step(0.985, max(abs(fract(vPosition.x * 7.0) - 0.5), abs(fract(vPosition.z * 7.0) - 0.5)) * 2.0);
+    float fabricWeave = sin(vPosition.x * 95.0) * sin(vPosition.z * 95.0);
+    vec3 materialColor = vColor;
+    materialColor *= 1.0 + wood * grain * 0.035;
+    materialColor *= 1.0 + fabric * fabricWeave * 0.018;
+    materialColor *= 1.0 - floorMaterial * floorGrid * 0.08;
+    float specular = pow(max(dot(normalize(vNormal), normalize(vec3(-0.25, 0.68, 0.55))), 0.0), 28.0);
+    float specularStrength = metal * 0.18 + glass * 0.16 + ceramic * 0.08;
+    vec3 litColor = materialColor * wrapLight + vec3(0.035, 0.03, 0.025) + specular * specularStrength;
+    litColor = mix(litColor, vColor * 0.5, shadow);
     gl_FragColor = vec4(min(litColor, vec3(1.0)), 1.0);
   }
 `;
@@ -97,13 +145,19 @@ function createProgram(gl: WebGLRenderingContext): WebGLProgram | null {
   return program;
 }
 
-export function renderApartmentRoomScene(
+function configureAttribute(
   gl: WebGLRenderingContext,
-  scene: ApartmentRoomScene,
-  camera: CameraOrbit,
-  width: number,
-  height: number,
-): SceneRenderHandle | null {
+  location: number,
+  size: number,
+  stride: number,
+  offset: number,
+): void {
+  if (location < 0) return;
+  gl.enableVertexAttribArray(location);
+  gl.vertexAttribPointer(location, size, gl.FLOAT, false, stride, offset);
+}
+
+export function createApartmentRoomRenderer(gl: WebGLRenderingContext): ApartmentRoomRenderer | null {
   const program = createProgram(gl);
   const buffer = gl.createBuffer();
   if (!program || !buffer) {
@@ -111,42 +165,67 @@ export function renderApartmentRoomScene(
     if (buffer) gl.deleteBuffer(buffer);
     return null;
   }
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, scene.vertices, gl.STATIC_DRAW);
-  gl.useProgram(program);
-
-  const stride = 9 * Float32Array.BYTES_PER_ELEMENT;
-  const positionLocation = gl.getAttribLocation(program, 'aPosition');
-  const normalLocation = gl.getAttribLocation(program, 'aNormal');
-  const colorLocation = gl.getAttribLocation(program, 'aColor');
-  if (positionLocation >= 0) {
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, stride, 0);
-  }
-  if (normalLocation >= 0) {
-    gl.enableVertexAttribArray(normalLocation);
-    gl.vertexAttribPointer(normalLocation, 3, gl.FLOAT, false, stride, 3 * Float32Array.BYTES_PER_ELEMENT);
-  }
-  if (colorLocation >= 0) {
-    gl.enableVertexAttribArray(colorLocation);
-    gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, stride, 6 * Float32Array.BYTES_PER_ELEMENT);
-  }
-
-  gl.uniform1f(gl.getUniformLocation(program, 'uAspect'), width / Math.max(1, height));
-  gl.uniform1f(gl.getUniformLocation(program, 'uYaw'), camera.yaw);
-  gl.uniform1f(gl.getUniformLocation(program, 'uPitch'), camera.pitch);
-  gl.uniform1f(gl.getUniformLocation(program, 'uZoom'), camera.zoom);
-  gl.uniform1f(gl.getUniformLocation(program, 'uTargetHeight'), scene.targetHeight);
-  gl.viewport(0, 0, width, height);
-  gl.enable(gl.DEPTH_TEST);
-  gl.clearColor(0.91, 0.9, 0.87, 1);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.drawArrays(gl.TRIANGLES, 0, scene.vertices.length / 9);
+  const attributes: AttributeLocations = {
+    position: gl.getAttribLocation(program, 'aPosition'),
+    normal: gl.getAttribLocation(program, 'aNormal'),
+    color: gl.getAttribLocation(program, 'aColor'),
+    material: gl.getAttribLocation(program, 'aMaterial'),
+  };
+  const uniforms: UniformLocations = {
+    aspect: gl.getUniformLocation(program, 'uAspect'),
+    yaw: gl.getUniformLocation(program, 'uYaw'),
+    pitch: gl.getUniformLocation(program, 'uPitch'),
+    zoom: gl.getUniformLocation(program, 'uZoom'),
+    targetHeight: gl.getUniformLocation(program, 'uTargetHeight'),
+  };
+  let scene: ApartmentRoomScene | null = null;
+  let vertexCount = 0;
 
   return {
+    setScene: (nextScene: ApartmentRoomScene) => {
+      if (scene === nextScene) return;
+      scene = nextScene;
+      vertexCount = nextScene.vertices.length / nextScene.vertexStride;
+      const stride = nextScene.vertexStride * Float32Array.BYTES_PER_ELEMENT;
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, nextScene.vertices, gl.STATIC_DRAW);
+      gl.useProgram(program);
+      configureAttribute(gl, attributes.position, 3, stride, 0);
+      configureAttribute(gl, attributes.normal, 3, stride, 3 * Float32Array.BYTES_PER_ELEMENT);
+      configureAttribute(gl, attributes.color, 3, stride, 6 * Float32Array.BYTES_PER_ELEMENT);
+      configureAttribute(gl, attributes.material, 1, stride, 9 * Float32Array.BYTES_PER_ELEMENT);
+    },
+    draw: (camera: CameraOrbit, width: number, height: number) => {
+      if (!scene) return;
+      gl.useProgram(program);
+      gl.uniform1f(uniforms.aspect, width / Math.max(1, height));
+      gl.uniform1f(uniforms.yaw, camera.yaw);
+      gl.uniform1f(uniforms.pitch, camera.pitch);
+      gl.uniform1f(uniforms.zoom, camera.zoom);
+      gl.uniform1f(uniforms.targetHeight, scene.targetHeight);
+      gl.viewport(0, 0, width, height);
+      gl.enable(gl.DEPTH_TEST);
+      gl.clearColor(0.91, 0.9, 0.87, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, vertexCount);
+    },
     dispose: () => {
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
     },
   };
+}
+
+export function renderApartmentRoomScene(
+  gl: WebGLRenderingContext,
+  scene: ApartmentRoomScene,
+  camera: CameraOrbit,
+  width: number,
+  height: number,
+): SceneRenderHandle | null {
+  const renderer = createApartmentRoomRenderer(gl);
+  if (!renderer) return null;
+  renderer.setScene(scene);
+  renderer.draw(camera, width, height);
+  return renderer;
 }

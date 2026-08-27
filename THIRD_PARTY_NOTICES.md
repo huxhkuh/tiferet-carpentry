@@ -43,6 +43,29 @@ Source project: **rohitguta2432/casita** (<https://github.com/rohitguta2432/casi
   colours, transforms and WebGL integration were substantially rewritten. No 3D assets or source
   directories were copied.
 
+## Iconoir
+
+Source project: **iconoir-icons/iconoir** (<https://github.com/iconoir-icons/iconoir>).
+
+- License: MIT.
+- Copyright: (c) 2021 Luca Burgio.
+- Local adaptation: `src/site/components/BrandServiceIcon.tsx`.
+- Adaptation status: the SVG paths for `design-pencil`, `tools`, `ruler-combine`, and `tree` were
+  copied and rounded for compact inline rendering. No package or icon font was added.
+
+## Editorial photography
+
+The homepage photography is stored in `public/tiferet/brand/`. The photographs remain subject to
+their source licenses and are not covered by this repository's MIT license.
+
+- Clay Banks, kitchen photograph, Unsplash License:
+  <https://unsplash.com/photos/modern-kitchen-with-wooden-cabinets-and-stainless-steel-appliances-htmZWzApbJE>
+- Alyssa Strohmann, wardrobe photograph, Unsplash License:
+  <https://unsplash.com/photos/TS--uNw-JqE>
+- Max Vakhtbovych, bedroom and media photographs, Pexels License: photo IDs `6489093`, `7060824`,
+  `7018249`, and `6527053`.
+- Ksenia Chernaya, children's room photograph, Pexels License: photo ID `8535617`.
+
 ### MIT license text for the adaptations above
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and

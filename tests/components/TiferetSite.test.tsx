@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -27,6 +27,28 @@ describe('Tiferet carpentry website', () => {
     expect(screen.getByText('הבית כבר מתוכנן. עכשיו מתכננים את הנגרות שמתאימה לו.')).toBeInTheDocument();
   });
 
+  it('uses editorial photography instead of schematic artwork on the homepage', () => {
+    window.history.replaceState({}, '', '/tiferet-carpentry/');
+    render(<TiferetSite onOpenWorkshop={vi.fn()} />);
+
+    const hero = screen.getByRole('img', { name: 'נגרות קיר מותאמת בחדר שינה מואר' });
+    expect(hero).toHaveAttribute('fetchpriority', 'high');
+    expect(hero).toHaveAttribute('loading', 'eager');
+
+    const spaceImages = screen.getAllByTestId('space-editorial-image');
+    expect(spaceImages).toHaveLength(6);
+    expect(spaceImages.every((image) => image.getAttribute('loading') === 'lazy')).toBe(true);
+  });
+
+  it('presents the studio navigation context and architectural service icons', () => {
+    window.history.replaceState({}, '', '/tiferet-carpentry/');
+    render(<TiferetSite onOpenWorkshop={vi.fn()} />);
+
+    expect(screen.getByText('סטודיו לנגרות מותאמת')).toBeInTheDocument();
+    expect(screen.getByText('פרויקט תפארת · רמלה')).toBeInTheDocument();
+    expect(screen.getAllByTestId('brand-service-icon')).toHaveLength(4);
+  });
+
   it('navigates to apartment selection without reloading the SPA', async () => {
     const user = userEvent.setup();
     window.history.replaceState({}, '', '/tiferet-carpentry/');
@@ -51,6 +73,40 @@ describe('Tiferet carpentry website', () => {
     window.history.replaceState({}, '', path);
     render(<TiferetSite onOpenWorkshop={vi.fn()} />);
     expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
+  });
+
+  it('shows the audited source inventory on the apartment selection page', () => {
+    window.history.replaceState({}, '', '/tiferet-carpentry/apartments');
+    render(<TiferetSite onOpenWorkshop={vi.fn()} />);
+
+    expect(screen.getByText('179 קבצי PDF נסרקו')).toBeInTheDocument();
+    expect(screen.getByText('99 תוכניות דירה אותרו')).toBeInTheDocument();
+    expect(
+      screen.getByText('דירה 23-א · גיליון 5-1 זמינה כמודל עבודה חלקי; היא עדיין אינה מסומנת כמאומתת'),
+    ).toBeInTheDocument();
+  });
+
+  it('lets users browse every inventoried apartment source without presenting it as a clean model', async () => {
+    const user = userEvent.setup();
+    window.history.replaceState({}, '', '/tiferet-carpentry/apartments');
+    render(<TiferetSite onOpenWorkshop={vi.fn()} />);
+
+    await user.selectOptions(screen.getByLabelText('מתחם / בניין'), 'argaman');
+    await user.selectOptions(screen.getByLabelText('קומה'), '1');
+
+    const sourcePlan = screen.getByLabelText('דירה');
+    const sourceOptions = within(sourcePlan).getAllByRole('option');
+    expect(sourceOptions.length).toBeGreaterThan(1);
+    await user.selectOptions(sourcePlan, sourceOptions[0]!);
+
+    expect(screen.getByText('מקור נקלט · מודל נקי טרם אומת')).toBeVisible();
+    expect(screen.getByRole('link', { name: 'פתח תוכנית מקור' })).toHaveAttribute(
+      'href',
+      expect.stringMatching(/^https:\/\/drive\.google\.com\/file\/d\//),
+    );
+    expect(screen.getByText('PDF רשמי ב‑Google Drive')).toBeVisible();
+    expect(screen.queryByTitle(/תוכנית מקור/)).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'בחרו דירה' })).not.toBeInTheDocument();
   });
 
   it('opens the existing planner for the room encoded in the URL', () => {

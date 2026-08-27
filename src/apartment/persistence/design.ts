@@ -1,7 +1,18 @@
 import type { CabinetConfig } from '../../engine/types';
-import type { CabinetPlacement, SavedDesign, SavedDesignMetadata } from '../types';
+import type {
+  CabinetPlacement,
+  DesignVisibility,
+  FurnitureOverride,
+  FurniturePalette,
+  RoomCameraOrbit,
+  SavedDesign,
+  SavedDesignV1,
+  SavedDesignV2,
+  SavedDesignMetadata,
+  SceneObjectCategory,
+} from '../types';
 
-export const SAVED_DESIGN_SCHEMA_VERSION = 1 as const;
+export const SAVED_DESIGN_SCHEMA_VERSION = 2 as const;
 
 export interface DesignStorage {
   getItem(key: string): string | null;
@@ -19,6 +30,17 @@ const EDGE_BANDING_VALUES = ['all-visible', 'doors-only', 'none'] as const;
 const CUT_MODES = ['guillotine', 'freeform'] as const;
 const LANGUAGES = ['en', 'he'] as const;
 const PANEL_MATERIAL_SOURCES = ['carcass', 'back'] as const;
+const FURNITURE_PALETTES: readonly FurniturePalette[] = ['warm', 'light', 'sage'];
+const SCENE_OBJECT_CATEGORIES: readonly SceneObjectCategory[] = [
+  'cabinetry',
+  'beds',
+  'kitchen',
+  'bathroom',
+  'living',
+  'work',
+  'utility',
+  'decor',
+];
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -99,16 +121,50 @@ function isSavedDesignMetadata(value: unknown): value is SavedDesignMetadata {
   );
 }
 
-export function isSavedDesign(value: unknown): value is SavedDesign {
-  if (!isRecord(value) || !Array.isArray(value.placements)) return false;
+const hasUniqueStrings = (values: readonly string[]): boolean => new Set(values).size === values.length;
+
+function isFurnitureOverride(value: unknown): value is FurnitureOverride {
+  return (
+    isRecord(value) &&
+    isNonEmptyString(value.id) &&
+    isFiniteNumber(value.x) &&
+    isFiniteNumber(value.y) &&
+    isFiniteNumber(value.rotation)
+  );
+}
+
+function isDesignVisibility(value: unknown): value is DesignVisibility {
+  if (!isRecord(value) || !Array.isArray(value.hiddenObjectIds) || !Array.isArray(value.hiddenCategories)) {
+    return false;
+  }
+  return (
+    value.hiddenObjectIds.every(isNonEmptyString) &&
+    hasUniqueStrings(value.hiddenObjectIds) &&
+    value.hiddenCategories.every((category) => isOneOf(category, SCENE_OBJECT_CATEGORIES)) &&
+    hasUniqueStrings(value.hiddenCategories)
+  );
+}
+
+function isRoomCameraOrbit(value: unknown): value is RoomCameraOrbit {
+  return isRecord(value) && isFiniteNumber(value.yaw) && isFiniteNumber(value.pitch) && isPositiveNumber(value.zoom);
+}
+
+function isCameraByRoom(value: unknown): value is Record<string, RoomCameraOrbit> {
+  return (
+    isRecord(value) &&
+    Object.entries(value).every(([roomId, camera]) => isNonEmptyString(roomId) && isRoomCameraOrbit(camera))
+  );
+}
+
+function hasValidPlacementEnvelope(value: Record<string, unknown>): boolean {
   if (
-    value.schemaVersion !== SAVED_DESIGN_SCHEMA_VERSION ||
     !isNonEmptyString(value.id) ||
     !isNonEmptyString(value.apartmentId) ||
     !isNonEmptyString(value.name) ||
     !isNonEmptyString(value.updatedAt) ||
     !Number.isFinite(Date.parse(value.updatedAt)) ||
     (value.metadata !== undefined && !isSavedDesignMetadata(value.metadata)) ||
+    !Array.isArray(value.placements) ||
     !value.placements.every(isCabinetPlacement)
   ) {
     return false;
@@ -120,15 +176,58 @@ export function isSavedDesign(value: unknown): value is SavedDesign {
   );
 }
 
-export function serializeDesign(design: SavedDesign): string {
-  if (!isSavedDesign(design)) throw new TypeError('התכנון אינו תואם לסכימת השמירה הנוכחית');
-  return JSON.stringify(design);
+function isLegacySavedDesign(value: unknown): value is SavedDesignV1 {
+  return isRecord(value) && value.schemaVersion === 1 && hasValidPlacementEnvelope(value);
 }
 
-export function deserializeDesign(serialized: string): SavedDesign | null {
+export function isSavedDesign(value: unknown): value is SavedDesignV2 {
+  if (!isRecord(value) || value.schemaVersion !== SAVED_DESIGN_SCHEMA_VERSION || !hasValidPlacementEnvelope(value)) {
+    return false;
+  }
+  if (
+    !isNonEmptyString(value.id) ||
+    !isNonEmptyString(value.apartmentId) ||
+    !isNonEmptyString(value.name) ||
+    !isNonEmptyString(value.updatedAt) ||
+    !Number.isFinite(Date.parse(value.updatedAt)) ||
+    (value.metadata !== undefined && !isSavedDesignMetadata(value.metadata)) ||
+    !Array.isArray(value.furnitureOverrides) ||
+    !value.furnitureOverrides.every(isFurnitureOverride) ||
+    !isDesignVisibility(value.visibility) ||
+    !isOneOf(value.furniturePalette, FURNITURE_PALETTES) ||
+    !isCameraByRoom(value.cameraByRoom)
+  ) {
+    return false;
+  }
+  return new Set(value.furnitureOverrides.map((override) => override.id)).size === value.furnitureOverrides.length;
+}
+
+function migrateLegacyDesign(design: SavedDesignV1): SavedDesignV2 {
+  return {
+    ...design,
+    schemaVersion: SAVED_DESIGN_SCHEMA_VERSION,
+    furnitureOverrides: [],
+    visibility: {
+      hiddenObjectIds: [],
+      hiddenCategories: [],
+    },
+    furniturePalette: 'warm',
+    cameraByRoom: {},
+  };
+}
+
+export function serializeDesign(design: SavedDesign): string {
+  const persisted = design.schemaVersion === 1 ? migrateLegacyDesign(design) : design;
+  if (!isSavedDesign(persisted)) throw new TypeError('התכנון אינו תואם לסכימת השמירה הנוכחית');
+  return JSON.stringify(persisted);
+}
+
+export function deserializeDesign(serialized: string): SavedDesignV2 | null {
   try {
     const parsed: unknown = JSON.parse(serialized);
-    return isSavedDesign(parsed) ? parsed : null;
+    if (isSavedDesign(parsed)) return parsed;
+    if (isLegacySavedDesign(parsed)) return migrateLegacyDesign(parsed);
+    return null;
   } catch {
     return null;
   }
@@ -138,7 +237,7 @@ export function saveDesign(storage: DesignStorage, key: string, design: SavedDes
   storage.setItem(key, serializeDesign(design));
 }
 
-export function restoreDesign(storage: DesignStorage, key: string, apartmentId?: string): SavedDesign | null {
+export function restoreDesign(storage: DesignStorage, key: string, apartmentId?: string): SavedDesignV2 | null {
   const serialized = storage.getItem(key);
   if (serialized === null) return null;
   const design = deserializeDesign(serialized);

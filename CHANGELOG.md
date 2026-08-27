@@ -11,6 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.32.0] — 2026-06-28
 
+### Tiferet Apartment Planner — 2026-08-27
+
+- Completed the premium Hebrew site shell, pixel-aligned source comparison view, searchable
+  99-plan catalog, named local design versions, richer project summary and room camera presets.
+- Recalibrated only the affected production ceilings after measurement: CSS 102 → 110 KB,
+  interactive application 3,000 → 3,050 KB, default chunk 520 → 530 KB and on-demand official
+  Tiferet source/evidence assets 22,000 → 24,000 KB. Current measured values are 107.7 KB,
+  3,016.9 KB, 525.2 KB and 23,398.5 KB respectively; the total-JS and per-source-file ceilings
+  remain unchanged.
+- Inventoried all 179 supplied Tiferet PDFs and all 99 apartment sheets, extracted title-block
+  identities for every apartment, and added a reproducible apartment-by-apartment audit report.
+- Preserved 48 byte-verified official apartment PDFs with SHA-256 checks and extracted complete
+  positioned text/vector evidence without treating the remaining unresolved plans as implemented.
+- Raised the interactive application budget by 40 KB (2,960 → 3,000 KB) for the audited 99-plan
+  source metadata. Raised the separately tracked, on-demand Tiferet document budget from 1,400 to
+  22,000 KB for 48 source PDFs and 48 compact vector-evidence files; JS and per-file limits remain
+  unchanged, and these documents are excluded from the interactive application total.
+- Added one persisted design model for cabinetry, movable furniture, scene visibility, material
+  palette and a per-room 3D camera, including validated v1-to-v2 local-storage migration.
+- Added room-boundary, furniture and cabinet collision checks, collision-free wall placement,
+  selectable 2D furniture, precise movement controls, category layers and undo/redo.
+- Upgraded the dependency-free WebGL room renderer with reusable GPU resources, material classes,
+  procedural surface detail, cutaway walls, selection feedback, windows, frames and door leaves.
+- Added responsive context-first mobile ordering, removed duplicate/unused PWA asset preloads and
+  expanded cross-browser E2E coverage for furniture, layers, camera and refresh restoration.
+- Raised only the raw CSS budget from 100 KB to 102 KB for the complete responsive planner UI;
+  measured production CSS is 101.0 KB raw / 19.9 KB gzip and the total application budget remains
+  unchanged at 2,960 KB.
+
 ### Dependency Upgrades — 2026-06-28
 
 - `i18next` `^26.3.1` → `^26.3.3`

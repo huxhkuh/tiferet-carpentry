@@ -25,13 +25,26 @@ const placement = createCabinetPlacement({
   cabinetConfig: { width: 900 },
   id: 'saved-placement',
 });
-const design: SavedDesign = {
-  schemaVersion: 1,
+const legacyDesign = {
+  schemaVersion: 1 as const,
   id: 'saved-design',
   apartmentId: TIFERET_5_1.id,
   name: 'תכנון דירה 5-1',
   updatedAt: '2026-08-26T10:00:00.000Z',
   placements: [placement],
+};
+const v2Design: SavedDesign = {
+  ...legacyDesign,
+  schemaVersion: 2,
+  furnitureOverrides: [{ id: 'bedroom-bed-a', x: 3_650, y: 1_100, rotation: Math.PI / 2 }],
+  visibility: {
+    hiddenObjectIds: ['kitchen-fridge'],
+    hiddenCategories: ['decor'],
+  },
+  furniturePalette: 'sage',
+  cameraByRoom: {
+    bedroom: { yaw: 2.1, pitch: -0.6, zoom: 1.25 },
+  },
 };
 
 function createMemoryStorage(initialValue: string | null = null): DesignStorage {
@@ -127,14 +140,48 @@ describe('apartment/project validation', () => {
       ]),
     );
   });
+
+  it('rejects a supposedly verified source while unresolved architectural fields remain', () => {
+    const apartment = {
+      ...TIFERET_5_1,
+      source: {
+        ...TIFERET_5_1.source,
+        geometryStatus: 'verified' as const,
+      },
+    };
+
+    expect(getApartmentValidationIssues(apartment).map((issue) => issue.code)).toContain('INVALID_SOURCE');
+  });
+
+  it.each([
+    ['sourceRoomCount', 0],
+    ['sourceAreaSqm', Number.NaN],
+    ['sourceCoveredBalconyAreaSqm', -1],
+    ['sourceSukkahBalconyAreaSqm', -1],
+    ['sourceEdition', 0],
+    ['sourceApartmentNumber', ''],
+    ['sourceBuildingType', ''],
+    ['sourceScale', ''],
+    ['sourceDate', ''],
+  ] as const)('rejects invalid inspected title-block metadata in %s', (field, value) => {
+    const apartment = {
+      ...TIFERET_5_1,
+      source: {
+        ...TIFERET_5_1.source,
+        [field]: value,
+      },
+    };
+
+    expect(getApartmentValidationIssues(apartment).map((issue) => issue.code)).toContain('INVALID_SOURCE');
+  });
 });
 
 describe('safe design restoration', () => {
   it('saves and restores a complete versioned design', () => {
     const storage = createMemoryStorage();
-    saveDesign(storage, 'design', design);
+    saveDesign(storage, 'design', v2Design);
 
-    expect(restoreDesign(storage, 'design', TIFERET_5_1.id)).toEqual(design);
+    expect(restoreDesign(storage, 'design', TIFERET_5_1.id)).toEqual(v2Design);
     expect(restoreDesign(storage, 'design', 'another-apartment')).toBeNull();
   });
 
@@ -146,7 +193,7 @@ describe('safe design restoration', () => {
   });
 
   it('clears a stored design', () => {
-    const storage = createMemoryStorage(serializeDesign(design));
+    const storage = createMemoryStorage(serializeDesign(v2Design));
 
     clearDesign(storage, 'design');
 
@@ -154,20 +201,102 @@ describe('safe design restoration', () => {
   });
 
   it('rejects duplicate placement IDs and cross-apartment placements', () => {
-    expect(deserializeDesign(JSON.stringify({ ...design, placements: [placement, { ...placement }] }))).toBeNull();
+    expect(deserializeDesign(JSON.stringify({ ...v2Design, placements: [placement, { ...placement }] }))).toBeNull();
     expect(
       deserializeDesign(
-        JSON.stringify({ ...design, placements: [{ ...placement, apartmentId: 'another-apartment' }] }),
+        JSON.stringify({ ...v2Design, placements: [{ ...placement, apartmentId: 'another-apartment' }] }),
       ),
     ).toBeNull();
   });
 
   it('refuses to serialize a runtime object with inconsistent duplicated dimensions', () => {
     const inconsistent = {
-      ...design,
+      ...v2Design,
       placements: [{ ...placement, width: placement.width + 1 }],
     };
 
     expect(() => serializeDesign(inconsistent)).toThrow(/סכימת השמירה/);
+  });
+
+  it('migrates a legacy schema v1 design into schema v2 defaults', () => {
+    const restored = deserializeDesign(JSON.stringify(legacyDesign));
+
+    expect(restored).toEqual({
+      ...legacyDesign,
+      schemaVersion: 2,
+      furnitureOverrides: [],
+      visibility: {
+        hiddenObjectIds: [],
+        hiddenCategories: [],
+      },
+      furniturePalette: 'warm',
+      cameraByRoom: {},
+    });
+  });
+
+  it('round trips a schema v2 design with furniture, visibility and per-room camera state', () => {
+    expect(deserializeDesign(serializeDesign(v2Design))).toEqual(v2Design);
+  });
+
+  it('rejects duplicate furniture overrides', () => {
+    expect(
+      deserializeDesign(
+        JSON.stringify({
+          ...v2Design,
+          furnitureOverrides: [
+            { id: 'bedroom-bed-a', x: 3_650, y: 1_100, rotation: 0 },
+            { id: 'bedroom-bed-a', x: 3_800, y: 1_200, rotation: 0 },
+          ],
+        }),
+      ),
+    ).toBeNull();
+  });
+
+  it('rejects malformed visibility categories and duplicate hidden object ids', () => {
+    expect(
+      deserializeDesign(
+        JSON.stringify({
+          ...v2Design,
+          visibility: {
+            hiddenObjectIds: ['bedroom-bed-a', 'bedroom-bed-a'],
+            hiddenCategories: ['beds'],
+          },
+        }),
+      ),
+    ).toBeNull();
+    expect(
+      deserializeDesign(
+        JSON.stringify({
+          ...v2Design,
+          visibility: {
+            hiddenObjectIds: [],
+            hiddenCategories: ['unknown-category'],
+          },
+        }),
+      ),
+    ).toBeNull();
+  });
+
+  it('rejects malformed per-room camera state', () => {
+    expect(
+      deserializeDesign(
+        JSON.stringify({
+          ...v2Design,
+          cameraByRoom: {
+            bedroom: { yaw: 2.1, pitch: Number.NaN, zoom: 1 },
+          },
+        }),
+      ),
+    ).toBeNull();
+    expect(
+      deserializeDesign(
+        JSON.stringify({
+          ...v2Design,
+          cameraByRoom: {
+            '': { yaw: 2.1, pitch: -0.6, zoom: 1 },
+          },
+        }),
+      ),
+    ).toBeNull();
   });
 });

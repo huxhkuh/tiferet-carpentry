@@ -3,7 +3,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Room3D } from '../../src/apartment/components/Room3D';
 import { TIFERET_5_1 } from '../../src/apartment/data/tiferet';
-import { buildApartmentRoomScene } from '../../src/apartment/three/scene';
+import { buildApartmentRoomScene, ROOM_MATERIAL_IDS } from '../../src/apartment/three/scene';
+import { createApartmentRoomRenderer } from '../../src/apartment/three/renderer';
 import { DEFAULT_CONFIG } from '../../src/engine/materials';
 import type { CabinetPlacement } from '../../src/apartment/types';
 
@@ -39,7 +40,9 @@ function createWebGLFixture() {
     getAttribLocation: vi.fn((_program: WebGLProgram, name: string) => {
       if (name === 'aPosition') return 0;
       if (name === 'aNormal') return 1;
-      return 2;
+      if (name === 'aColor') return 2;
+      if (name === 'aMaterial') return 3;
+      return -1;
     }),
     getUniformLocation: vi.fn(() => ({ kind: 'uniform' })),
     enableVertexAttribArray: vi.fn(),
@@ -110,11 +113,53 @@ describe('Room3D', () => {
     const uploadedGeometry = fixture.bufferData.mock.calls[0]?.[1];
     expect(uploadedGeometry).toBeInstanceOf(Float32Array);
     if (!(uploadedGeometry instanceof Float32Array)) throw new TypeError('Expected WebGL geometry');
-    const verticalCoordinates = Array.from(uploadedGeometry.filter((_, index) => index % 9 === 1));
-    const depthCoordinates = Array.from(uploadedGeometry.filter((_, index) => index % 9 === 2));
+    const verticalCoordinates = Array.from(uploadedGeometry.filter((_, index) => index % 10 === 1));
+    const depthCoordinates = Array.from(uploadedGeometry.filter((_, index) => index % 10 === 2));
     expect(verticalCoordinates.some((value) => value > 0.5)).toBe(true);
     expect(depthCoordinates.some((value) => Math.abs(value) > 0.5)).toBe(true);
     expect(fixture.drawArrays).toHaveBeenCalled();
+  });
+
+  it('מייצר ערוץ חומר לכל vertex כדי לאפשר תאורה וחומרים עשירים יותר', () => {
+    const room = TIFERET_5_1.rooms.find((candidate) => candidate.id === 'bedroom');
+    if (!room) throw new Error('Missing bedroom fixture');
+
+    const scene = buildApartmentRoomScene(TIFERET_5_1, room, [BEDROOM_PLACEMENT]);
+    const materialIds = Array.from(
+      { length: scene.vertices.length / scene.vertexStride },
+      (_, index) => scene.vertices[index * scene.vertexStride + 9],
+    );
+
+    expect(scene.vertexStride).toBe(10);
+    expect(new Set(materialIds).size).toBeGreaterThanOrEqual(4);
+    expect(materialIds).toContain(0);
+    expect(materialIds).toContain(2);
+    expect(materialIds).toContain(3);
+    expect(materialIds).toContain(5);
+  });
+
+  it('מדמה את החלון והדלת כגאומטריה חומרית ולא כחורים ריקים בקיר', () => {
+    const room = TIFERET_5_1.rooms.find((candidate) => candidate.id === 'bedroom');
+    if (!room) throw new Error('Missing bedroom fixture');
+
+    const scene = buildApartmentRoomScene(TIFERET_5_1, room, []);
+    const materialIds = Array.from(
+      { length: scene.vertices.length / scene.vertexStride },
+      (_, index) => scene.vertices[index * scene.vertexStride + 9],
+    );
+
+    expect(scene.openingCount).toBe(2);
+    expect(materialIds).toContain(ROOM_MATERIAL_IDS.glass);
+  });
+
+  it('מתאים את קירות ה-cutaway לכיוון המצלמה כאשר מועבר cameraYaw', () => {
+    const room = TIFERET_5_1.rooms.find((candidate) => candidate.id === 'bedroom');
+    if (!room) throw new Error('Missing bedroom fixture');
+
+    const defaultScene = buildApartmentRoomScene(TIFERET_5_1, room, [], { cameraYaw: 2.62 });
+    const rotatedScene = buildApartmentRoomScene(TIFERET_5_1, room, [], { cameraYaw: 0 });
+
+    expect(rotatedScene.cutawayWallIds).not.toEqual(defaultScene.cutawayWallIds);
   });
 
   it('מציג בחדר השינה שתי מיטות יחיד נפרדות כחלק מהדמיית הריהוט', () => {
@@ -145,6 +190,19 @@ describe('Room3D', () => {
     expect(flatScene.vertices.length).toBeLessThan(shakerScene.vertices.length);
   });
 
+  it('מוסיף הדגשה מרחבית לפריט שנבחר בלי לשנות את נתוני המקור', () => {
+    const room = TIFERET_5_1.rooms.find((candidate) => candidate.id === 'bedroom');
+    if (!room) throw new Error('Missing bedroom fixture');
+
+    const regularScene = buildApartmentRoomScene(TIFERET_5_1, room, [BEDROOM_PLACEMENT]);
+    const selectedScene = buildApartmentRoomScene(TIFERET_5_1, room, [BEDROOM_PLACEMENT], {
+      selectedObjectId: BEDROOM_PLACEMENT.id,
+    });
+
+    expect(selectedScene.vertices.length).toBeGreaterThan(regularScene.vertices.length);
+    expect(BEDROOM_PLACEMENT).toMatchObject({ id: 'cabinet-bedroom-1', width: 1_800 });
+  });
+
   it('מאפשר להטות את המצלמה באמצעות בקרה נגישה', () => {
     const fixture = createWebGLFixture();
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(fixture.context);
@@ -156,6 +214,75 @@ describe('Room3D', () => {
     fireEvent.click(screen.getByRole('button', { name: 'הטה מעלה' }));
 
     expect(canvas).toHaveAttribute('data-camera-pitch', '-0.64');
+  });
+
+  it('מספק מבטי מצלמה מוכנים להבנת החדר במהירות', () => {
+    const fixture = createWebGLFixture();
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(fixture.context);
+    render(<Room3D apartment={TIFERET_5_1} roomId="bedroom" placements={[]} />);
+    const canvas = screen.getByTestId('apartment-3d-canvas');
+
+    fireEvent.click(screen.getByRole('button', { name: 'מבט על' }));
+    expect(canvas).toHaveAttribute('data-camera-pitch', '-1.20');
+    expect(canvas).toHaveAttribute('data-camera-zoom', '0.68');
+
+    fireEvent.click(screen.getByRole('button', { name: 'מבט חזית' }));
+    expect(canvas).toHaveAttribute('data-camera-yaw', '3.14');
+    expect(canvas).toHaveAttribute('data-camera-pitch', '-0.30');
+
+    fireEvent.click(screen.getByRole('button', { name: 'התאם חדר למסך' }));
+    expect(canvas).toHaveAttribute('data-camera-yaw', '2.62');
+    expect(canvas).toHaveAttribute('data-camera-zoom', '0.78');
+  });
+
+  it('שומר renderer יחיד בזמן סיבוב וזום של המצלמה בחדר', () => {
+    const fixture = createWebGLFixture();
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(fixture.context);
+    render(<Room3D apartment={TIFERET_5_1} roomId="bedroom" placements={[]} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'סובב ימינה' }));
+    fireEvent.click(screen.getByRole('button', { name: 'הטה מעלה' }));
+    fireEvent.click(screen.getByRole('button', { name: 'התקרב' }));
+
+    expect(fixture.context.createProgram).toHaveBeenCalledTimes(1);
+    expect(fixture.context.createBuffer).toHaveBeenCalledTimes(1);
+    expect(fixture.bufferData).toHaveBeenCalledTimes(1);
+    expect(fixture.drawArrays.mock.calls.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('משחזר מצלמה שמורה ומדווח את השינוי לפי מזהה החדר', () => {
+    const fixture = createWebGLFixture();
+    const onCameraChange = vi.fn();
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(fixture.context);
+    render(
+      <Room3D
+        apartment={TIFERET_5_1}
+        roomId="bedroom"
+        placements={[]}
+        initialCamera={{ yaw: 1, pitch: -0.4, zoom: 1.1 }}
+        onCameraChange={onCameraChange}
+      />,
+    );
+
+    expect(screen.getByTestId('apartment-3d-canvas')).toHaveAttribute('data-camera-yaw', '1.00');
+    fireEvent.click(screen.getByRole('button', { name: 'סובב ימינה' }));
+
+    expect(onCameraChange).toHaveBeenLastCalledWith('bedroom', { yaw: 1.2, pitch: -0.4, zoom: 1.1 });
+  });
+
+  it('חושף לקורא המסך ולבדיקות את הפריט המודגש בחדר', () => {
+    const fixture = createWebGLFixture();
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(fixture.context);
+    render(
+      <Room3D
+        apartment={TIFERET_5_1}
+        roomId="bedroom"
+        placements={[BEDROOM_PLACEMENT]}
+        selectedObjectId={BEDROOM_PLACEMENT.id}
+      />,
+    );
+
+    expect(screen.getByTestId('apartment-3d-canvas')).toHaveAttribute('data-selected-object', BEDROOM_PLACEMENT.id);
   });
 
   it('מתאר לקורא מסך את מידות הארון המוצג', () => {
@@ -182,6 +309,26 @@ describe('Room3D', () => {
 
     expect(screen.getByTestId('apartment-3d-canvas')).toHaveAccessibleName(/ארון 220×240×60 ס״מ/);
     expect(fixture.bufferData).toHaveBeenCalledTimes(2);
+  });
+
+  it('משתמש מחדש בתוכנית וב-buffer כאשר מציירים אותה סצנה עם מצלמות שונות', () => {
+    const fixture = createWebGLFixture();
+    const room = TIFERET_5_1.rooms.find((candidate) => candidate.id === 'bedroom');
+    if (!room) throw new Error('Missing bedroom fixture');
+    const scene = buildApartmentRoomScene(TIFERET_5_1, room, [BEDROOM_PLACEMENT]);
+
+    const view = createApartmentRoomRenderer(fixture.context);
+    if (!view) throw new Error('Expected renderer fixture');
+    view.setScene(scene);
+    view.draw({ yaw: 2.62, pitch: -0.52, zoom: 0.78 }, 960, 540);
+    view.draw({ yaw: 2.9, pitch: -0.52, zoom: 0.78 }, 960, 540);
+
+    expect(fixture.context.createProgram).toHaveBeenCalledTimes(1);
+    expect(fixture.context.createBuffer).toHaveBeenCalledTimes(1);
+    expect(fixture.bufferData).toHaveBeenCalledTimes(1);
+    expect(fixture.drawArrays).toHaveBeenCalledTimes(2);
+
+    view.dispose();
   });
 
   it('פותח את חדר הארון השמור כאשר עוברים ל־3D בלי לבחור חדר מחדש', () => {

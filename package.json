@@ -51,6 +51,9 @@
   },
   "scripts": {
     "dev": "vite",
+    "audit:tiferet": "node scripts/generate-tiferet-apartment-audit.js",
+    "extract:tiferet:vectors": "python scripts/extract-tiferet-vector-evidence.py --source-dir \"%TEMP%\\tiferet-source-pdfs\\validated\" --inventory public/tiferet/catalog/source-inventory.json --output public/tiferet/catalog/vector-evidence.json --geometry-dir public/tiferet/catalog/vectors",
+    "sync:tiferet:vectors": "node scripts/sync-tiferet-vector-status.js",
     "prebuild": "node scripts/sync-sw-version.js",
     "build": "tsc -b && vite build",
     "prebuild:nocheck": "node scripts/sync-sw-version.js",

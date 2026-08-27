@@ -6,7 +6,7 @@
  */
 import { spawn } from 'node:child_process';
 
-const checks = [
+const parallelChecks = [
   'typecheck',
   'lint',
   'lint:css',
@@ -22,9 +22,12 @@ const checks = [
   'workflows:validate',
   'hooks:validate',
   'template:sync:validate',
-  'pdf:budget',
   'components:budget',
 ];
+// Vitest's PDF renderer worker needs substantially more startup memory than
+// the metadata checks. Running it after the parallel batch avoids worker
+// startup timeouts on Windows and lower-powered CI runners.
+const serialChecks = ['pdf:budget'];
 const PromiseCtor = globalThis.Promise;
 
 function runCheck(name) {
@@ -48,7 +51,10 @@ function runCheck(name) {
   });
 }
 
-const results = await PromiseCtor.all(checks.map((name) => runCheck(name)));
+const parallelResults = await PromiseCtor.all(parallelChecks.map((name) => runCheck(name)));
+const serialResults = [];
+for (const name of serialChecks) serialResults.push(await runCheck(name));
+const results = [...parallelResults, ...serialResults];
 const failed = results.filter((result) => result.code !== 0);
 
 if (failed.length > 0) {

@@ -3,17 +3,43 @@ import { TIFERET_5_1 } from '../../apartment/data/tiferet';
 import { ApartmentThumbnail } from '../../apartment/components/ApartmentThumbnail';
 import { MATERIAL_LIBRARY, PROCESS_STEPS, SPACE_CATEGORIES } from '../content';
 import type { NavigateSite } from '../types';
-import { CabinetArtwork, HeroCabinetScene, WardrobeElevation } from '../components/CabinetArtwork';
+import { WardrobeElevation } from '../components/CabinetArtwork';
+import { BrandServiceIcon } from '../components/BrandServiceIcon';
 import { DiamondMark } from '../components/DiamondMark';
+import { EditorialImage } from '../components/EditorialImage';
 import { SectionHeading } from '../components/SectionHeading';
 import { SiteLink } from '../components/SiteLink';
 
 export function HomePage({ navigate }: { navigate: NavigateSite }) {
+  const serviceValues = [
+    { icon: 'consultation', title: 'שירות אישי', text: 'ליווי מסודר לאורך כל התהליך' },
+    { icon: 'craft', title: 'ייצור מדויק', text: 'מידות וחלוקה לפי החלל' },
+    { icon: 'planning', title: 'תכנון קפדני', text: 'חשיבה על כל פרט ושימוש' },
+    { icon: 'materials', title: 'חומרים מובחרים', text: 'מבחר גוונים וגימורים' },
+  ] as const;
+  const spacePhotos = {
+    kitchen: { src: 'space-kitchen.jpg', alt: 'מטבח עץ חם עם נגרות בגובה מלא' },
+    wardrobe: { src: 'space-wardrobe.jpg', alt: 'פריטי לבוש בחדר ארונות בגוון אגוז' },
+    bedroom: { src: 'space-bedroom.jpg', alt: 'ארון קיר לבן משולב בחדר שינה' },
+    children: { src: 'space-children.jpg', alt: 'חדר ילדים בהיר עם אחסון וסביבת יצירה' },
+    media: { src: 'space-media.jpg', alt: 'יחידת מדיה בהירה בסלון מודרני' },
+    niches: { src: 'space-niches.jpg', alt: 'נגרות אחסון חמה המשולבת בנישת חדר שינה' },
+  } as const;
+
   return (
     <>
       <section className="ng-hero" aria-labelledby="home-hero-title">
         <div className="ng-hero__visual">
-          <HeroCabinetScene />
+          <EditorialImage
+            src="hero-bedroom-cabinetry.jpg"
+            alt="נגרות קיר מותאמת בחדר שינה מואר"
+            className="ng-hero-photo"
+            eager
+          />
+          <div className="ng-hero__image-note" aria-hidden="true">
+            <span>פרט נגרות / 01</span>
+            <span>תכנון בהתאמה אישית</span>
+          </div>
           <div className="ng-hero__measure" aria-hidden="true">
             <span>340</span>
             <i />
@@ -42,19 +68,14 @@ export function HomePage({ navigate }: { navigate: NavigateSite }) {
       </section>
 
       <section className="ng-value-strip" aria-label="עקרונות השירות">
-        {[
-          ['שירות אישי', 'ליווי מסודר לאורך כל התהליך'],
-          ['ייצור מדויק', 'מידות וחלוקה לפי החלל'],
-          ['תכנון קפדני', 'חשיבה על כל פרט ושימוש'],
-          ['חומרים מובחרים', 'מבחר גוונים וגימורים'],
-        ].map(([title, text], index) => (
-          <article key={title}>
-            <span className="ng-value-icon" aria-hidden="true">
-              {String(index + 1).padStart(2, '0')}
+        {serviceValues.map((value) => (
+          <article key={value.title}>
+            <span className="ng-value-icon">
+              <BrandServiceIcon kind={value.icon} />
             </span>
             <div>
-              <h2>{title}</h2>
-              <p>{text}</p>
+              <h2>{value.title}</h2>
+              <p>{value.text}</p>
             </div>
           </article>
         ))}
@@ -112,8 +133,12 @@ export function HomePage({ navigate }: { navigate: NavigateSite }) {
         <div className="ng-spaces-grid">
           {SPACE_CATEGORIES.map((space, index) => (
             <article key={space.id} className={index === 0 || index === 3 ? 'is-wide' : ''}>
-              <CabinetArtwork variant={space.variant} />
-              <div>
+              <EditorialImage
+                src={spacePhotos[space.id].src}
+                alt={spacePhotos[space.id].alt}
+                testId="space-editorial-image"
+              />
+              <div className="ng-space-card__copy">
                 <p className="ng-index">{String(index + 1).padStart(2, '0')}</p>
                 <h3>{space.title}</h3>
                 <p>{space.text}</p>

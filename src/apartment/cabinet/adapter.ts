@@ -4,8 +4,9 @@ import { generateParts } from '../../engine/parts';
 import type { CabinetConfig, DerivedDimensions, Part, ValidationIssue } from '../../engine/types';
 import { validateConfig } from '../../engine/validation';
 import { cabinetFootprint, placementTransformForRoom } from '../geometry/placement-geometry';
-import { findFirstFit, validatePlacement } from '../geometry/intervals';
-import type { Apartment, CabinetPlacement, Point, Room, Wall } from '../types';
+import { validatePlacement } from '../geometry/intervals';
+import { findCabinetFurnitureCollision, findFirstCollisionFreeCabinetOffset } from '../geometry/scene-collision';
+import type { Apartment, CabinetPlacement, FurniturePlacement, Point, Room, Wall } from '../types';
 
 export interface CabinetDerivation {
   config: CabinetConfig;
@@ -28,6 +29,7 @@ export interface CreateCabinetPlacementInput {
   distanceFromWallStart?: number;
   elevation?: number;
   existingPlacements?: readonly CabinetPlacement[];
+  furniture?: readonly FurniturePlacement[];
   id?: string;
 }
 
@@ -79,6 +81,7 @@ export function createCabinetPlacement({
   distanceFromWallStart,
   elevation = 0,
   existingPlacements = [],
+  furniture = apartment.furniture ?? [],
   id = globalThis.crypto.randomUUID(),
 }: CreateCabinetPlacementInput): CabinetPlacement {
   assertApartmentRelationships(apartment, room, wall);
@@ -89,10 +92,21 @@ export function createCabinetPlacement({
   const scopedPlacements = existingPlacements.filter(
     (placement) => placement.apartmentId === apartment.id && placement.roomId === room.id,
   );
-  const resolvedDistance = distanceFromWallStart ?? findFirstFit(wall, config.width, { placements: scopedPlacements });
+  const resolvedDistance =
+    distanceFromWallStart ??
+    findFirstCollisionFreeCabinetOffset(apartment, room, wall, config.width, config.depth, furniture, scopedPlacements);
   if (resolvedDistance === null) throw new RangeError('לא נמצא בקיר מקטע פנוי המתאים לרוחב הארון');
   const placementError = validatePlacement(wall, config.width, resolvedDistance, scopedPlacements);
   if (placementError) throw new RangeError(placementError);
+  const furnitureCollision = findCabinetFurnitureCollision(
+    room,
+    wall,
+    resolvedDistance,
+    config.width,
+    config.depth,
+    furniture,
+  );
+  if (furnitureCollision) throw new RangeError('הארון חופף לריהוט בחדר. הזיזו את הריהוט או בחרו קיר אחר');
   const transform = placementTransformForRoom(wall, room, resolvedDistance);
   return {
     id,

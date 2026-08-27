@@ -55,7 +55,7 @@ export function SiteHeader({
 
   const navigation = (mobile = false) => (
     <nav className={mobile ? 'ng-mobile-nav' : 'ng-desktop-nav'} aria-label={mobile ? 'ניווט נייד' : 'ניווט ראשי'}>
-      {SITE_NAV_ITEMS.map((item) => (
+      {SITE_NAV_ITEMS.map((item, index) => (
         <SiteLink
           key={item.routeId}
           route={{ id: item.routeId }}
@@ -63,7 +63,10 @@ export function SiteHeader({
           onNavigate={mobile ? () => setMenuOpen(false) : undefined}
           ariaCurrent={route.id === item.routeId ? 'page' : undefined}
         >
-          {item.label}
+          <span className="ng-nav-number" aria-hidden="true">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <span>{item.label}</span>
         </SiteLink>
       ))}
     </nav>
@@ -75,6 +78,10 @@ export function SiteHeader({
         <div className="ng-header-inner">
           <SiteLink route={{ id: 'home' }} navigate={navigate} className="ng-brand-link">
             <BrandMark compact />
+            <span className="ng-brand-lockup">
+              <strong>סטודיו לנגרות מותאמת</strong>
+              <small>פרויקט תפארת · רמלה</small>
+            </span>
           </SiteLink>
           {navigation()}
           <div className="ng-header-actions">
@@ -82,7 +89,8 @@ export function SiteHeader({
               כניסה לנגרייה המקצועית
             </button>
             <SiteLink route={{ id: 'apartments' }} navigate={navigate} className="ng-button ng-button--small">
-              תכנון דירה
+              <span>תכנון דירה</span>
+              <span aria-hidden="true">↙</span>
             </SiteLink>
             <button
               ref={menuButtonRef}

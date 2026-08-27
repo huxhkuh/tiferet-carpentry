@@ -21,6 +21,7 @@ describe('Tiferet planner UI', () => {
     render(<PlannerApp initialStarted initialRoomId="bedroom" onExit={onExit} />);
 
     expect(screen.getByText('נגרות תפארת')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'נגרות — תפארת' })).toHaveClass('shrink-0');
     expect(screen.queryByText('TIFERET HOME')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'חזרה לדירה שלי' }));
     expect(onExit).toHaveBeenCalledOnce();
@@ -33,8 +34,19 @@ describe('Tiferet planner UI', () => {
     expect(screen.getByLabelText('מתחם / בניין')).toHaveValue('techelet');
     expect(screen.getByLabelText('קומה')).toHaveValue('5');
     expect(screen.getByLabelText('דירה')).toHaveValue('tiferet-techelet-5-1');
+    expect(screen.getByRole('option', { name: 'דירה 23-א · גיליון 5-1' })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'תצוגה מקדימה של דירה 5-1' })).toBeVisible();
     expect(screen.getAllByTestId(/^thumbnail-wall-mass-/)).toHaveLength(48);
+  });
+
+  it('shows the audited source inventory without presenting unresolved PDFs as implemented clean models', () => {
+    render(<PlannerApp />);
+
+    expect(screen.getByText('179 קבצי PDF נסרקו מהמקור')).toBeVisible();
+    expect(screen.getByText('98 תוכניות דירה טרם שוחזרו לגאומטריה אדריכלית')).toBeVisible();
+    expect(
+      screen.getByText('דירה 23-א · גיליון 5-1 זמינה כמודל עבודה; האימות האדריכלי המלא עדיין בהמתנה'),
+    ).toBeVisible();
   });
 
   it('selects a room and wall with stable test ids and shows the wall length', () => {
@@ -53,7 +65,14 @@ describe('Tiferet planner UI', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /התחל לתכנן/ }));
 
-    expect(screen.getByTestId('planner-canvas')).toHaveClass('lg:sticky', 'lg:h-[calc(100vh-5rem)]');
+    expect(screen.getByTestId('planner-canvas')).toHaveClass('lg:sticky', 'lg:top-32', 'lg:h-[calc(100vh-8rem)]');
+  });
+
+  it('מציג את עורך הפריט לפני רשימת החדרים במסך צר', () => {
+    render(<PlannerApp initialStarted initialRoomId="bedroom" />);
+
+    expect(screen.getByTestId('planner-context-panel')).toHaveClass('order-2', 'lg:order-3');
+    expect(screen.getByTestId('planner-room-panel')).toHaveClass('order-3', 'lg:order-1');
   });
 
   it('מציג ריהוט מלא כברירת מחדל ומאפשר להסתיר אותו', () => {
@@ -71,6 +90,64 @@ describe('Tiferet planner UI', () => {
 
     expect(furnitureToggle).toHaveAttribute('aria-checked', 'false');
     expect(screen.queryByTestId('furniture-bedroom-bed-a')).not.toBeInTheDocument();
+  });
+
+  it('בוחר רהיט, מזיז אותו בגריד ומאפשר להסתיר ולשחזר אותו', () => {
+    render(<PlannerApp />);
+
+    fireEvent.click(screen.getByRole('button', { name: /התחל לתכנן/ }));
+    fireEvent.click(screen.getByTestId('room-select-bedroom'));
+    fireEvent.click(screen.getByTestId('furniture-bedroom-bed-a'));
+
+    expect(screen.getByRole('heading', { name: 'עריכת מיטת יחיד' })).toBeVisible();
+    expect(screen.getByLabelText(/מיקום X/)).toHaveValue(370);
+    fireEvent.click(screen.getByRole('button', { name: 'הזז ימינה 10 ס״מ' }));
+    expect(screen.getByLabelText(/מיקום X/)).toHaveValue(380);
+
+    fireEvent.click(screen.getByRole('button', { name: 'הסתר פריט' }));
+    expect(screen.queryByTestId('furniture-bedroom-bed-a')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'הצג את כל הפריטים' }));
+    expect(screen.getByTestId('furniture-bedroom-bed-a')).toBeVisible();
+  });
+
+  it('שומר ומשחזר מיקום ריהוט ושכבות תצוגה כחלק מהתכנון', () => {
+    const view = render(<PlannerApp />);
+
+    fireEvent.click(screen.getByRole('button', { name: /התחל לתכנן/ }));
+    fireEvent.click(screen.getByTestId('room-select-bedroom'));
+    fireEvent.click(screen.getByTestId('furniture-bedroom-bed-a'));
+    fireEvent.click(screen.getByRole('button', { name: 'הזז ימינה 10 ס״מ' }));
+    fireEvent.click(screen.getByRole('button', { name: 'שכבת עיצוב והלבשה' }));
+    fireEvent.click(screen.getByRole('button', { name: 'שמור תכנון' }));
+
+    const serialized = window.localStorage.getItem('tiferet:design:5-1');
+    expect(serialized).toContain('"schemaVersion":2');
+    expect(serialized).toContain('"id":"bedroom-bed-a","x":3800');
+    expect(serialized).toContain('"hiddenCategories":["decor"]');
+
+    view.unmount();
+    render(<PlannerApp />);
+    fireEvent.click(screen.getByRole('button', { name: /התחל לתכנן/ }));
+    fireEvent.click(screen.getByTestId('room-select-bedroom'));
+    fireEvent.click(screen.getByTestId('furniture-bedroom-bed-a'));
+
+    expect(screen.getByLabelText(/מיקום X/)).toHaveValue(380);
+    expect(screen.getByRole('button', { name: 'שכבת עיצוב והלבשה' })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('מבטל ומבצע מחדש שינוי מרחבי בלי לאבד את הפריט הנבחר', () => {
+    render(<PlannerApp />);
+    fireEvent.click(screen.getByRole('button', { name: /התחל לתכנן/ }));
+    fireEvent.click(screen.getByTestId('room-select-bedroom'));
+    fireEvent.click(screen.getByTestId('furniture-bedroom-bed-a'));
+
+    expect(screen.getByRole('button', { name: 'בטל שינוי' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'הזז ימינה 10 ס״מ' }));
+    expect(screen.getByLabelText(/מיקום X/)).toHaveValue(380);
+    fireEvent.click(screen.getByRole('button', { name: 'בטל שינוי' }));
+    expect(screen.getByLabelText(/מיקום X/)).toHaveValue(370);
+    fireEvent.click(screen.getByRole('button', { name: 'בצע שוב' }));
+    expect(screen.getByLabelText(/מיקום X/)).toHaveValue(380);
   });
 
   it('מציג ערכת מטבח מלאה בחדר המטבח', () => {
@@ -123,6 +200,16 @@ describe('Tiferet planner UI', () => {
     expect(screen.getByText('תצוגת מקור מלאה')).toBeVisible();
   });
 
+  it('opens a calibrated source overlay for line-by-line geometry inspection', () => {
+    render(<PlannerApp initialStarted initialRoomId="bedroom" />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'בדיקת חפיפה' }));
+
+    expect(screen.getByRole('img', { name: 'השוואת תוכנית 5-1 למודל הנקי' })).toBeVisible();
+    expect(screen.getAllByTestId(/^source-overlay-wall-mass-/)).toHaveLength(48);
+    expect(screen.getByLabelText('שקיפות שכבת המודל')).toBeVisible();
+  });
+
   it('adds, edits, saves, restores, and resets a wardrobe placement', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     const view = render(<PlannerApp />);
@@ -131,11 +218,11 @@ describe('Tiferet planner UI', () => {
     fireEvent.click(screen.getByTestId('room-select-bedroom'));
     fireEvent.click(screen.getByTestId('wall-select-bed-e'));
     fireEvent.click(screen.getByRole('button', { name: /הוסף ארון/ }));
-    fireEvent.change(await screen.findByLabelText(/רוחב/), { target: { value: '220' } });
+    fireEvent.change(await screen.findByLabelText(/רוחב/), { target: { value: '200' } });
     fireEvent.click(screen.getByRole('button', { name: 'שמור תכנון' }));
 
     expect(screen.getByRole('status')).toHaveTextContent('נשמר');
-    expect(window.localStorage.getItem('tiferet:design:5-1')).toContain('"width":2200');
+    expect(window.localStorage.getItem('tiferet:design:5-1')).toContain('"width":2000');
 
     view.unmount();
     render(<PlannerApp />);
@@ -145,6 +232,25 @@ describe('Tiferet planner UI', () => {
     fireEvent.click(screen.getByRole('button', { name: 'אפס תכנון' }));
     expect(screen.getByText('0 ארונות בתכנון')).toBeInTheDocument();
     expect(window.localStorage.getItem('tiferet:design:5-1')).toBeNull();
+  });
+
+  it('שומר כמה גרסאות בשם ומציג אותן בספריית התכנון', () => {
+    render(<PlannerApp initialStarted initialRoomId="bedroom" />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'גרסאות ושיתוף' }));
+    fireEvent.change(screen.getByLabelText('שם הגרסה'), { target: { value: 'חלופה חמה' } });
+    fireEvent.click(screen.getByRole('button', { name: 'שמור כגרסה חדשה' }));
+
+    expect(screen.getByText('חלופה חמה')).toBeVisible();
+    expect(window.localStorage.getItem('tiferet:design-library:tiferet-techelet-5-1')).toContain('חלופה חמה');
+
+    fireEvent.change(screen.getByLabelText('שם הגרסה'), { target: { value: 'חלופה בהירה' } });
+    fireEvent.click(screen.getByRole('button', { name: 'שמור כגרסה חדשה' }));
+
+    expect(screen.getByText('חלופה בהירה')).toBeVisible();
+    expect(screen.getAllByRole('button', { name: /טען גרסה/ })).toHaveLength(2);
+    expect(screen.getByRole('button', { name: 'ייצוא גרסה פעילה ל‑JSON' })).toBeEnabled();
+    expect(screen.getByLabelText('ייבוא תכנון JSON')).toHaveAttribute('accept', 'application/json,.json');
   });
 
   it('rejects an edit that would extend the wardrobe beyond the selected wall', async () => {

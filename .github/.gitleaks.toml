@@ -34,4 +34,3 @@ regexes = [
   # in src/engine/validation*.ts.  Pattern: quoted all-caps+hyphen strings ≥16 chars.
   '''['"][A-Z][A-Z0-9_\-]{15,}['"]''',
 ]
-

@@ -9,11 +9,64 @@ export interface Point {
   y: number;
 }
 
+export type MeasurementBasis = 'construction' | 'clear' | 'centerline' | 'unknown';
+export type MeasurementOrigin = 'explicit' | 'derived' | 'vector-traced' | 'presentation-default' | 'unresolved';
+export type EvidenceConfidence = 'high' | 'medium' | 'low' | 'unresolved';
+export type VerificationStatus = 'pending' | 'passed';
+export type GeometryModelStatus = 'unresolved' | 'partially-modeled' | 'modeled' | 'verified';
+
+/** Audit metadata for a dimensional value. Presentation defaults must never be treated as source measurements. */
+export interface MeasurementEvidence {
+  origin: MeasurementOrigin;
+  basis: MeasurementBasis;
+  confidence: EvidenceConfidence;
+  sourceFileId?: EntityId;
+  sourcePage?: number;
+  annotation?: string;
+  derivation?: string;
+}
+
+/** Link from modeled geometry back to the exact supplied drawing. */
+export interface GeometryTrace {
+  sourceFileId: EntityId;
+  sourcePage: number;
+  confidence: EvidenceConfidence;
+  sourceRect?: SourcePdfRect;
+  unresolved?: string[];
+}
+
+export interface SourceDocument {
+  id: EntityId;
+  driveFileId: EntityId;
+  fileName: string;
+  sourcePath: string;
+  sourceUrl: string;
+  mimeType: 'application/pdf';
+  sizeBytes: number;
+}
+
+export interface SourceSheet {
+  id: EntityId;
+  documentId: EntityId;
+  pageNumber: number;
+  sheetLabel: string;
+  pageWidthPoints?: number;
+  pageHeightPoints?: number;
+  planBoundsPoints?: SourcePdfRect;
+}
+
 interface OpeningBase {
   id: EntityId;
   offset: number;
   width: number;
   height?: number;
+  measurements?: {
+    offset?: MeasurementEvidence;
+    width?: MeasurementEvidence;
+    height?: MeasurementEvidence;
+    sillHeight?: MeasurementEvidence;
+  };
+  trace?: GeometryTrace;
 }
 
 export interface Door extends OpeningBase {
@@ -35,6 +88,7 @@ export interface FixedObstacle {
   label: string;
   polygon: Point[];
   height?: number;
+  trace?: GeometryTrace;
 }
 
 /** Backwards-compatible name used by the first normalized Tiferet data file. */
@@ -47,6 +101,12 @@ export interface Wall {
   openings: Opening[];
   thickness?: number;
   height?: number;
+  measurements?: {
+    length?: MeasurementEvidence;
+    thickness?: MeasurementEvidence;
+    height?: MeasurementEvidence;
+  };
+  trace?: GeometryTrace;
 }
 
 export interface SourcePdfRect {
@@ -61,6 +121,7 @@ export interface WallMass {
   id: EntityId;
   polygon: Point[];
   sourcePdfRect?: SourcePdfRect;
+  trace?: GeometryTrace;
 }
 
 export interface Room {
@@ -68,6 +129,7 @@ export interface Room {
   name: string;
   polygon: Point[];
   wallIds: EntityId[];
+  trace?: GeometryTrace;
 }
 
 export type FurnitureKind =
@@ -130,8 +192,25 @@ export interface ApartmentSource {
   pageWidthPoints?: number;
   pageHeightPoints?: number;
   sourcePlanBoundsPoints?: SourcePdfRect;
+  /** Apartment number printed in the architectural title block; distinct from the sheet identifier. */
+  sourceApartmentNumber?: string;
+  sourceBuildingType?: string;
+  sourceRoomCount?: number;
+  sourceAreaSqm?: number;
+  sourceCoveredBalconyAreaSqm?: number;
+  sourceSukkahBalconyAreaSqm?: number;
+  sourceScale?: string;
+  sourceEdition?: number;
+  sourceDate?: string;
   modelingMethod?: 'automatic' | 'semi-automatic' | 'manually-normalized';
   modelingNotes?: string;
+  documentId?: EntityId;
+  sheetId?: EntityId;
+  measurementBasis?: MeasurementBasis;
+  geometryStatus?: GeometryModelStatus;
+  mathematicalVerification?: VerificationStatus;
+  visualVerification?: VerificationStatus;
+  unresolvedFields?: string[];
 }
 
 export interface ApartmentType {
@@ -195,7 +274,28 @@ export interface SavedDesignMetadata {
   notes?: string;
 }
 
-export interface SavedDesign {
+export interface FurnitureOverride {
+  id: EntityId;
+  x: number;
+  y: number;
+  rotation: number;
+}
+
+export type SceneObjectCategory =
+  'cabinetry' | 'beds' | 'kitchen' | 'bathroom' | 'living' | 'work' | 'utility' | 'decor';
+
+export interface DesignVisibility {
+  hiddenObjectIds: EntityId[];
+  hiddenCategories: SceneObjectCategory[];
+}
+
+export interface RoomCameraOrbit {
+  yaw: number;
+  pitch: number;
+  zoom: number;
+}
+
+export interface SavedDesignV1 {
   schemaVersion: 1;
   id: EntityId;
   apartmentId: EntityId;
@@ -204,3 +304,19 @@ export interface SavedDesign {
   placements: CabinetPlacement[];
   metadata?: SavedDesignMetadata;
 }
+
+export interface SavedDesignV2 {
+  schemaVersion: 2;
+  id: EntityId;
+  apartmentId: EntityId;
+  name: string;
+  updatedAt: string;
+  placements: CabinetPlacement[];
+  furnitureOverrides: FurnitureOverride[];
+  visibility: DesignVisibility;
+  furniturePalette: FurniturePalette;
+  cameraByRoom: Record<EntityId, RoomCameraOrbit>;
+  metadata?: SavedDesignMetadata;
+}
+
+export type SavedDesign = SavedDesignV1 | SavedDesignV2;

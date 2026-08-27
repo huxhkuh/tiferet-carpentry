@@ -1,4 +1,13 @@
-import type { Apartment, Point, Project, Wall } from '../types';
+import type {
+  Apartment,
+  EvidenceConfidence,
+  GeometryTrace,
+  MeasurementEvidence,
+  MeasurementOrigin,
+  Point,
+  Project,
+  Wall,
+} from '../types';
 import { createFurniturePlacement } from '../furniture/catalog';
 import {
   sourcePlanPoint,
@@ -7,11 +16,61 @@ import {
   TIFERET_SOURCE_PLAN_BOUNDS,
 } from './tiferet-source-plan';
 
-const WALL_HEIGHT = 2_750;
+const SOURCE_FILE_ID = '1RTrFsQ1eBTVzudl3wC0Ocv5DirPh6tBq';
+const SOURCE_PAGE = 1;
+/** Viewer-only fallback; the supplied sheet has not yet yielded an audited wall/ceiling height. */
+const PRESENTATION_WALL_HEIGHT = 2_750;
 const WALL_THICKNESS = 140;
 
+function sourceTrace(confidence: EvidenceConfidence = 'medium'): GeometryTrace {
+  return { sourceFileId: SOURCE_FILE_ID, sourcePage: SOURCE_PAGE, confidence };
+}
+
+function measurement(
+  origin: MeasurementOrigin,
+  confidence: EvidenceConfidence,
+  annotation?: string,
+): MeasurementEvidence {
+  return {
+    origin,
+    basis: origin === 'presentation-default' ? 'unknown' : 'construction',
+    confidence,
+    sourceFileId: SOURCE_FILE_ID,
+    sourcePage: SOURCE_PAGE,
+    ...(annotation === undefined ? {} : { annotation }),
+  };
+}
+
 function wall(id: string, start: Point, end: Point, openings: Wall['openings'] = [], thickness = WALL_THICKNESS): Wall {
-  return { id, start, end, openings, height: WALL_HEIGHT, thickness };
+  return {
+    id,
+    start,
+    end,
+    openings: openings.map((opening) => ({
+      ...opening,
+      trace: sourceTrace('low'),
+      measurements: {
+        offset: measurement('vector-traced', 'low'),
+        width: measurement('vector-traced', 'low'),
+        ...(opening.height === undefined
+          ? {}
+          : { height: measurement('presentation-default', 'unresolved', 'Viewer fallback; not source-verified') }),
+        ...(opening.kind === 'window' && opening.sillHeight !== undefined
+          ? {
+              sillHeight: measurement('presentation-default', 'unresolved', 'Viewer fallback; not source-verified'),
+            }
+          : {}),
+      },
+    })),
+    height: PRESENTATION_WALL_HEIGHT,
+    thickness,
+    measurements: {
+      length: measurement('derived', 'medium', 'Derived from the calibrated source-plan coordinate frame'),
+      thickness: measurement('vector-traced', 'medium'),
+      height: measurement('presentation-default', 'unresolved', 'Viewer fallback; not source-verified'),
+    },
+    trace: sourceTrace(),
+  };
 }
 
 /**
@@ -33,13 +92,35 @@ export const TIFERET_5_1: Apartment = {
     sourceType: 'sales-plan-pdf',
     sourceFile: 'טיפוס שני - Sheet - 5-1 - פרויקט תפארת - רמלה.pdf',
     sourceUrl: 'https://drive.google.com/drive/folders/1K3jMHkgnPNTydsJYdTVOzqkEinDPmwG4',
-    sourceFileId: '1RTrFsQ1eBTVzudl3wC0Ocv5DirPh6tBq',
+    sourceFileId: SOURCE_FILE_ID,
     sourceSha256: '2165ED6217A04A5A56AC00B5B3DBF0AC477F6224884CFD1A513FCF6B478F6DBE',
     sourcePage: 1,
     pageWidthPoints: 2_268,
     pageHeightPoints: 1_193,
     sourcePlanBoundsPoints: TIFERET_SOURCE_PLAN_BOUNDS,
+    sourceApartmentNumber: '23-א',
+    sourceBuildingType: 'תכלת א',
+    sourceRoomCount: 4,
+    sourceAreaSqm: 97.4,
+    sourceCoveredBalconyAreaSqm: 17.8,
+    sourceSukkahBalconyAreaSqm: 3.3,
+    sourceScale: '1 : 50',
+    sourceEdition: 1,
+    sourceDate: '17.03.26',
     modelingMethod: 'semi-automatic',
+    measurementBasis: 'construction',
+    geometryStatus: 'partially-modeled',
+    mathematicalVerification: 'pending',
+    visualVerification: 'pending',
+    unresolvedFields: [
+      'wall-heights',
+      'door-heights',
+      'window-heights',
+      'window-sill-heights',
+      'ceiling-heights',
+      'opening-offset-source-audit',
+      'complete-dimension-chain-closure',
+    ],
     modelingNotes:
       'Forty-eight filled structural wall rectangles and their joins were extracted from the official vector PDF. Piecewise calibration anchors preserve the printed clear-room dimensions in millimetres. This is not an as-built survey.',
   },
@@ -108,7 +189,10 @@ export const TIFERET_5_1: Apartment = {
     wall('kitchen-s', sourcePlanPoint(1_175.04, 979.8), sourcePlanPoint(954, 979.8)),
     wall('kitchen-w', sourcePlanPoint(954, 979.8), sourcePlanPoint(954, 883.44)),
   ],
-  wallMasses: TIFERET_5_1_WALL_MASSES,
+  wallMasses: TIFERET_5_1_WALL_MASSES.map((mass) => ({
+    ...mass,
+    trace: { ...sourceTrace('medium'), sourceRect: mass.sourcePdfRect },
+  })),
   rooms: [
     {
       id: 'safe-room',

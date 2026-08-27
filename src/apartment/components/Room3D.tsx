@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { renderApartmentRoomScene, type CameraOrbit } from '../three/renderer';
+import { createApartmentRoomRenderer, type ApartmentRoomRenderer, type CameraOrbit } from '../three/renderer';
 import { buildApartmentRoomScene, DEFAULT_ROOM_CAMERA_YAW } from '../three/scene';
 import type { Apartment, CabinetPlacement, FurniturePalette } from '../types';
 
@@ -11,6 +11,9 @@ interface Room3DProps {
   placements: CabinetPlacement[];
   showFurniture?: boolean;
   furniturePalette?: FurniturePalette;
+  selectedObjectId?: string | null;
+  initialCamera?: CameraOrbit;
+  onCameraChange?: (roomId: string, camera: CameraOrbit) => void;
 }
 
 interface DragOrigin {
@@ -41,15 +44,26 @@ export function Room3D({
   placements,
   showFurniture = true,
   furniturePalette = 'warm',
+  selectedObjectId = null,
+  initialCamera,
+  onCameraChange,
 }: Room3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragOriginRef = useRef<DragOrigin | null>(null);
+  const rendererRef = useRef<ApartmentRoomRenderer | null>(null);
+  const cameraRef = useRef<CameraOrbit>(initialCamera ?? INITIAL_CAMERA);
+  const initialCameraRef = useRef<CameraOrbit | undefined>(initialCamera);
+  const onCameraChangeRef = useRef(onCameraChange);
+  const drawRef = useRef<() => void>(() => undefined);
   const [rendererStatus, setRendererStatus] = useState<RendererStatus>('checking');
-  const [camera, setCamera] = useState<CameraOrbit>({ ...INITIAL_CAMERA });
+  const [camera, setCamera] = useState<CameraOrbit>(() => ({ ...(initialCamera ?? INITIAL_CAMERA) }));
   const room =
     apartment.rooms.find((item) => item.id === roomId) ??
     apartment.rooms.find((item) => item.id === placements[0]?.roomId) ??
     apartment.rooms[0];
+  const previousRoomIdRef = useRef(room.id);
+  initialCameraRef.current = initialCamera;
+  onCameraChangeRef.current = onCameraChange;
   const roomPlacements = useMemo(
     () => placements.filter((placement) => placement.roomId === room.id),
     [placements, room.id],
@@ -58,10 +72,20 @@ export function Room3D({
     () => (showFurniture ? (apartment.furniture ?? []).filter((item) => item.roomId === room.id) : []),
     [apartment.furniture, room.id, showFurniture],
   );
+  const cutawayYaw = Math.round(camera.yaw / (Math.PI / 2)) * (Math.PI / 2);
   const scene = useMemo(
-    () => buildApartmentRoomScene(apartment, room, roomPlacements, { showFurniture, furniturePalette }),
-    [apartment, furniturePalette, room, roomPlacements, showFurniture],
+    () =>
+      buildApartmentRoomScene(apartment, room, roomPlacements, {
+        showFurniture,
+        furniturePalette,
+        cameraYaw: cutawayYaw,
+        selectedObjectId: selectedObjectId ?? undefined,
+      }),
+    [apartment, cutawayYaw, furniturePalette, room, roomPlacements, selectedObjectId, showFurniture],
   );
+  const sceneRef = useRef(scene);
+  sceneRef.current = scene;
+  cameraRef.current = camera;
   const cabinetSummary = useMemo(
     () =>
       roomPlacements.length === 0
@@ -83,6 +107,19 @@ export function Room3D({
         : `${roomFurniture.length} פריטי ריהוט`;
 
   useEffect(() => {
+    if (previousRoomIdRef.current === room.id) return;
+    previousRoomIdRef.current = room.id;
+    const nextCamera = { ...(initialCameraRef.current ?? INITIAL_CAMERA) };
+    cameraRef.current = nextCamera;
+    setCamera(nextCamera);
+  }, [room.id]);
+
+  useEffect(() => {
+    if (cameraRef.current !== camera) return;
+    onCameraChangeRef.current?.(room.id, camera);
+  }, [camera, room.id]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const gl = canvas.getContext('webgl', {
@@ -96,24 +133,41 @@ export function Room3D({
       return;
     }
 
-    let handle: ReturnType<typeof renderApartmentRoomScene> = null;
+    const renderer = createApartmentRoomRenderer(gl);
+    if (!renderer) {
+      setRendererStatus('unavailable');
+      return;
+    }
+    rendererRef.current = renderer;
     const draw = () => {
-      handle?.dispose();
       const pixelRatio = clamp(window.devicePixelRatio || 1, 1, 2);
       const width = Math.max(1, Math.round((canvas.clientWidth || 960) * pixelRatio));
       const height = Math.max(1, Math.round((canvas.clientHeight || 540) * pixelRatio));
       if (canvas.width !== width) canvas.width = width;
       if (canvas.height !== height) canvas.height = height;
-      handle = renderApartmentRoomScene(gl, scene, camera, width, height);
-      setRendererStatus(handle ? 'ready' : 'unavailable');
+      renderer.draw(cameraRef.current, width, height);
     };
+    drawRef.current = draw;
+    renderer.setScene(sceneRef.current);
     draw();
+    setRendererStatus('ready');
     window.addEventListener('resize', draw);
     return () => {
       window.removeEventListener('resize', draw);
-      handle?.dispose();
+      renderer.dispose();
+      rendererRef.current = null;
+      drawRef.current = () => undefined;
     };
-  }, [camera, scene]);
+  }, []);
+
+  useEffect(() => {
+    rendererRef.current?.setScene(scene);
+    drawRef.current();
+  }, [scene]);
+
+  useEffect(() => {
+    drawRef.current();
+  }, [camera]);
 
   const changeZoom = (factor: number) => {
     setCamera((current) => ({ ...current, zoom: clamp(current.zoom * factor, 0.55, 2.2) }));
@@ -122,8 +176,37 @@ export function Room3D({
   return (
     <div className="relative h-full min-h-96 overflow-hidden rounded-3xl bg-stone-100">
       <div className="pointer-events-none absolute start-4 top-4 z-10 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-stone-700 shadow-sm">
-        {room.name} • {scene.furnitureCount} פריטי ריהוט • גררו לסיבוב
+        {room.name} • {scene.furnitureCount} פריטי ריהוט • {scene.openingCount} פתחים • גררו לסיבוב
       </div>
+      {rendererStatus === 'ready' ? (
+        <div
+          className="absolute end-4 top-4 z-10 flex max-w-[48%] flex-wrap justify-end gap-1 rounded-xl bg-white/90 p-1 shadow-sm backdrop-blur"
+          role="group"
+          aria-label="מבטים מוכנים"
+        >
+          <button
+            type="button"
+            onClick={() => setCamera({ yaw: camera.yaw, pitch: -1.2, zoom: 0.68 })}
+            className="rounded-lg px-2.5 py-2 text-xs font-bold text-stone-700 hover:bg-stone-100"
+          >
+            מבט על
+          </button>
+          <button
+            type="button"
+            onClick={() => setCamera({ yaw: Math.PI, pitch: -0.3, zoom: 0.86 })}
+            className="rounded-lg px-2.5 py-2 text-xs font-bold text-stone-700 hover:bg-stone-100"
+          >
+            מבט חזית
+          </button>
+          <button
+            type="button"
+            onClick={() => setCamera({ ...INITIAL_CAMERA })}
+            className="rounded-lg px-2.5 py-2 text-xs font-bold text-stone-700 hover:bg-stone-100"
+          >
+            התאם חדר למסך
+          </button>
+        </div>
+      ) : null}
       {rendererStatus === 'unavailable' ? (
         <div
           className="flex min-h-96 items-center justify-center px-6 text-center text-sm text-stone-600"
@@ -143,16 +226,18 @@ export function Room3D({
         }
         role="img"
         tabIndex={rendererStatus === 'unavailable' ? -1 : 0}
-        aria-label={`הדמיית חדר תלת־ממדית עבור ${room.name}, ${scene.wallCount} קירות, ${furnitureSummary}, ${cabinetSummary}`}
+        aria-label={`הדמיית חדר תלת־ממדית עבור ${room.name}, ${scene.wallCount} קירות, ${scene.openingCount} פתחים, ${furnitureSummary}, ${cabinetSummary}`}
         data-testid="apartment-3d-canvas"
         data-scene-walls={scene.wallCount}
         data-scene-cutaway-walls={scene.cutawayWallCount}
         data-scene-cabinets={scene.cabinetCount}
         data-scene-furniture={scene.furnitureCount}
         data-scene-beds={scene.bedCount}
+        data-scene-openings={scene.openingCount}
         data-camera-yaw={camera.yaw.toFixed(2)}
         data-camera-pitch={camera.pitch.toFixed(2)}
         data-camera-zoom={camera.zoom.toFixed(2)}
+        data-selected-object={selectedObjectId ?? undefined}
         onPointerDown={(event) => {
           event.currentTarget.setPointerCapture(event.pointerId);
           dragOriginRef.current = {

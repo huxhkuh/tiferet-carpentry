@@ -1,0 +1,1641 @@
+{
+  "schemaVersion": 1,
+  "extractionMethod": "pdfplumber-vector-and-positioned-text",
+  "coordinateSystem": "pdf-points-top-left",
+  "validatedSourcePdfCount": 48,
+  "validatedSourceBytes": 6586021,
+  "documents": [
+    {
+      "driveFileId": "1-UMMgTwBmexXPEBPjwkWIoBcWyECKaIr",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 3/‏‏טיפוס שני - Sheet - 3-1 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 127878,
+      "sourceSha256": "9bd68c37b87a7b52fdaa53bc3876f960d4150a2ef0090990c3563b9d68001e82",
+      "pageCount": 1,
+      "geometryFingerprint": "5e0fa1b18ce8d6e8196a999cddb4bdaadf2c9898e79d18311a99357f719cfae7",
+      "wallMassFingerprint": "2b8cca44c6822b2d043cf5ad429faacec27c5a90061a4879f5451ad5ba087972",
+      "mirroredWallMassFingerprint": "34fab9ca2d0b224002975ef61abfe7f653cb293b1068516336b8a769c619f639",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1-UMMgTwBmexXPEBPjwkWIoBcWyECKaIr.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1153,
+          "lineCount": 4089,
+          "rectangleCount": 392,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 48,
+          "planBoundsPoints": {
+            "x0": 503.76,
+            "top": 361.8,
+            "x1": 1084.8,
+            "bottom": 974.04
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "10-67G0G5CrNpZS0pfXh3PIiEOPGzKEy4",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 4/‏‏טיפוס שני - Sheet - 4-7 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 128426,
+      "sourceSha256": "1e6292e29f83298c46ad4a769e959cea7130544c0709d12ea4370c954fe7e8e1",
+      "pageCount": 1,
+      "geometryFingerprint": "1bc157951a8668a87f72d954b9c87b084bf12821c4bf19fd922f91a6d841705d",
+      "wallMassFingerprint": "49aad0f86e96cb535d4610bc408e5319076a1f6c1e330233a334e7e891d6df52",
+      "mirroredWallMassFingerprint": "9cdbe3cc098b7f612b27f6fef3a9b3b8cae556ea9a066a691e77c6b412dd0021",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/10-67G0G5CrNpZS0pfXh3PIiEOPGzKEy4.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6233,
+          "wordCount": 1150,
+          "lineCount": 4369,
+          "rectangleCount": 390,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 48,
+          "planBoundsPoints": {
+            "x0": 509.76,
+            "top": 226.32,
+            "x1": 1204.32,
+            "bottom": 864.12
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "109zuZrJnGNAapKiK_5PQoDg7LHF6Eh8O",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 5/‏‏טיפוס שני - Sheet - 5-4 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131423,
+      "sourceSha256": "566b71d9ab0c237b4a82e0b70d799e5821299c0d59f1f0a0b1921d78de9c74b1",
+      "pageCount": 1,
+      "geometryFingerprint": "44250f930ff388fbc09e10e04cde154ece315348b9454694a0212e4df36759bd",
+      "wallMassFingerprint": "c1aba8d158184d04984d5ccca402af5e53963b74b6b39bea64fa64e418bfb494",
+      "mirroredWallMassFingerprint": "e6f27d47fc3dfeadb5c5e4c59c9707c6cfb8a7e9cad2025e12bc736e3a6db9b1",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/109zuZrJnGNAapKiK_5PQoDg7LHF6Eh8O.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1152,
+          "lineCount": 4059,
+          "rectangleCount": 412,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 586.2,
+            "top": 204.0,
+            "x1": 1224.0,
+            "bottom": 949.56
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "10t2CWGIJ29U9K9Tl3d0w39gvh8AybHVN",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 5/‏‏טיפוס שני - Sheet - 5-5 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131433,
+      "sourceSha256": "509c4235c63ae23694c74c278ad964c53ab5dab5d8377109f56151255b583014",
+      "pageCount": 1,
+      "geometryFingerprint": "a852220407468c1e3fc5b0aedb65eb8fc0ec524e517a078d42ec282cad5c5ea5",
+      "wallMassFingerprint": "b383a97d8d475b3dfa577be4055edb28b0bb3b29105478013fa0a528022cca70",
+      "mirroredWallMassFingerprint": "207e1e502b715a3af86a798e3a2c15cff4f945173d5d379afcdffe388f219b9b",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/10t2CWGIJ29U9K9Tl3d0w39gvh8AybHVN.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1152,
+          "lineCount": 4074,
+          "rectangleCount": 413,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 528.36,
+            "top": 182.4,
+            "x1": 1169.04,
+            "bottom": 927.84
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "11ltC7cD5PDoVJa5erLUqU30bNUpA7LXM",
+      "sourcePath": "תפארת/תוכניות מכר ארגמן/מכר קומה 3/‏‏טיפוס אמה רמלה - Sheet - 3-4 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 123015,
+      "sourceSha256": "9a977700574845c3f68685a363098128b2c86beb45b89ad14753ffd6c03114dd",
+      "pageCount": 1,
+      "geometryFingerprint": "06c67b370f388f27885574b5ad5062c52eae2a4ea0fb2c5d60a4a516827e6643",
+      "wallMassFingerprint": "e2bcc986e9222e735511a2e02fb323061ae5381bc6d91a36ca2f4371b4595c1d",
+      "mirroredWallMassFingerprint": "6f5c7cba81652189b5a421618fdb37cbd1c2e9f6b36dbba9af62897c13c9cd8c",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/11ltC7cD5PDoVJa5erLUqU30bNUpA7LXM.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1684,
+          "heightPoints": 1191,
+          "characterCount": 6404,
+          "wordCount": 1184,
+          "lineCount": 4195,
+          "rectangleCount": 453,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 316.6608,
+            "top": 70.56,
+            "x1": 785.9808,
+            "bottom": 892.08
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "11vRxbyuHeaq2eDMnmLppy3VVOnEt2iE-",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 8/‏‏טיפוס שני - Sheet - 8-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 130058,
+      "sourceSha256": "862bfa64a9c736887657216a41d212e6fb522103adf17e46f033030e8c68c9de",
+      "pageCount": 1,
+      "geometryFingerprint": "899b897fb94f4b886d063da94475e8ecae70ee82065348d91218e52e1a386afc",
+      "wallMassFingerprint": "fa5ec89759191b63db9a94fcdfa21be7e049f2494de38c1451fade093b74656a",
+      "mirroredWallMassFingerprint": "d92a05a9ec0141349393f4297f8f51b4b26acc0367c49c4d29b9d22aba4c961d",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/11vRxbyuHeaq2eDMnmLppy3VVOnEt2iE-.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6296,
+          "wordCount": 1166,
+          "lineCount": 4240,
+          "rectangleCount": 406,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 44,
+          "planBoundsPoints": {
+            "x0": 468.6,
+            "top": 379.32,
+            "x1": 1239.6,
+            "bottom": 991.56
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "12_Pq5KszSbSnv__1Jtoc24-umHPNhpYm",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 4/‏‏טיפוס שני - Sheet - 4-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 130124,
+      "sourceSha256": "90e706b01363b49841b1e2051a1666c9c914924e2b4c3fa78df9805cb3c75570",
+      "pageCount": 1,
+      "geometryFingerprint": "60c52d6cf532c96e7f4f5b490d5e30b1c0a510cc5a5b4537e5bd3ac0bc9acb4b",
+      "wallMassFingerprint": "301329791076433a16f6da38c749306e33e0a9aec67856ca0f9c5a645d9a77b9",
+      "mirroredWallMassFingerprint": "3bdb48aaf89a7ef975a506105dd89f640670c6e6805163bc46a88f53225bef9d",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/12_Pq5KszSbSnv__1Jtoc24-umHPNhpYm.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6296,
+          "wordCount": 1166,
+          "lineCount": 4270,
+          "rectangleCount": 407,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 44,
+          "planBoundsPoints": {
+            "x0": 444.6,
+            "top": 307.2,
+            "x1": 1215.6,
+            "bottom": 919.56
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "12H5bOAZv8vv-_XhMBEuWg5VWO1ySnECv",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 9/9-5.pdf",
+      "sourceSizeBytes": 268991,
+      "sourceSha256": "4b320136ebf193fde9b0ec0a173f15cfba9adab43372015a2dc466fbc935638e",
+      "pageCount": 1,
+      "geometryFingerprint": "76f433ce8048ed457ff76d9905261d761cf109c37b24fac09eb19a85c1fbfc62",
+      "wallMassFingerprint": "cc8539d8311ecfd4e9cb5702b1197adc498df90f5d20ebe8586a5d6c567ac9f9",
+      "mirroredWallMassFingerprint": "3d67644d14dadba979d146bf3320c191d10600e0d46da209660888880e72551b",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/12H5bOAZv8vv-_XhMBEuWg5VWO1ySnECv.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2409,
+          "heightPoints": 1193,
+          "characterCount": 6277,
+          "wordCount": 1159,
+          "lineCount": 5398,
+          "rectangleCount": 465,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 77,
+          "planBoundsPoints": {
+            "x0": 70.44,
+            "top": 223.68,
+            "x1": 1601.04,
+            "bottom": 996.96
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "17c59VvTR3qoFjJv7tko1mgKOdQu0dMJZ",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 8/‏‏טיפוס שני - Sheet - 8-5 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131310,
+      "sourceSha256": "c28b6e8be729a8ec2ffdfdad710aeae172e419b5a52f741a9bbf170b6f4906c6",
+      "pageCount": 1,
+      "geometryFingerprint": "e861e093b61b54c2d8a7c5f616dd53e77271381bab8c54824741e0278e8ea1a1",
+      "wallMassFingerprint": "b9d8bede168bdc119469177a1ff61fa4976585ade48038a92d95d64f6bf40165",
+      "mirroredWallMassFingerprint": "575e6f4e79e79cfc71723c6e222c533e5b57e1d7f44e869cfb385fe3a7261863",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/17c59VvTR3qoFjJv7tko1mgKOdQu0dMJZ.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6240,
+          "wordCount": 1152,
+          "lineCount": 4076,
+          "rectangleCount": 412,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 487.2,
+            "top": 199.32,
+            "x1": 1127.88,
+            "bottom": 944.88
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "18vTL2qreb5PBQN2jT98s42u5C2-A0F9x",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 6/‏‏טיפוס שני - Sheet - 6-5 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131597,
+      "sourceSha256": "6417d3b60e0f9e33e89bc8c9aa29b352acc3bfb93f310baa1dc509458ffa45cf",
+      "pageCount": 1,
+      "geometryFingerprint": "ed323603fd5f6e7e2e96911225cb3bfe2a5ff8a2f93f669a76cabc1e8e622ee2",
+      "wallMassFingerprint": "5b2e4b3e529dd405894c28469bf7fc72efa3886ddf7b330e55a6964111ac9e18",
+      "mirroredWallMassFingerprint": "70c4866185984ac45cfd0b46c6e217cf390e994436544f98caf2c4ad7ca89221",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/18vTL2qreb5PBQN2jT98s42u5C2-A0F9x.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1152,
+          "lineCount": 4082,
+          "rectangleCount": 412,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 482.52,
+            "top": 215.52,
+            "x1": 1123.2,
+            "bottom": 960.96
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "19CFXTtSpnr1vzUoODSFdXdWSvLa6Bh4i",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 3/‏‏טיפוס שני - Sheet - 3-6 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 129281,
+      "sourceSha256": "b0c5c32e7e8423244dd1cbf314a28aaaa4b0e29be37a7dcae90f621c851c4b2d",
+      "pageCount": 1,
+      "geometryFingerprint": "4c25b50f5ff4bc218e6558aca8cf5aeeb53cd048123053103a2b1dfbfb7aebf7",
+      "wallMassFingerprint": "f9878ee824a24aff0f3334d44c9d3dda9b33a7fa256732e428952b4f638e223e",
+      "mirroredWallMassFingerprint": "a4cd08c2747e2c26243232e06023a8cdd6f5066a5729259b4f656b21c785b6a2",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/19CFXTtSpnr1vzUoODSFdXdWSvLa6Bh4i.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6232,
+          "wordCount": 1150,
+          "lineCount": 4508,
+          "rectangleCount": 389,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 49,
+          "planBoundsPoints": {
+            "x0": 518.64,
+            "top": 175.68,
+            "x1": 1213.08,
+            "bottom": 824.88
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1a_qOpcR5afIUlf0oa9HbEWim59vDbEVG",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 8/‏‏טיפוס שני - Sheet - 8-1 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 127918,
+      "sourceSha256": "dfa7a42343226f72fa9db599142712d21da00ab8c9eecb0e1bc0ef1fc31e88ae",
+      "pageCount": 1,
+      "geometryFingerprint": "224587bd8d88bf6659f67a5e2d37a6fb6950934f24cb01da0e6f612d2134bada",
+      "wallMassFingerprint": "fa5aca3f45aa37716835c0ab3cf5d104d633a73785d9fd7e1c9112bf5050b9e9",
+      "mirroredWallMassFingerprint": "7392458d00343cd2050f5ab0d131616e0d274bbb1158b6b6b408402a4f00e7a3",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1a_qOpcR5afIUlf0oa9HbEWim59vDbEVG.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6242,
+          "wordCount": 1153,
+          "lineCount": 4035,
+          "rectangleCount": 393,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 48,
+          "planBoundsPoints": {
+            "x0": 606.36,
+            "top": 379.8,
+            "x1": 1187.52,
+            "bottom": 992.04
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1ArZYsWDlJ4Hb4D6fbbkLPZHdCQA-qtqO",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 6/‏‏טיפוס שני - Sheet - 6-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 129936,
+      "sourceSha256": "95c45a046553d5c7b93702939ae5ae1f1d96cbbcd25ec243666f6b5e9166d4a9",
+      "pageCount": 1,
+      "geometryFingerprint": "634939f83195a55f9a1f737910328824817d48bc7aacaa1d2c1368f362504b62",
+      "wallMassFingerprint": "5a01ed884235d7353f6424b2d21b6ebc6bcbbc81237f4fde24577b8b07f853df",
+      "mirroredWallMassFingerprint": "b2c3789ff318805274a48a954f31a872ad2512f8f8b874402697f7cab540dc3f",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1ArZYsWDlJ4Hb4D6fbbkLPZHdCQA-qtqO.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6296,
+          "wordCount": 1166,
+          "lineCount": 4264,
+          "rectangleCount": 407,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 44,
+          "planBoundsPoints": {
+            "x0": 455.76,
+            "top": 336.24,
+            "x1": 1226.76,
+            "bottom": 948.6
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1audL5PG-msxygGRiFqP-tQP8WaMpEUnr",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 3/‏‏טיפוס שני - Sheet - 3-4 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131655,
+      "sourceSha256": "be369314ee83a7322eb051315ef7109c9b2865b0fa987a0b3191dab68fa0a15e",
+      "pageCount": 1,
+      "geometryFingerprint": "868ce11f24fdf0735cffc5a42c690467af5bff01f1decab0af9b08a3332f4180",
+      "wallMassFingerprint": "e25ca5e9bfb23671f291042e0f6605e261dd645d7e2959e210320bd220ea6c8a",
+      "mirroredWallMassFingerprint": "3ddd7aacdec74161a72862601360b0a844b76110f44a60fd3a29bb7c58a52c29",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1audL5PG-msxygGRiFqP-tQP8WaMpEUnr.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1152,
+          "lineCount": 4086,
+          "rectangleCount": 414,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 589.32,
+            "top": 220.2,
+            "x1": 1227.12,
+            "bottom": 965.64
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1bFCAINpQBZ4UCmm9R46wboIMlUMwSTqT",
+      "sourcePath": "תפארת/תוכניות מכר ארגמן/מכר קומה 8/‏‏טיפוס אמה רמלה - Sheet - 8-2 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 121924,
+      "sourceSha256": "0799cf5a0413ba861cfd44877fe9752ea5dd40f48d8058351de93a06c7b5c6f8",
+      "pageCount": 1,
+      "geometryFingerprint": "6177f8347d4f762cf0f7855cbd5c859f8a33803d87af35b6a4880dc4ea6ca323",
+      "wallMassFingerprint": "25d7d6d6691bf59b9965258ac6eebe458d9d0887b8c6b86a317fbd79fae318cc",
+      "mirroredWallMassFingerprint": "fb39fe9f644e08b216f3b70d1c62ca0e22d78a318137966d715a13b4cafa2065",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1bFCAINpQBZ4UCmm9R46wboIMlUMwSTqT.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1684,
+          "heightPoints": 1191,
+          "characterCount": 6045,
+          "wordCount": 1121,
+          "lineCount": 3964,
+          "rectangleCount": 361,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 297.5808,
+            "top": 276.96,
+            "x1": 766.9008,
+            "bottom": 1098.48
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1bWMrzQaMQmZSEr80cO5Asx1fGe8co1e6",
+      "sourcePath": "תפארת/תוכניות מכר ארגמן/מכר קומה 9/‏‏טיפוס אמה רמלה - Sheet - 9-2 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 140483,
+      "sourceSha256": "cce4d838bda0a69ec70e4a81abda1c9527a20f3adede7f3133938a0d611a7389",
+      "pageCount": 1,
+      "geometryFingerprint": "ae5666b666529eecc5df6d8eae2d65035f724c04aa7b5d8010b959af2a99f20b",
+      "wallMassFingerprint": "32da5af52677fd110da427c0984baa1668243317bcf0dbc17a91379c9c549872",
+      "mirroredWallMassFingerprint": "6e0b9d4b52369210c697666c350b80a5e9c5d080ca21baac4fcea18724f5c00b",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1bWMrzQaMQmZSEr80cO5Asx1fGe8co1e6.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1684,
+          "heightPoints": 1191,
+          "characterCount": 6166,
+          "wordCount": 1156,
+          "lineCount": 6106,
+          "rectangleCount": 462,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 80,
+          "planBoundsPoints": {
+            "x0": 51.9413,
+            "top": 193.08,
+            "x1": 1040.1408,
+            "bottom": 1014.48
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1CHnx-KWp2RFJt0O64iRIO8IM97x6DbXr",
+      "sourcePath": "תפארת/תוכניות מכר ארגמן/מכר קומה 6/‏‏טיפוס אמה רמלה - Sheet - 6-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 122187,
+      "sourceSha256": "1fcf8dcab18ec1c4330834bd91985ade1a0ac035f801e10cb33a01211bd3623f",
+      "pageCount": 1,
+      "geometryFingerprint": "a2386997c7293cececf579fea82bcd3b66eb230869a79017c86453967bf9f71b",
+      "wallMassFingerprint": "7b2a6165c36ec7f9c0a2fb3a10f7463033edcee85e84edb079da290fd09585d5",
+      "mirroredWallMassFingerprint": "f36ea9b6b7671b0ea6824e38d4c7820f1ff93d7db58abe84fd70bf381db2404a",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1CHnx-KWp2RFJt0O64iRIO8IM97x6DbXr.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1684,
+          "heightPoints": 1191,
+          "characterCount": 6046,
+          "wordCount": 1121,
+          "lineCount": 3972,
+          "rectangleCount": 360,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 334.9008,
+            "top": 121.32,
+            "x1": 804.3408,
+            "bottom": 942.84
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1dcjFOLEhadppP1e7vlhQDAs-jd6yb9JI",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 5/‏‏טיפוס שני - Sheet - 5-2 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 126702,
+      "sourceSha256": "ebff9d568d7c651c7e1cabff01d670aa9a8c68f6463217eb4a114d455c9a6eb4",
+      "pageCount": 1,
+      "geometryFingerprint": "4fd83c35357e2d3b8a9b217a160261051ec382d3a430b2378571993229faa100",
+      "wallMassFingerprint": "e2d9c49487f0b28c01d5c142fa306f288e80cef2a88638a5f7c6da00e4601e7d",
+      "mirroredWallMassFingerprint": "315a2d67e93fa553c176facfafab779d101bb2a08618a3679e8c60a814c4299c",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1dcjFOLEhadppP1e7vlhQDAs-jd6yb9JI.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6202,
+          "wordCount": 1141,
+          "lineCount": 3585,
+          "rectangleCount": 363,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 35,
+          "planBoundsPoints": {
+            "x0": 517.92,
+            "top": 241.8,
+            "x1": 1104.72,
+            "bottom": 826.32
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1Dx1wG18E2vxA3R5ONWFsBxSasSvQ4uJH",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 1/‏‏טיפוס שני - Sheet - 1-1 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 128136,
+      "sourceSha256": "e2f818ae47a2a7023ffe80d0f429275b7992a71ee1d1d15e8c2e8bcfe9ea579a",
+      "pageCount": 1,
+      "geometryFingerprint": "984ee9e3cde42f01209f9e39876704592765829c3b8d5a7001cdb4a17ff603af",
+      "wallMassFingerprint": "ef9994d18959e8306c70e13fcb8b73913e3d1a3f127566c5ce4f60b22e529229",
+      "mirroredWallMassFingerprint": "3b941affa82b6731d17e81424c350d0511fc70874140ee409f40e629f6f58251",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1Dx1wG18E2vxA3R5ONWFsBxSasSvQ4uJH.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1153,
+          "lineCount": 4084,
+          "rectangleCount": 392,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 48,
+          "planBoundsPoints": {
+            "x0": 598.32,
+            "top": 382.56,
+            "x1": 1179.48,
+            "bottom": 994.92
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1FCZR8xrr2IQVf6Y950CS3LSS_w-8Snpo",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 2/‏‏טיפוס שני - Sheet - 2-4 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131869,
+      "sourceSha256": "51b45db120e34b9fb5cd805e15da860a14bfcdd16ec1ed9aa172414ae3bf594c",
+      "pageCount": 1,
+      "geometryFingerprint": "0b97b1eac23b1e9f89b35b573b5b5f1b0bfe3653711a2a1e7410842e429b601f",
+      "wallMassFingerprint": "c18fedc8807ef3a77d7fa1d8bcfcc4e7aab4c63ead9541ff13ee9a3c41699e9a",
+      "mirroredWallMassFingerprint": "ff7cf76a7ae118d9e18c56410aa8ea2dc6bd68f7d5cafd7e59b788c7b0b8ee55",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1FCZR8xrr2IQVf6Y950CS3LSS_w-8Snpo.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6244,
+          "wordCount": 1152,
+          "lineCount": 4092,
+          "rectangleCount": 414,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 578.28,
+            "top": 174.96,
+            "x1": 1216.08,
+            "bottom": 920.52
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1forZ2T9hDZoawwclAwRzEo0KKds1yMN1",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 4/‏‏טיפוס שני - Sheet - 4-4 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131284,
+      "sourceSha256": "e50662ad516220e29c9efd1318744233cda4f4d8847a9579544ae376a4284db8",
+      "pageCount": 1,
+      "geometryFingerprint": "522f283c784e7e0730c152563d4055490dbd00d757ccc69ff1c08bc6a49d5397",
+      "wallMassFingerprint": "24a505362491eda4340e5e219c7f2ce82442597479612870a17766fda4fa0cb0",
+      "mirroredWallMassFingerprint": "30427498596be235df76562da6b35ae06b37fcd2da1d8bd8e7419cf0b84e58b6",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1forZ2T9hDZoawwclAwRzEo0KKds1yMN1.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1152,
+          "lineCount": 4080,
+          "rectangleCount": 414,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 572.28,
+            "top": 183.84,
+            "x1": 1210.08,
+            "bottom": 929.4
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1Gky54yp8Yh9GOq87BzeW2zqG8kEuD3rk",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 9/9-1.pdf",
+      "sourceSizeBytes": 269488,
+      "sourceSha256": "be726aea8cc5781da205fae1d96be4e80a5056b72473f87bfdb2faf3cffb2a79",
+      "pageCount": 1,
+      "geometryFingerprint": "83ad5e5b0ad9c3cccee665bdb8d79b8b33d95c4ebe34282af629395f78415df1",
+      "wallMassFingerprint": "3420148cd88732e9bec37611d72d91b2dff049e83450ba2cd110b8829a827cd2",
+      "mirroredWallMassFingerprint": "68867d6ee42e9996fb98e3cef6a6b3caf2a060bc3d6f88d80192c5bd0e3f9a9c",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1Gky54yp8Yh9GOq87BzeW2zqG8kEuD3rk.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1843,
+          "heightPoints": 1196,
+          "characterCount": 6413,
+          "wordCount": 1198,
+          "lineCount": 5682,
+          "rectangleCount": 487,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 67,
+          "planBoundsPoints": {
+            "x0": 31.44,
+            "top": 337.08,
+            "x1": 1230.36,
+            "bottom": 949.32
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1GvFpGaJlxP_ZCNJJdfKl3focivQNNwmt",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 5/‏‏טיפוס שני - Sheet - 5-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 130186,
+      "sourceSha256": "3d57e904b4b45b2eaf17b5bb416ab59e69d666bb7d87a4d99fc24496b8b138ed",
+      "pageCount": 1,
+      "geometryFingerprint": "2c4406281e6353bdb704ad9e8b612232edbd1b6bb909f4b826aa9e5c6fe84d89",
+      "wallMassFingerprint": "adcabeaf7e8d388796e7faa2c2e9d131b3af04f113ee4d7d4c325f35359d28be",
+      "mirroredWallMassFingerprint": "8dd8544b227ee2474f4bd5d77e4a636df3efbf273ca83d8117ab4f69017b96d6",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1GvFpGaJlxP_ZCNJJdfKl3focivQNNwmt.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6298,
+          "wordCount": 1166,
+          "lineCount": 4259,
+          "rectangleCount": 407,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 44,
+          "planBoundsPoints": {
+            "x0": 453.84,
+            "top": 337.56,
+            "x1": 1224.84,
+            "bottom": 949.8
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1I9bnGnIYmoR4EiojGgA-ioTNt1B2Skqs",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 4/‏‏טיפוס שני - Sheet - 4-5 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131275,
+      "sourceSha256": "1b020a04d4b28085a84b556b4a44c52f5ff8a13879fd72bea3f1bb42b535b750",
+      "pageCount": 1,
+      "geometryFingerprint": "3e584006e13c3f117936d0b38538993d66a2a82b6a2f9216f199843767a5831e",
+      "wallMassFingerprint": "be5eea031a98d33ec6b1218fa3bb55fc47fd18bba2b910893d12a065d72104a7",
+      "mirroredWallMassFingerprint": "43e6ee6c6e1bbb3c8d21b01fd6e4837b53f3005e5e85f36f84eda77b9d0c4972",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1I9bnGnIYmoR4EiojGgA-ioTNt1B2Skqs.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1152,
+          "lineCount": 4083,
+          "rectangleCount": 413,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 496.92,
+            "top": 187.44,
+            "x1": 1137.6,
+            "bottom": 933.0
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1Jd5lCqTUx066EQqSVrxt2T_qohafyQ6Z",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 3/‏‏טיפוס שני - Sheet - 3-5 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131473,
+      "sourceSha256": "be725bdbb316f0d8569a04595f826f96fcf7bdecf65a98e174c10d146a712e24",
+      "pageCount": 1,
+      "geometryFingerprint": "692946af0e019d000f88dcdf04db9f0847fe759da8550d29c4cfe25032d0f115",
+      "wallMassFingerprint": "a9368d52619d8385df2dfc7a151d501ddfd07f030558b4776cba0bcf195db094",
+      "mirroredWallMassFingerprint": "99b0cc875f9e1feecb1655ecfd5e290fee12d7f41de6634e93005462eb0c172a",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1Jd5lCqTUx066EQqSVrxt2T_qohafyQ6Z.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1152,
+          "lineCount": 4075,
+          "rectangleCount": 412,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 501.36,
+            "top": 195.72,
+            "x1": 1141.92,
+            "bottom": 941.16
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1jsQev2LtaYwBDpA94dq-xZTqbj7IqEEX",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 2/‏‏טיפוס שני - Sheet - 2-6 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 128710,
+      "sourceSha256": "7365bcce81ef9c59af5a1ed5feb41f6d544fc06984b202478595341182c03e58",
+      "pageCount": 1,
+      "geometryFingerprint": "ce48cd14abb74c2ac3030016e1708f45b2d4c9191944906a4def8b53a54317fc",
+      "wallMassFingerprint": "c4a49d6d6a33860f9bc80a58f392af4effefef5b9636994486d30f9e085e509d",
+      "mirroredWallMassFingerprint": "2b024ce49eb11be4abe8c2dc804c1388c972ff332304e1fde87e4038d92070f9",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1jsQev2LtaYwBDpA94dq-xZTqbj7IqEEX.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6230,
+          "wordCount": 1150,
+          "lineCount": 4494,
+          "rectangleCount": 389,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 49,
+          "planBoundsPoints": {
+            "x0": 505.2,
+            "top": 197.52,
+            "x1": 1199.76,
+            "bottom": 846.72
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1Kq93XinK6RIneCXgWSBZu7gwAi1h3jwu",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 2/‏‏טיפוס שני - Sheet - 2-7 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 128269,
+      "sourceSha256": "49f719829735e086fce108b30d759c7853b95456d677670d302592ed6f708c55",
+      "pageCount": 1,
+      "geometryFingerprint": "84c8318172925b157f4a5c15d60451d9c0f76d628e87fc82df07e8bfd0fe8173",
+      "wallMassFingerprint": "3a77520404d268c7e3529f373bad9f5459b89d0074dde8b76ad56fded373a2ce",
+      "mirroredWallMassFingerprint": "f3fd5811ee6a61ce4c725c0a2aee6d608f000c7198ce3476c5fe08f4263bf951",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1Kq93XinK6RIneCXgWSBZu7gwAi1h3jwu.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6230,
+          "wordCount": 1150,
+          "lineCount": 4387,
+          "rectangleCount": 390,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 48,
+          "planBoundsPoints": {
+            "x0": 511.68,
+            "top": 195.96,
+            "x1": 1206.24,
+            "bottom": 833.76
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1LBdbRLhkMqfphfd6uTY7ZYq0zqaHrYGQ",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 4/‏‏טיפוס שני - Sheet - 4-1 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 128306,
+      "sourceSha256": "fb3b997106693e0b26f1df733785c3f4fa9f383dae558aca5e1a5b283de8bfa8",
+      "pageCount": 1,
+      "geometryFingerprint": "1ce74da7d91bd61bbea597abccf5a1a8553d781c557815907ba8bf10f575c166",
+      "wallMassFingerprint": "2099d82442e546d394d644a6a3ca9b1a7df0e44d1d2b7db94521e32bc02d8f2a",
+      "mirroredWallMassFingerprint": "e0340cc3b8fee436aa4b1cc3758a2b9f9ece280a1fba7f21f39e4ad2ba07c4f9",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1LBdbRLhkMqfphfd6uTY7ZYq0zqaHrYGQ.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1153,
+          "lineCount": 4051,
+          "rectangleCount": 392,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 48,
+          "planBoundsPoints": {
+            "x0": 559.2,
+            "top": 368.28,
+            "x1": 1140.36,
+            "bottom": 980.52
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1lv0tRcN3yb3igkL8J3N4_oWlPjZt8Jqp",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 3/‏‏טיפוס שני - Sheet - 3-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 130043,
+      "sourceSha256": "349a470c90caa0b4a6f9c1092c42e1bc6087b397c9303795bb73e734ec7fe178",
+      "pageCount": 1,
+      "geometryFingerprint": "48fde1c6a3da9dad7cbe6dc9806ea29c33ee3047f8b3a0b3c7b0e27c827e0ea1",
+      "wallMassFingerprint": "f97a17495a0080dcaedff2c7fe24df8c7267672c079c719f83a7dc271f423e5a",
+      "mirroredWallMassFingerprint": "27ce4a3c526bab7a90746930890c53e2654920652e1fda422eb2b20fa32f9cf3",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1lv0tRcN3yb3igkL8J3N4_oWlPjZt8Jqp.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6296,
+          "wordCount": 1166,
+          "lineCount": 4277,
+          "rectangleCount": 407,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 44,
+          "planBoundsPoints": {
+            "x0": 431.52,
+            "top": 376.08,
+            "x1": 1202.52,
+            "bottom": 988.32
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1n9BSQ3DSB7Me8CotWqRYOiVAfAhZA7lU",
+      "sourcePath": "תפארת/תוכניות מכר ארגמן/מכר קומה 7/‏‏טיפוס אמה רמלה - Sheet - 7-1 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 122054,
+      "sourceSha256": "7fd52bd34c5f8e286a03294e530fcdf6d8a60d621466d676fd11e408bcbfe056",
+      "pageCount": 1,
+      "geometryFingerprint": "01a0b443fe7b901a6bb83c43b53376862a3433d87c01eaf564e27d1674ba843e",
+      "wallMassFingerprint": "c1d5e022a061e3a256942946b00b40ecaafa24af99dbd6d2459c3bce43925746",
+      "mirroredWallMassFingerprint": "c8c860724d77363f9dc5c7ada635a7e3541ad2b20e1546a89e701aacdd0eb687",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1n9BSQ3DSB7Me8CotWqRYOiVAfAhZA7lU.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1684,
+          "heightPoints": 1191,
+          "characterCount": 6046,
+          "wordCount": 1121,
+          "lineCount": 3965,
+          "rectangleCount": 360,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 314.0208,
+            "top": 270.48,
+            "x1": 783.3408,
+            "bottom": 1092.0
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1ntH26aD4oEVCck3svau3YIOpCTFr_QMh",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 2/‏‏טיפוס שני - Sheet - 2-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 130290,
+      "sourceSha256": "f89b1b7576a954a2d83c7928efe066f14199eeabb3f721ab18325582f229a50b",
+      "pageCount": 1,
+      "geometryFingerprint": "b38c86291811f163ca1d7a2538dc6130b91ba2a69a922e9aad3873eab2234498",
+      "wallMassFingerprint": "2c17356712ebc628629e433a8c56ac632c66849e067a7d02a283bd1ff22a7756",
+      "mirroredWallMassFingerprint": "226aa7af3d27e5a338919aa55250d2721afba7b0a588c648be330f3e9a0ae16d",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1ntH26aD4oEVCck3svau3YIOpCTFr_QMh.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6297,
+          "wordCount": 1166,
+          "lineCount": 4311,
+          "rectangleCount": 407,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 44,
+          "planBoundsPoints": {
+            "x0": 411.36,
+            "top": 366.24,
+            "x1": 1182.36,
+            "bottom": 978.6
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1nTYDwbOQpeXM4XiDCjIl_w9vTtvBQtwg",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/‏‏מכר קומה 2/‏‏טיפוס שני - Sheet - 2-5 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 131202,
+      "sourceSha256": "c816acdf799a770b50aa5b3d87aa32d1c66e21b343f740a8b8d9e47d52c41fe1",
+      "pageCount": 1,
+      "geometryFingerprint": "cec4efe6aa52b45c4ed11e073fae2add9053c488d63c94c93826e40cbacd98fe",
+      "wallMassFingerprint": "48665a311f9dae51c12bdc12cf08be2a5b199cfe0d4c2ea4fcfca4b40c6e2cf6",
+      "mirroredWallMassFingerprint": "5ca5e46e9bc43ff8d4d3aa1a0811d7cd6b8da059bf43bcac57598f2ab509dc47",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1nTYDwbOQpeXM4XiDCjIl_w9vTtvBQtwg.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6244,
+          "wordCount": 1152,
+          "lineCount": 4096,
+          "rectangleCount": 413,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 482.28,
+            "top": 168.48,
+            "x1": 1122.96,
+            "bottom": 914.04
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1nzjVgtKSEY-YILvz0jb67p4eucItNQgo",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 6/‏‏טיפוס שני - Sheet - 6-1 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 127760,
+      "sourceSha256": "e27c1cdac6feb625955265cf0fc99ab89d46316994c85cc1dab6ac75c7a446ea",
+      "pageCount": 1,
+      "geometryFingerprint": "eb4d326ffe3002d1c1d466470229f4d3c60dd99dd451da614a3c523e491e6568",
+      "wallMassFingerprint": "72b03b714ce407c2cc1aa23663a08d0276880130e6e0097e285c9d031cce4c14",
+      "mirroredWallMassFingerprint": "a331fa4a7cc3139aede74b1077d50f91944e1f643536b0eff4f1ca3803c7bf06",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1nzjVgtKSEY-YILvz0jb67p4eucItNQgo.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6244,
+          "wordCount": 1153,
+          "lineCount": 4035,
+          "rectangleCount": 392,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 48,
+          "planBoundsPoints": {
+            "x0": 596.4,
+            "top": 342.96,
+            "x1": 1177.56,
+            "bottom": 955.32
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1obkResD-OKaLrdGqUhBWBYWS-oH-7fWp",
+      "sourcePath": "תפארת/תוכניות מכר ארגמן/מכר קומה 8/‏‏טיפוס אמה רמלה - Sheet - 8-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 122050,
+      "sourceSha256": "896171fe44ca018f100f406f7f837f80c3ee226b76192e97722e15e3dd09e3af",
+      "pageCount": 1,
+      "geometryFingerprint": "52e94579b06c0f5273a2ee171e5518341c64b92febcd835faf06b5800e2a0254",
+      "wallMassFingerprint": "d04613dfb1b68848351a2560b6207c575e28d830f5a1e76a65c6b449b95d737b",
+      "mirroredWallMassFingerprint": "ef9266e31deaf26ea83501356334272726e07af26204030056685030488cec2c",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1obkResD-OKaLrdGqUhBWBYWS-oH-7fWp.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1684,
+          "heightPoints": 1191,
+          "characterCount": 6044,
+          "wordCount": 1121,
+          "lineCount": 3947,
+          "rectangleCount": 360,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 317.0208,
+            "top": 80.28,
+            "x1": 786.4608,
+            "bottom": 901.8
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1Qf7QGGKPyQuikWc4ebRqYq-tPFrT0WEw",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 8/‏‏טיפוס שני - Sheet - 8-6 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 128751,
+      "sourceSha256": "963643ad58d08747e2986e10152564be92605f8d846503bbe23523a85d54b726",
+      "pageCount": 1,
+      "geometryFingerprint": "045bc46bf7e7f9a238506ce8195a40413ac0eb0b776e842f445b633984a0613b",
+      "wallMassFingerprint": "d08089f5d88eace570ae86ea44f486caa72cf87be349f1e1193b2966e013b72d",
+      "mirroredWallMassFingerprint": "d971d3aa0099cbe83708231a4d04bd6a57c01f76eff1342e598caca7781e7c8d",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1Qf7QGGKPyQuikWc4ebRqYq-tPFrT0WEw.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6231,
+          "wordCount": 1150,
+          "lineCount": 4449,
+          "rectangleCount": 392,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 51,
+          "planBoundsPoints": {
+            "x0": 506.88,
+            "top": 204.12,
+            "x1": 1246.68,
+            "bottom": 853.2
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1qHg0NUyRztzKbrKkdGaucXhcmf8gyW2z",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 7/‏‏טיפוס שני - Sheet - 7-2 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 125217,
+      "sourceSha256": "be27d585ef3c8d0c0814061985fa9073749867a6db5ec62ff6bd1756c417ea45",
+      "pageCount": 1,
+      "geometryFingerprint": "c4ec707e840dd9e81f9b52186d5ffedd5dbbab8c92a8f67bea2ab4d99c89509f",
+      "wallMassFingerprint": "b1da0a2dac0f9afd901762976f488012efb45da96fe118984a6affc8c9c55b24",
+      "mirroredWallMassFingerprint": "4a0f5faf388bea50c412962c5e03aba1f82d94d4c97907b76164c7b1981d0fd2",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1qHg0NUyRztzKbrKkdGaucXhcmf8gyW2z.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6180,
+          "wordCount": 1135,
+          "lineCount": 3478,
+          "rectangleCount": 349,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 33,
+          "planBoundsPoints": {
+            "x0": 540.0,
+            "top": 328.8,
+            "x1": 1126.68,
+            "bottom": 913.32
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1qowSvvELibpQt6yUMM5UH1uO-c1UIMUo",
+      "sourcePath": "תפארת/תוכניות מכר ארגמן/מכר קומה 4/‏‏טיפוס אמה רמלה - Sheet - 4-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 122933,
+      "sourceSha256": "9c7816b1628af9500920ce38075714c2dfc90cd09fa780830afd1d88b249e17e",
+      "pageCount": 1,
+      "geometryFingerprint": "4c6c5de857c4c8fd913b270436926ec9598105da33f93842539e11b6ff830d5a",
+      "wallMassFingerprint": "886aa667396fc59a48871f8dcc1a22f18e4305b325f771b0dba74d2238e9db1f",
+      "mirroredWallMassFingerprint": "f60765ad3b9a4e55730ce7334c85a02ba69a309a883f5f29987478aaa78bd203",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1qowSvvELibpQt6yUMM5UH1uO-c1UIMUo.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1684,
+          "heightPoints": 1191,
+          "characterCount": 6067,
+          "wordCount": 1127,
+          "lineCount": 3993,
+          "rectangleCount": 370,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 333.7008,
+            "top": 80.28,
+            "x1": 803.1408,
+            "bottom": 901.8
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1qtR73fhYK8kunq7W8ED2LocNb6itzSvs",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 6/‏‏טיפוס שני - Sheet - 6-6 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 128603,
+      "sourceSha256": "d0c0b35cf1a6d869feca9a13f54dcc4b915367c25474e20b720dce769844bf66",
+      "pageCount": 1,
+      "geometryFingerprint": "89605f2bbd706b84565f45eb7e2bdfe4c3a2f502f396f72cf4bee09cd2adceef",
+      "wallMassFingerprint": "8231df826aea28ae71db84c788f9c20490bbd4d0e8e6fcd468ad65eba66371d2",
+      "mirroredWallMassFingerprint": "a94d34db605469d2c8a28187a476f88502031fde823882416b2a1a3bf35c5cdf",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1qtR73fhYK8kunq7W8ED2LocNb6itzSvs.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6233,
+          "wordCount": 1150,
+          "lineCount": 4515,
+          "rectangleCount": 389,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 49,
+          "planBoundsPoints": {
+            "x0": 520.68,
+            "top": 171.36,
+            "x1": 1215.12,
+            "bottom": 820.44
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1RTrFsQ1eBTVzudl3wC0Ocv5DirPh6tBq",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 5/‏‏טיפוס שני - Sheet - 5-1 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 127934,
+      "sourceSha256": "2165ed6217a04a5a56ac00b5b3dbf0ac477f6224884cfd1a513fcf6b478f6dbe",
+      "pageCount": 1,
+      "geometryFingerprint": "844336fd5076472eb45fb0651b060ad333e0db67503e9deda5bbaf06a108bb15",
+      "wallMassFingerprint": "25fea2cce7c56091a0b663aa34b8ddddcce918da07e4fef47143c83b8c512eb6",
+      "mirroredWallMassFingerprint": "84de1ee0fcddbaa24c3645cfda5eb9114fc7a3fafb01917fd2710e79d28884e7",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1RTrFsQ1eBTVzudl3wC0Ocv5DirPh6tBq.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6243,
+          "wordCount": 1153,
+          "lineCount": 4027,
+          "rectangleCount": 392,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 48,
+          "planBoundsPoints": {
+            "x0": 610.92,
+            "top": 378.84,
+            "x1": 1192.08,
+            "bottom": 991.2
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1s4qNtbwjeCNDrNOmlwtjuVCbrAjBcot7",
+      "sourcePath": "תפארת/תוכניות מכר ארגמן/מכר קומה 3/‏‏טיפוס אמה רמלה - Sheet - 3-1 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 122301,
+      "sourceSha256": "1d6a2f463e73fa090225c398a1bc7d02f0120fa7a8da8fe3ec8b2583aa6dc619",
+      "pageCount": 1,
+      "geometryFingerprint": "9119e922923182da06765fded69e4f7d24c752ff13057c478570f9547c6a318c",
+      "wallMassFingerprint": "2ced9282b2ed1ddc005c71d527bc8a209aa3db7148125c348f6f0effd8bebeaa",
+      "mirroredWallMassFingerprint": "391d5de2a59bf24913fba63557faf4d8ee5d17d14f76509f25eb9f8cf4c806fa",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1s4qNtbwjeCNDrNOmlwtjuVCbrAjBcot7.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1684,
+          "heightPoints": 1191,
+          "characterCount": 6055,
+          "wordCount": 1124,
+          "lineCount": 3986,
+          "rectangleCount": 365,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 315.7008,
+            "top": 268.68,
+            "x1": 785.1408,
+            "bottom": 1090.08
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1sWFWRCA3Q6LZxGc6fvjid9EBnFgZktsw",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 6/‏‏טיפוס שני - Sheet - 6-2 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 126667,
+      "sourceSha256": "8ca82e631d15e449de7e931a26d3d34065a63211a744be304ee58e682157bd3d",
+      "pageCount": 1,
+      "geometryFingerprint": "984d6082c88a730b24339c8bc62b7f01e8136c1cd818f0c987de924d92956f3a",
+      "wallMassFingerprint": "661733167f81ecbbd470c5d289c6220c95c99464b73ec3fe541badb5a0bf52d0",
+      "mirroredWallMassFingerprint": "3e878a5b94fc568763d06fca58e256e024df3aeb114a6d3134245ec02e57f4e8",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1sWFWRCA3Q6LZxGc6fvjid9EBnFgZktsw.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6202,
+          "wordCount": 1141,
+          "lineCount": 3529,
+          "rectangleCount": 361,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 33,
+          "planBoundsPoints": {
+            "x0": 558.6,
+            "top": 396.84,
+            "x1": 1145.4,
+            "bottom": 981.36
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1TvNEbtV2BDm7shPqGpNqtzYkSWtPWk6U",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 8/‏‏טיפוס שני - Sheet - 8-7 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 128824,
+      "sourceSha256": "f885d74d95d5fd88658750e7b8e2c93707e485a36e288e8112cc612a5655893b",
+      "pageCount": 1,
+      "geometryFingerprint": "f5c25c45ccbfde529bd5930377306f7afc78153ac6d89c6c80112deb10ceb2c3",
+      "wallMassFingerprint": "b101c41649836add8289293adf4ad7bd6ebeb07449daa5f5fef9840ee3951594",
+      "mirroredWallMassFingerprint": "fb599d4e60b103790eae603952f7d7e4d563db0af42c3bda5c41a5ce8f283fe2",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1TvNEbtV2BDm7shPqGpNqtzYkSWtPWk6U.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6231,
+          "wordCount": 1150,
+          "lineCount": 4340,
+          "rectangleCount": 390,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 49,
+          "planBoundsPoints": {
+            "x0": 456.6,
+            "top": 220.32,
+            "x1": 1196.52,
+            "bottom": 869.52
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1veZC1FoVjXfG5erCnXNcb39gh07nWZHQ",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 4/‏‏טיפוס שני - Sheet - 4-2 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 125574,
+      "sourceSha256": "3ec8a69e2a86500734e7d00666f5b734ae501b0b6b22aa0367755ffca2fbe437",
+      "pageCount": 1,
+      "geometryFingerprint": "130475988da6b12bd993343fc76911006324cbcec8aecff9315f163500553a3f",
+      "wallMassFingerprint": "689697c76cc8aa46e1feda95ccddbdb873028e90de76548d7ddc1f85721e1aa2",
+      "mirroredWallMassFingerprint": "9ca50e727b9b6c737a8cf97aa857a7e57d72fc47474fc05a334f98d19164c41a",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1veZC1FoVjXfG5erCnXNcb39gh07nWZHQ.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6180,
+          "wordCount": 1135,
+          "lineCount": 3510,
+          "rectangleCount": 351,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 33,
+          "planBoundsPoints": {
+            "x0": 519.96,
+            "top": 313.08,
+            "x1": 1106.76,
+            "bottom": 897.6
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1VFzL9Tou4_MzDVv9t_8PrrL6qGvppKUP",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 1/‏‏טיפוס שני - Sheet - 1-7 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 129090,
+      "sourceSha256": "ab82411d1f779393d7d59a43ce9ae0675f4087cd1f2b3a70c3a56acaf9b7532d",
+      "pageCount": 1,
+      "geometryFingerprint": "30585714a3918bf6de090efd9bb228da9bb59d1ffeff8d471712d48f63dc38ee",
+      "wallMassFingerprint": "69c9c8bf7eee6082a1dd1ab5e1d3bfcea16aa84bbc353fb55c8b0be2e51fb058",
+      "mirroredWallMassFingerprint": "8c3f82e8f8f72b68ab336a5ee9b3dac66c2fde9da9f693cfd87f90dffa9bef3e",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1VFzL9Tou4_MzDVv9t_8PrrL6qGvppKUP.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6232,
+          "wordCount": 1150,
+          "lineCount": 4367,
+          "rectangleCount": 389,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 48,
+          "planBoundsPoints": {
+            "x0": 510.72,
+            "top": 213.6,
+            "x1": 1205.16,
+            "bottom": 851.4
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1VGkfbJ_ax7RurAX2PVN7UQ3ZurtniI93",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 7/‏‏טיפוס שני - Sheet - 7-3 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 129710,
+      "sourceSha256": "4063cf452e72a56cce4681d787b7d64c4285f9706f4019947f242823beb08368",
+      "pageCount": 1,
+      "geometryFingerprint": "0fda8d68edefa7b53363f42119ea8e67a33aeb63644d8e696ade3e1923d9b58a",
+      "wallMassFingerprint": "781d0074111a620a4a1318cbcebd9a8dfa41c2a4a70a775cefaa27e80c986c38",
+      "mirroredWallMassFingerprint": "0cc5fee0c4a7a2c83fe3fc7ce1b1f77de4d9fca8fcc94c6c29ee52f1c477037d",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1VGkfbJ_ax7RurAX2PVN7UQ3ZurtniI93.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6296,
+          "wordCount": 1166,
+          "lineCount": 4251,
+          "rectangleCount": 407,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 44,
+          "planBoundsPoints": {
+            "x0": 449.04,
+            "top": 374.4,
+            "x1": 1220.16,
+            "bottom": 986.64
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1Y1CTPmsAAd9-pY3ukD7RVnAX6dEAPS6O",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 7/‏‏טיפוס שני - Sheet - 7-6 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 129688,
+      "sourceSha256": "6c99c396b2ec776d0c16e94c62fc731eb50d4bcf361aef82a50ddd139ce6a0c8",
+      "pageCount": 1,
+      "geometryFingerprint": "8d576b14cf5c6c457715bcc047f02293fe9d6f97add51d79199d26c329d3d1fe",
+      "wallMassFingerprint": "2f02f949d28e65890c199a8e795444fba38f90d0fe3912ffce3ce2794d3ec777",
+      "mirroredWallMassFingerprint": "32c7b230711922b4f78d6257fb1dc0d1e429f49d23dd9e40d7530052c9b072a4",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1Y1CTPmsAAd9-pY3ukD7RVnAX6dEAPS6O.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6242,
+          "wordCount": 1153,
+          "lineCount": 4517,
+          "rectangleCount": 395,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 50,
+          "planBoundsPoints": {
+            "x0": 487.32,
+            "top": 217.08,
+            "x1": 1327.8,
+            "bottom": 866.16
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1y5CCbMo1a4SlOERSpREx5oKOw9P_a-qq",
+      "sourcePath": "תפארת/תוכניות מכר ארגמן/מכר קומה 1/‏‏טיפוס אמה רמלה - Sheet - 1-2 - פרויקט תפארת - רמלה.pdf",
+      "sourceSizeBytes": 123334,
+      "sourceSha256": "c2fabe2510784385d9da7ff8f1b6cc2e6108198d1acc2919d47a204660afdbc1",
+      "pageCount": 1,
+      "geometryFingerprint": "a15b07698b472362684f7b877d75a804093a103407480a6a036a1cbfeda3c145",
+      "wallMassFingerprint": "12f8c9917561dc87e52ca95a5fb31a1b17498a6f025cf5a5895d9f0e762bb6d9",
+      "mirroredWallMassFingerprint": "10558e526c81a7d68836594952c7e77e13295a9eb4d4b93828a279c3944ba50b",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1y5CCbMo1a4SlOERSpREx5oKOw9P_a-qq.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 1684,
+          "heightPoints": 1191,
+          "characterCount": 6066,
+          "wordCount": 1127,
+          "lineCount": 4035,
+          "rectangleCount": 370,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 46,
+          "planBoundsPoints": {
+            "x0": 317.2608,
+            "top": 294.36,
+            "x1": 786.7008,
+            "bottom": 1115.88
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    },
+    {
+      "driveFileId": "1ZHjuDqTFRDzGQD9-78kbNXk3OVt-ezaA",
+      "sourcePath": "תפארת/תוכניות מכר תכלת/מכר קומה 9/9-6.pdf",
+      "sourceSizeBytes": 270659,
+      "sourceSha256": "62aef798ffa4b8d140a1f6932f2f12399a33fb314fa41ef59432fb935614eb70",
+      "pageCount": 1,
+      "geometryFingerprint": "1fe12b025e1e84ca8bf7d7767e1c03d59cb9cfe58a5b6fea29435a7c6add7e9b",
+      "wallMassFingerprint": "7d3eeaaa0488aabdcab72027ecb1f20d1b2569204add9316eac776ae0433c064",
+      "mirroredWallMassFingerprint": "6e554201ffab0c9e27784432e9df61646dbedb25e7c223bce6a6fe0956aa49a4",
+      "geometryEvidenceFile": "/tiferet/catalog/vectors/1ZHjuDqTFRDzGQD9-78kbNXk3OVt-ezaA.json",
+      "pages": [
+        {
+          "page": 1,
+          "widthPoints": 2268,
+          "heightPoints": 1193,
+          "characterCount": 6365,
+          "wordCount": 1183,
+          "lineCount": 5921,
+          "rectangleCount": 482,
+          "curveCount": 20,
+          "imageCount": 2,
+          "wallMassCandidateCount": 76,
+          "planBoundsPoints": {
+            "x0": 85.32,
+            "top": 231.96,
+            "x1": 1561.56,
+            "bottom": 881.16
+          }
+        }
+      ],
+      "exactGeometryGroupSize": 1,
+      "exactWallMassGroupSize": 1,
+      "mirroredCandidateIds": []
+    }
+  ]
+}

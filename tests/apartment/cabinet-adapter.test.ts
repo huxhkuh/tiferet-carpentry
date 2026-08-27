@@ -7,6 +7,7 @@ import {
   updateCabinetPlacement,
 } from '../../src/apartment/cabinet/adapter';
 import { TIFERET_5_1 } from '../../src/apartment/data/tiferet';
+import type { FurniturePlacement } from '../../src/apartment/types';
 
 const bedroom = TIFERET_5_1.rooms.find((room) => room.id === 'bedroom')!;
 const eastWall = TIFERET_5_1.walls.find((wall) => wall.id === 'bed-e')!;
@@ -24,7 +25,7 @@ describe('WoodworkingShop cabinet adapter', () => {
     expect(result.hasErrors).toBe(false);
   });
 
-  it('automatically places a wardrobe in the first usable wall interval', () => {
+  it('automatically places a wardrobe in the first usable interval that is also clear of furniture', () => {
     const placement = createCabinetPlacement({
       apartment: TIFERET_5_1,
       room: bedroom,
@@ -33,7 +34,34 @@ describe('WoodworkingShop cabinet adapter', () => {
       id: 'auto-fit',
     });
 
-    expect(placement.distanceFromWallStart).toBe(980);
+    expect(placement.distanceFromWallStart).toBe(1620);
+  });
+
+  it('skips furniture that occupies the first visually usable cabinet position', () => {
+    const movedBed: FurniturePlacement = {
+      id: 'bed-near-east-wall',
+      roomId: bedroom.id,
+      kind: 'single-bed',
+      label: 'מיטת יחיד',
+      x: 5_600,
+      y: 450,
+      width: 800,
+      depth: 900,
+      height: 900,
+      elevation: 0,
+      rotation: 0,
+    };
+
+    const placement = createCabinetPlacement({
+      apartment: TIFERET_5_1,
+      room: bedroom,
+      wall: eastWall,
+      cabinetConfig: { width: 900, depth: 600 },
+      furniture: [movedBed],
+      id: 'furniture-aware-fit',
+    });
+
+    expect(placement.distanceFromWallStart).toBeGreaterThan(0);
   });
 
   it('creates the planner default 1800 × 2400 × 600 wardrobe without blocking on advisory engine issues', () => {

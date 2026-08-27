@@ -49,7 +49,40 @@ describe('Tiferet apartment 5-1 normalized source model', () => {
       pageWidthPoints: 2268,
       pageHeightPoints: 1193,
       modelingMethod: 'semi-automatic',
+      measurementBasis: 'construction',
+      geometryStatus: 'partially-modeled',
+      mathematicalVerification: 'pending',
+      visualVerification: 'pending',
+      sourceApartmentNumber: '23-א',
+      sourceBuildingType: 'תכלת א',
+      sourceRoomCount: 4,
+      sourceAreaSqm: 97.4,
+      sourceCoveredBalconyAreaSqm: 17.8,
+      sourceSukkahBalconyAreaSqm: 3.3,
+      sourceScale: '1 : 50',
+      sourceEdition: 1,
+      sourceDate: '17.03.26',
     });
+    expect(TIFERET_5_1.source.unresolvedFields).toEqual(
+      expect.arrayContaining([
+        'wall-heights',
+        'door-heights',
+        'window-heights',
+        'window-sill-heights',
+        'ceiling-heights',
+      ]),
+    );
+  });
+
+  it('distinguishes source geometry from unverified 3D presentation defaults', () => {
+    expect(TIFERET_5_1.walls.every((wall) => wall.trace?.sourceFileId === TIFERET_5_1.source.sourceFileId)).toBe(true);
+    expect(TIFERET_5_1.walls.every((wall) => wall.trace?.sourcePage === 1)).toBe(true);
+    expect(TIFERET_5_1.walls.every((wall) => wall.measurements?.height?.origin === 'presentation-default')).toBe(true);
+    expect(
+      TIFERET_5_1.walls
+        .flatMap((wall) => wall.openings)
+        .every((opening) => opening.measurements?.height?.origin === 'presentation-default'),
+    ).toBe(true);
   });
 
   it('anchors every measured room to the official PDF vector coordinates', () => {
