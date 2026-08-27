@@ -42,4 +42,3 @@ describe('GitHub workflow action inputs', () => {
     expect(invalidInputs, `Non-scalar GitHub Action inputs: ${invalidInputs.join(', ')}`).toEqual([]);
   });
 });
-
