@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
-import { PlannerApp } from '../apartment/PlannerApp';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 import { AboutPage, InspirationPage, MaterialsPage, ProcessPage } from './pages/EditorialPages';
@@ -11,6 +10,8 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { SummaryPage } from './pages/SummaryPage';
 import { parseSiteLocation, sitePath, type SiteRoute } from './router';
 import './site.css';
+
+const PlannerApp = lazy(() => import('../apartment/PlannerApp').then((module) => ({ default: module.PlannerApp })));
 
 function readRoute(): SiteRoute {
   return parseSiteLocation(window.location.pathname, window.location.search).route;
@@ -56,12 +57,14 @@ export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) 
 
   if (route.id === 'design') {
     return (
-      <PlannerApp
-        initialStarted
-        initialRoomId={route.roomId}
-        onExit={() => navigate({ id: 'my-apartment' })}
-        onSummary={() => navigate({ id: 'summary' })}
-      />
+      <Suspense fallback={<main aria-busy="true">טוען את מתכנן הנגרות…</main>}>
+        <PlannerApp
+          initialStarted
+          initialRoomId={route.roomId}
+          onExit={() => navigate({ id: 'my-apartment' })}
+          onSummary={() => navigate({ id: 'summary' })}
+        />
+      </Suspense>
     );
   }
 

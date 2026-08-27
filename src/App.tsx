@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 
-import i18n, { RTL_LANGS, type SupportedLang } from './i18n';
-import './index.css';
 import { TiferetSite } from './site/TiferetSite';
 import { buildAppModeUrl, readAppMode, type AppMode } from './utils/app-mode';
-import WoodworkingShopApp from './WoodworkingShopApp';
+
+const WorkshopMode = lazy(() => import('./WorkshopMode'));
 
 function replaceMode(mode: AppMode): void {
   const search = buildAppModeUrl(window.location.search, mode);
@@ -20,14 +19,6 @@ export default function App() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  useEffect(() => {
-    if (mode !== 'workshop') return;
-    const language = i18n.language as SupportedLang;
-    document.documentElement.lang = language;
-    document.documentElement.dir = RTL_LANGS.has(language) ? 'rtl' : 'ltr';
-    document.title = 'Cabinet Planner — Woodworking Design Tool';
-  }, [mode]);
-
   const navigate = useCallback((nextMode: AppMode) => {
     replaceMode(nextMode);
     setMode(nextMode);
@@ -37,5 +28,9 @@ export default function App() {
     return <TiferetSite onOpenWorkshop={() => navigate('workshop')} />;
   }
 
-  return <WoodworkingShopApp />;
+  return (
+    <Suspense fallback={<main aria-busy="true">טוען את סביבת הנגרייה…</main>}>
+      <WorkshopMode />
+    </Suspense>
+  );
 }

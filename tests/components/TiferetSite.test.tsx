@@ -34,6 +34,10 @@ describe('Tiferet carpentry website', () => {
     const hero = screen.getByRole('img', { name: 'נגרות קיר מותאמת בחדר שינה מואר' });
     expect(hero).toHaveAttribute('fetchpriority', 'high');
     expect(hero).toHaveAttribute('loading', 'eager');
+    expect(hero).toHaveAttribute('width', '1800');
+    expect(hero).toHaveAttribute('height', '1201');
+    expect(hero.getAttribute('srcset')).toContain('hero-bedroom-cabinetry-720.jpg 720w');
+    expect(hero.getAttribute('srcset')).toContain('hero-bedroom-cabinetry-1200.jpg 1200w');
 
     const spaceImages = screen.getAllByTestId('space-editorial-image');
     expect(spaceImages).toHaveLength(6);
@@ -109,10 +113,10 @@ describe('Tiferet carpentry website', () => {
     expect(screen.queryByRole('link', { name: 'בחרו דירה' })).not.toBeInTheDocument();
   });
 
-  it('opens the existing planner for the room encoded in the URL', () => {
+  it('opens the existing planner for the room encoded in the URL', async () => {
     window.history.replaceState({}, '', '/tiferet-carpentry/design/bedroom');
     render(<TiferetSite onOpenWorkshop={vi.fn()} />);
-    expect(screen.getByRole('region', { name: 'מתכנן הנגרות הקיים' })).toHaveAttribute('data-room', 'bedroom');
+    expect(await screen.findByRole('region', { name: 'מתכנן הנגרות הקיים' })).toHaveAttribute('data-room', 'bedroom');
   });
 
   it('offers an accessible mobile navigation panel', async () => {

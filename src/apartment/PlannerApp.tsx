@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import '../index.css';
 import { MATERIALS } from '../engine/materials';
 import type { CabinetConfig, DoorStyle, FurnitureType, HandleStyle } from '../engine/types';
 import type {

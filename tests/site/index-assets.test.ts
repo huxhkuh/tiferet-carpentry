@@ -11,5 +11,8 @@ describe('index asset paths', () => {
     expect(html).toContain('href="/icon-192.png"');
     expect(html).not.toContain('rel="preload" href="/manifest.json"');
     expect(html).not.toContain('rel="preload" href="/icon-192.png"');
+    expect(html).toMatch(/rel="preload"\s+as="image"\s+href="\/tiferet\/brand\/hero-bedroom-cabinetry-1200\.jpg"/u);
+    expect(html).toContain('hero-bedroom-cabinetry-720.jpg 720w');
+    expect(html).toContain('imagesizes="(max-width: 60rem) 100vw, 58vw"');
   });
 });

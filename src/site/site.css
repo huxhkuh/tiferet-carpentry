@@ -6,6 +6,13 @@
   font-display: swap;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
 @font-face {
   font-family: 'Tiferet Sans';
   src: url('/tiferet-carpentry/fonts/NotoSansHebrew-Bold.ttf') format('truetype');

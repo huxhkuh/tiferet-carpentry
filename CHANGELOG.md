@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Completed the premium Hebrew site shell, pixel-aligned source comparison view, searchable
   99-plan catalog, named local design versions, richer project summary and room camera presets.
+- Deferred the professional workshop, cabinet store, i18n bundle, planner and Tailwind shell until
+  their routes are opened. The measured initial site JavaScript fell from 537.8 KB to 114.6 KB
+  raw (−79%) and initial CSS from 110.2 KB to 31.2 KB raw (−72%).
+- Added intrinsic image dimensions, a high-priority responsive hero preload and 720/1,200 px hero
+  variants; the mobile hero payload fell from 205.0 KB to 45.3 KB while keeping the source image.
 - Recalibrated only the affected production ceilings after measurement: CSS 102 → 110 KB,
   interactive application 3,000 → 3,050 KB, default chunk 520 → 530 KB and on-demand official
   Tiferet source/evidence assets 22,000 → 24,000 KB. Current measured values are 107.7 KB,
