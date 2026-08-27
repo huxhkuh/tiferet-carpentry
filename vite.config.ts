@@ -126,27 +126,5 @@ export default defineConfig({
     chunkSizeWarningLimit: 1600,
     // v3.24.0: inject modulepreload polyfill for Safari < 16.4 compatibility
     modulePreload: { polyfill: true },
-    rollupOptions: {
-      output: {
-        // Sprint 63 — consolidated chunk strategy:
-        //   pdf-renderer : lazily-imported 300 KB PDF engine — own chunk for deferred loading.
-        //   i18n-vendor  : i18next + react-i18next — stable, cached separately from app code.
-        //   vendor       : React + React-DOM + Zustand — small combined chunk; rarely changes
-        //                  together with app code, benefits from long-term browser caching.
-        //                  (react-vendor and state-vendor merged here — fewer chunk files.)
-        //
-        // Phase 18 prep: when Three.js is added, add:
-        //   if (id.includes('three')) return 'three-vendor';
-        manualChunks: (id) => {
-          if (id.includes('@react-pdf/renderer')) return 'pdf-renderer';
-          if (id.includes('/i18next') || id.includes('/react-i18next')) return 'i18n-vendor';
-          if (id.includes('/react-dom/') || id.includes('/node_modules/react/') || id.includes('/zustand'))
-            return 'vendor';
-          // Sprint 140 — defer parse cost of heavy optimizer engine to OptimizerView lazy chunk
-          if (id.includes('/cut-optimizer') || id.includes('/smart-optimizer') || id.includes('/assembly-dag'))
-            return 'engine-optimizer';
-        },
-      },
-    },
   },
 });

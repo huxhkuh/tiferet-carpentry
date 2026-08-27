@@ -24,27 +24,45 @@ function resizedImagePath(src: string, width: number): string {
   return imagePath(src.replace(/\.jpg$/u, `-${width}.jpg`));
 }
 
+function resizedWebpPath(src: string, width: number): string {
+  return imagePath(src.replace(/\.jpg$/u, `-${width}.webp`));
+}
+
 export function EditorialImage({ alt, className = '', eager = false, src, testId }: EditorialImageProps) {
   const dimensions = IMAGE_DIMENSIONS[src] ?? { width: 1800, height: 1200 };
   const responsiveSources =
     src === 'hero-bedroom-cabinetry.jpg'
       ? `${resizedImagePath(src, 720)} 720w, ${resizedImagePath(src, 1200)} 1200w, ${imagePath(src)} 1800w`
       : undefined;
+  const responsiveWebpSources =
+    src === 'hero-bedroom-cabinetry.jpg'
+      ? `${resizedWebpPath(src, 720)} 720w, ${resizedWebpPath(src, 1200)} 1200w`
+      : undefined;
 
   return (
     <figure className={`ng-editorial-image ${className}`.trim()}>
-      <img
-        src={imagePath(src)}
-        srcSet={responsiveSources}
-        sizes={responsiveSources ? '(max-width: 60rem) 100vw, 58vw' : undefined}
-        alt={alt}
-        width={dimensions.width}
-        height={dimensions.height}
-        loading={eager ? 'eager' : 'lazy'}
-        fetchPriority={eager ? 'high' : undefined}
-        decoding="async"
-        data-testid={testId}
-      />
+      <picture>
+        {responsiveWebpSources ? (
+          <source
+            type="image/webp"
+            srcSet={responsiveWebpSources}
+            sizes="(max-width: 60rem) 100vw, 58vw"
+            data-testid={testId ? `${testId}-webp-source` : undefined}
+          />
+        ) : null}
+        <img
+          src={imagePath(src)}
+          srcSet={responsiveSources}
+          sizes={responsiveSources ? '(max-width: 60rem) 100vw, 58vw' : undefined}
+          alt={alt}
+          width={dimensions.width}
+          height={dimensions.height}
+          loading={eager ? 'eager' : 'lazy'}
+          fetchPriority={eager ? 'high' : undefined}
+          decoding="async"
+          data-testid={testId}
+        />
+      </picture>
       <span className="ng-editorial-image__wash" aria-hidden="true" />
       <span className="ng-editorial-image__corner" aria-hidden="true" />
     </figure>

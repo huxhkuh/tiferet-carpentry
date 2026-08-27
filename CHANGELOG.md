@@ -15,16 +15,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Completed the premium Hebrew site shell, pixel-aligned source comparison view, searchable
   99-plan catalog, named local design versions, richer project summary and room camera presets.
-- Deferred the professional workshop, cabinet store, i18n bundle, planner and Tailwind shell until
-  their routes are opened. The measured initial site JavaScript fell from 537.8 KB to 114.6 KB
-  raw (−79%) and initial CSS from 110.2 KB to 31.2 KB raw (−72%).
-- Added intrinsic image dimensions, a high-priority responsive hero preload and 720/1,200 px hero
-  variants; the mobile hero payload fell from 205.0 KB to 45.3 KB while keeping the source image.
+- Deferred the professional workshop, cabinet store, i18n bundle, planner, site shell and every
+  secondary site page until its route is opened. Automatic Vite boundaries replaced manual vendor
+  chunks that had silently preloaded the PDF renderer and optimizer; the initial entry fell from
+  537.8 KB to 196.7 KB raw while the 1,338.5 KB PDF panel remains genuinely on demand.
+- Added a critical inline Hebrew brand shell and preserved its first browser paint before React
+  mounts. Three cold production Lighthouse runs measured performance 0.98–0.99, FCP
+  1.069–1.072 s, LCP 2.128–2.284 s, TBT 0–13 ms and CLS 0.02 with about 183 KB transferred.
+- Added intrinsic image dimensions, a high-priority responsive hero preload, JPG fallbacks and
+  720/1,200 px WebP variants. The responsive hero payload is 17.2/40.9 KB instead of 45.3/114.2 KB.
 - Recalibrated only the affected production ceilings after measurement: CSS 102 → 110 KB,
   interactive application 3,000 → 3,050 KB, default chunk 520 → 530 KB and on-demand official
-  Tiferet source/evidence assets 22,000 → 24,000 KB. Current measured values are 107.7 KB,
-  3,016.9 KB, 525.2 KB and 23,398.5 KB respectively; the total-JS and per-source-file ceilings
-  remain unchanged.
+  Tiferet source/evidence assets 22,000 → 24,000 KB. Current measured values are 107.8 KB CSS,
+  3,026.4 KB application total, 354.1 KB for the largest normal chunk and 23,611.0 KB of source
+  assets. The generated `PdfExportPanel` name receives the existing 1,600 KB PDF-only ceiling;
+  aggregate and per-source-file ceilings remain unchanged.
+- Removed the obsolete Lighthouse `no-pwa` preset that asserted retired audits as `NaN`; all
+  explicit performance, accessibility, best-practice and Core Web Vitals gates remain unchanged.
 - Inventoried all 179 supplied Tiferet PDFs and all 99 apartment sheets, extracted title-block
   identities for every apartment, and added a reproducible apartment-by-apartment audit report.
 - Preserved 48 byte-verified official apartment PDFs with SHA-256 checks and extracted complete

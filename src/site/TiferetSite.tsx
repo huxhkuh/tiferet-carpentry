@@ -1,17 +1,28 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
-import { AboutPage, InspirationPage, MaterialsPage, ProcessPage } from './pages/EditorialPages';
-import { ApartmentsPage } from './pages/ApartmentsPage';
-import { ContactPage } from './pages/ContactPage';
 import { HomePage } from './pages/HomePage';
-import { MyApartmentPage } from './pages/MyApartmentPage';
-import { NotFoundPage } from './pages/NotFoundPage';
-import { SummaryPage } from './pages/SummaryPage';
 import { parseSiteLocation, sitePath, type SiteRoute } from './router';
 import './site.css';
 
 const PlannerApp = lazy(() => import('../apartment/PlannerApp').then((module) => ({ default: module.PlannerApp })));
+const ApartmentsPage = lazy(() =>
+  import('./pages/ApartmentsPage').then((module) => ({ default: module.ApartmentsPage })),
+);
+const MyApartmentPage = lazy(() =>
+  import('./pages/MyApartmentPage').then((module) => ({ default: module.MyApartmentPage })),
+);
+const SummaryPage = lazy(() => import('./pages/SummaryPage').then((module) => ({ default: module.SummaryPage })));
+const InspirationPage = lazy(() =>
+  import('./pages/EditorialPages').then((module) => ({ default: module.InspirationPage })),
+);
+const MaterialsPage = lazy(() =>
+  import('./pages/EditorialPages').then((module) => ({ default: module.MaterialsPage })),
+);
+const ProcessPage = lazy(() => import('./pages/EditorialPages').then((module) => ({ default: module.ProcessPage })));
+const AboutPage = lazy(() => import('./pages/EditorialPages').then((module) => ({ default: module.AboutPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then((module) => ({ default: module.ContactPage })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
 
 function readRoute(): SiteRoute {
   return parseSiteLocation(window.location.pathname, window.location.search).route;
@@ -96,7 +107,9 @@ export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) 
   return (
     <div className="ng-site" dir="rtl">
       <SiteHeader route={route} navigate={navigate} onOpenWorkshop={onOpenWorkshop} />
-      <main id="ng-main">{page}</main>
+      <main id="ng-main">
+        <Suspense fallback={<div aria-busy="true">טוען את העמוד…</div>}>{page}</Suspense>
+      </main>
       <SiteFooter navigate={navigate} />
     </div>
   );

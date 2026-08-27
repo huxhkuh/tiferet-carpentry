@@ -11,8 +11,17 @@ describe('index asset paths', () => {
     expect(html).toContain('href="/icon-192.png"');
     expect(html).not.toContain('rel="preload" href="/manifest.json"');
     expect(html).not.toContain('rel="preload" href="/icon-192.png"');
-    expect(html).toMatch(/rel="preload"\s+as="image"\s+href="\/tiferet\/brand\/hero-bedroom-cabinetry-1200\.jpg"/u);
-    expect(html).toContain('hero-bedroom-cabinetry-720.jpg 720w');
+    expect(html).toMatch(/rel="preload"\s+as="image"\s+href="\/tiferet\/brand\/hero-bedroom-cabinetry-1200\.webp"/u);
+    expect(html).toContain('hero-bedroom-cabinetry-720.webp 720w');
+    expect(html).toContain('type="image/webp"');
     expect(html).toContain('imagesizes="(max-width: 60rem) 100vw, 58vw"');
+  });
+
+  it('renders a lightweight branded status before React starts', () => {
+    const html = readFileSync(resolve(process.cwd(), 'index.html'), 'utf8');
+
+    expect(html).toContain('id="tiferet-bootstrap-shell"');
+    expect(html).toContain('טוען את אתר תפארת');
+    expect(html).toContain('תכנון מדויק. נגרות אישית.');
   });
 });

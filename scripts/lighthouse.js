@@ -20,6 +20,8 @@ mkdirSync(outputDir, { recursive: true });
  * Category scores: performance ≥ 0.9, accessibility ≥ 0.95
  *
  * 'error' = hard gate (blocks merge), 'warn' = advisory (reported but non-blocking).
+ * Audits are explicit: the generic no-pwa preset includes removed/unsupported
+ * audits that Lighthouse reports as NaN and would create false hard failures.
  * numberOfRuns: 3 for statistical stability in CI.
  */
 const config = {
@@ -31,7 +33,6 @@ const config = {
       numberOfRuns: process.env.CI ? 3 : 1,
     },
     assert: {
-      preset: 'lighthouse:no-pwa',
       assertions: {
         'categories:performance': ['error', { minScore: 0.9, aggregationMethod: 'median-run' }],
         'categories:accessibility': ['error', { minScore: 0.95, aggregationMethod: 'pessimistic' }],

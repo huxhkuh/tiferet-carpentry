@@ -1,9 +1,24 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 
-import { TiferetSite } from './site/TiferetSite';
 import { buildAppModeUrl, readAppMode, type AppMode } from './utils/app-mode';
 
 const WorkshopMode = lazy(() => import('./WorkshopMode'));
+const TiferetSite = lazy(() => import('./site/TiferetSite').then((module) => ({ default: module.TiferetSite })));
+
+function SiteBootstrapFallback() {
+  return (
+    <div id="tiferet-bootstrap-shell" role="status" aria-label="טוען את אתר תפארת">
+      <div>
+        <span className="tiferet-bootstrap__mark" aria-hidden="true">
+          ת
+        </span>
+        <p className="tiferet-bootstrap__eyebrow">תפארת · רמלה</p>
+        <p className="tiferet-bootstrap__title">תכנון מדויק. נגרות אישית.</p>
+        <div className="tiferet-bootstrap__line" aria-hidden="true" />
+      </div>
+    </div>
+  );
+}
 
 function replaceMode(mode: AppMode): void {
   const search = buildAppModeUrl(window.location.search, mode);
@@ -25,7 +40,11 @@ export default function App() {
   }, []);
 
   if (mode === 'site') {
-    return <TiferetSite onOpenWorkshop={() => navigate('workshop')} />;
+    return (
+      <Suspense fallback={<SiteBootstrapFallback />}>
+        <TiferetSite onOpenWorkshop={() => navigate('workshop')} />
+      </Suspense>
+    );
   }
 
   return (

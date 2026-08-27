@@ -15,7 +15,7 @@ afterEach(() => {
 });
 
 describe('Tiferet carpentry website', () => {
-  it('presents the premium Hebrew homepage with primary navigation and planning CTA', () => {
+  it('presents the premium Hebrew homepage with primary navigation and planning CTA', async () => {
     window.history.replaceState({}, '', '/tiferet-carpentry/');
     render(<TiferetSite onOpenWorkshop={vi.fn()} />);
 
@@ -24,10 +24,10 @@ describe('Tiferet carpentry website', () => {
     expect(screen.getByRole('navigation', { name: 'ניווט ראשי' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'נגרות מדויקת. בתים מעוררי השראה.' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'התחילו לתכנן' })).toBeInTheDocument();
-    expect(screen.getByText('הבית כבר מתוכנן. עכשיו מתכננים את הנגרות שמתאימה לו.')).toBeInTheDocument();
+    expect(await screen.findByText('הבית כבר מתוכנן. עכשיו מתכננים את הנגרות שמתאימה לו.')).toBeInTheDocument();
   });
 
-  it('uses editorial photography instead of schematic artwork on the homepage', () => {
+  it('uses editorial photography instead of schematic artwork on the homepage', async () => {
     window.history.replaceState({}, '', '/tiferet-carpentry/');
     render(<TiferetSite onOpenWorkshop={vi.fn()} />);
 
@@ -38,8 +38,12 @@ describe('Tiferet carpentry website', () => {
     expect(hero).toHaveAttribute('height', '1201');
     expect(hero.getAttribute('srcset')).toContain('hero-bedroom-cabinetry-720.jpg 720w');
     expect(hero.getAttribute('srcset')).toContain('hero-bedroom-cabinetry-1200.jpg 1200w');
+    expect(screen.getByTestId('home-hero-image-webp-source')).toHaveAttribute(
+      'srcset',
+      expect.stringContaining('hero-bedroom-cabinetry-720.webp 720w'),
+    );
 
-    const spaceImages = screen.getAllByTestId('space-editorial-image');
+    const spaceImages = await screen.findAllByTestId('space-editorial-image');
     expect(spaceImages).toHaveLength(6);
     expect(spaceImages.every((image) => image.getAttribute('loading') === 'lazy')).toBe(true);
   });
@@ -54,6 +58,7 @@ describe('Tiferet carpentry website', () => {
   });
 
   it('navigates to apartment selection without reloading the SPA', async () => {
+    await import('../../src/site/pages/ApartmentsPage');
     const user = userEvent.setup();
     window.history.replaceState({}, '', '/tiferet-carpentry/');
     render(<TiferetSite onOpenWorkshop={vi.fn()} />);
@@ -61,7 +66,9 @@ describe('Tiferet carpentry website', () => {
     await user.click(screen.getByRole('link', { name: 'התחילו לתכנן' }));
 
     expect(window.location.pathname).toBe('/tiferet-carpentry/apartments');
-    expect(screen.getByRole('heading', { name: 'בחרו את דירת תפארת שלכם' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'בחרו את דירת תפארת שלכם' }, { timeout: 5000 }),
+    ).toBeInTheDocument();
   });
 
   it.each([
@@ -73,17 +80,17 @@ describe('Tiferet carpentry website', () => {
     ['/tiferet-carpentry/process', 'מהדירה ועד ההתקנה'],
     ['/tiferet-carpentry/about', 'נגרות שתוכננה לתפארת'],
     ['/tiferet-carpentry/contact', 'בואו נדבר על הבית שלכם'],
-  ])('renders the page for %s', (path, heading) => {
+  ])('renders the page for %s', async (path, heading) => {
     window.history.replaceState({}, '', path);
     render(<TiferetSite onOpenWorkshop={vi.fn()} />);
-    expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: heading })).toBeInTheDocument();
   });
 
-  it('shows the audited source inventory on the apartment selection page', () => {
+  it('shows the audited source inventory on the apartment selection page', async () => {
     window.history.replaceState({}, '', '/tiferet-carpentry/apartments');
     render(<TiferetSite onOpenWorkshop={vi.fn()} />);
 
-    expect(screen.getByText('179 קבצי PDF נסרקו')).toBeInTheDocument();
+    expect(await screen.findByText('179 קבצי PDF נסרקו')).toBeInTheDocument();
     expect(screen.getByText('99 תוכניות דירה אותרו')).toBeInTheDocument();
     expect(
       screen.getByText('דירה 23-א · גיליון 5-1 זמינה כמודל עבודה חלקי; היא עדיין אינה מסומנת כמאומתת'),
@@ -95,7 +102,7 @@ describe('Tiferet carpentry website', () => {
     window.history.replaceState({}, '', '/tiferet-carpentry/apartments');
     render(<TiferetSite onOpenWorkshop={vi.fn()} />);
 
-    await user.selectOptions(screen.getByLabelText('מתחם / בניין'), 'argaman');
+    await user.selectOptions(await screen.findByLabelText('מתחם / בניין'), 'argaman');
     await user.selectOptions(screen.getByLabelText('קומה'), '1');
 
     const sourcePlan = screen.getByLabelText('דירה');

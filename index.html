@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="he" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -52,9 +52,10 @@
     <link
       rel="preload"
       as="image"
-      href="/tiferet/brand/hero-bedroom-cabinetry-1200.jpg"
-      imagesrcset="/tiferet/brand/hero-bedroom-cabinetry-720.jpg 720w, /tiferet/brand/hero-bedroom-cabinetry-1200.jpg 1200w"
+      href="/tiferet/brand/hero-bedroom-cabinetry-1200.webp"
+      imagesrcset="/tiferet/brand/hero-bedroom-cabinetry-720.webp 720w, /tiferet/brand/hero-bedroom-cabinetry-1200.webp 1200w"
       imagesizes="(max-width: 60rem) 100vw, 58vw"
+      type="image/webp"
       fetchpriority="high"
     />
 
@@ -74,9 +75,66 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' blob: https://cdnjs.cloudflare.com https://cloudflareinsights.com https://csp.cabinet-planner.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'"
     />
+    <style>
+      #tiferet-bootstrap-shell {
+        display: grid;
+        min-height: 100svh;
+        place-items: center;
+        padding: 2rem;
+        color: #302a24;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: linear-gradient(135deg, rgb(255 255 255 / 70%), transparent 52%), #eee8df;
+        box-sizing: border-box;
+      }
+
+      .tiferet-bootstrap__mark {
+        display: grid;
+        width: 4.5rem;
+        height: 4.5rem;
+        margin-inline: auto;
+        margin-block-end: 1.25rem;
+        border: 0.0625rem solid #8a6a44;
+        place-items: center;
+        color: #5b422a;
+        font-family: Georgia, serif;
+        font-size: 2.45rem;
+        line-height: 1;
+      }
+
+      .tiferet-bootstrap__eyebrow {
+        margin: 0;
+        color: #806d58;
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+      }
+
+      .tiferet-bootstrap__title {
+        margin: 0.45rem 0 0.8rem;
+        font-family: Georgia, serif;
+        font-size: clamp(1.45rem, 4vw, 2.1rem);
+        font-weight: 400;
+      }
+
+      .tiferet-bootstrap__line {
+        width: 4.5rem;
+        height: 0.0625rem;
+        margin: 0 auto;
+        background: #a28660;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="tiferet-bootstrap-shell" role="status" aria-label="טוען את אתר תפארת">
+        <div>
+          <span class="tiferet-bootstrap__mark" aria-hidden="true">ת</span>
+          <p class="tiferet-bootstrap__eyebrow">תפארת · רמלה</p>
+          <p class="tiferet-bootstrap__title">תכנון מדויק. נגרות אישית.</p>
+          <div class="tiferet-bootstrap__line" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
     <noscript>
       <p class="noscript-msg">המתכנן דורש JavaScript. יש להפעיל JavaScript בדפדפן כדי להשתמש בו.</p>
     </noscript>

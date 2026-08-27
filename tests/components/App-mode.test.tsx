@@ -31,15 +31,15 @@ afterEach(() => {
 });
 
 describe('App product modes', () => {
-  it('opens the Tiferet carpentry website by default', () => {
+  it('opens the Tiferet carpentry website by default', async () => {
     window.history.replaceState({}, '', '/');
     render(<App />);
-    expect(screen.getByRole('heading', { name: /נגרות מדויקת/ })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /נגרות מדויקת/ }, { timeout: 5000 })).toBeInTheDocument();
   });
 
   it('keeps the original WoodworkingShop available in workshop mode', async () => {
     window.history.replaceState({}, '', '/?app=workshop');
     render(<App />);
-    expect(await screen.findByRole('banner', { name: 'WoodworkingShop' })).toBeInTheDocument();
+    expect(await screen.findByRole('banner', { name: 'WoodworkingShop' }, { timeout: 5000 })).toBeInTheDocument();
   });
 });
