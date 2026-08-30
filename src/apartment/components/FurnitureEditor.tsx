@@ -5,6 +5,8 @@ interface FurnitureEditorProps {
   onPositionChange: (x: number, y: number) => void;
   onRotationChange: (radians: number) => void;
   onHide: () => void;
+  onDuplicate?: () => void;
+  onDelete?: () => void;
 }
 
 const NUDGE_MM = 100;
@@ -26,7 +28,14 @@ function degreesToRadians(value: string): number {
   return (Number(value) * Math.PI) / 180;
 }
 
-export function FurnitureEditor({ item, onPositionChange, onRotationChange, onHide }: FurnitureEditorProps) {
+export function FurnitureEditor({
+  item,
+  onPositionChange,
+  onRotationChange,
+  onHide,
+  onDuplicate,
+  onDelete,
+}: FurnitureEditorProps) {
   const xInputId = `${item.id}-furniture-x`;
   const yInputId = `${item.id}-furniture-y`;
   const rotationInputId = `${item.id}-furniture-rotation`;
@@ -44,13 +53,34 @@ export function FurnitureEditor({ item, onPositionChange, onRotationChange, onHi
             עריכת {item.label}
           </h3>
         </div>
-        <button
-          type="button"
-          onClick={onHide}
-          className="rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm font-bold text-stone-700 hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7b4f35]"
-        >
-          הסתר פריט
-        </button>
+        <div className="flex flex-wrap justify-end gap-2">
+          {onDuplicate && (
+            <button
+              type="button"
+              onClick={onDuplicate}
+              className="rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm font-bold text-stone-700 hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7b4f35]"
+            >
+              שכפל פריט
+            </button>
+          )}
+          {onDelete ? (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-bold text-red-700 hover:bg-red-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
+            >
+              מחק פריט
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={onHide}
+              className="rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm font-bold text-stone-700 hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7b4f35]"
+            >
+              הסתר פריט
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">

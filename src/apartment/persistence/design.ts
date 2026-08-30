@@ -4,6 +4,7 @@ import type {
   DesignVisibility,
   FurnitureOverride,
   FurniturePalette,
+  FurniturePlacement,
   RoomCameraOrbit,
   SavedDesign,
   SavedDesignV1,
@@ -31,6 +32,31 @@ const CUT_MODES = ['guillotine', 'freeform'] as const;
 const LANGUAGES = ['en', 'he'] as const;
 const PANEL_MATERIAL_SOURCES = ['carcass', 'back'] as const;
 const FURNITURE_PALETTES: readonly FurniturePalette[] = ['warm', 'light', 'sage'];
+const FURNITURE_KINDS = [
+  'single-bed',
+  'double-bed',
+  'nightstand',
+  'desk',
+  'bookshelf',
+  'sofa',
+  'coffee-table',
+  'rug',
+  'media-console',
+  'dining-table',
+  'dining-chair',
+  'plant',
+  'kitchen-base-run',
+  'kitchen-wall-run',
+  'refrigerator',
+  'oven',
+  'sink',
+  'vanity',
+  'toilet',
+  'shower',
+  'bathtub',
+  'washer',
+  'dryer',
+] as const;
 const SCENE_OBJECT_CATEGORIES: readonly SceneObjectCategory[] = [
   'cabinetry',
   'beds',
@@ -133,6 +159,25 @@ function isFurnitureOverride(value: unknown): value is FurnitureOverride {
   );
 }
 
+function isFurniturePlacement(value: unknown): value is FurniturePlacement {
+  return (
+    isRecord(value) &&
+    isNonEmptyString(value.id) &&
+    isNonEmptyString(value.roomId) &&
+    isOneOf(value.kind, FURNITURE_KINDS) &&
+    isNonEmptyString(value.label) &&
+    isFiniteNumber(value.x) &&
+    isFiniteNumber(value.y) &&
+    isPositiveNumber(value.width) &&
+    isPositiveNumber(value.depth) &&
+    isPositiveNumber(value.height) &&
+    isNonNegativeNumber(value.elevation) &&
+    isFiniteNumber(value.rotation) &&
+    isOptionalString(value.color) &&
+    isOptionalString(value.accentColor)
+  );
+}
+
 function isDesignVisibility(value: unknown): value is DesignVisibility {
   if (!isRecord(value) || !Array.isArray(value.hiddenObjectIds) || !Array.isArray(value.hiddenCategories)) {
     return false;
@@ -193,13 +238,19 @@ export function isSavedDesign(value: unknown): value is SavedDesignV2 {
     (value.metadata !== undefined && !isSavedDesignMetadata(value.metadata)) ||
     !Array.isArray(value.furnitureOverrides) ||
     !value.furnitureOverrides.every(isFurnitureOverride) ||
+    (value.addedFurniture !== undefined &&
+      (!Array.isArray(value.addedFurniture) || !value.addedFurniture.every(isFurniturePlacement))) ||
     !isDesignVisibility(value.visibility) ||
     !isOneOf(value.furniturePalette, FURNITURE_PALETTES) ||
     !isCameraByRoom(value.cameraByRoom)
   ) {
     return false;
   }
-  return new Set(value.furnitureOverrides.map((override) => override.id)).size === value.furnitureOverrides.length;
+  const addedFurniture = value.addedFurniture ?? [];
+  return (
+    new Set(value.furnitureOverrides.map((override) => override.id)).size === value.furnitureOverrides.length &&
+    new Set(addedFurniture.map((item) => item.id)).size === addedFurniture.length
+  );
 }
 
 function migrateLegacyDesign(design: SavedDesignV1): SavedDesignV2 {

@@ -252,6 +252,29 @@ describe('safe design restoration', () => {
     ).toBeNull();
   });
 
+  it('rejects malformed and duplicate user-added furniture', () => {
+    const sourceFurniture = TIFERET_5_1.furniture?.[0];
+    if (!sourceFurniture) throw new Error('Missing furniture fixture');
+    const addedFurniture = { ...sourceFurniture, id: 'user-bed', roomId: 'bedroom' };
+
+    expect(
+      deserializeDesign(
+        JSON.stringify({
+          ...v2Design,
+          addedFurniture: [addedFurniture, { ...addedFurniture }],
+        }),
+      ),
+    ).toBeNull();
+    expect(
+      deserializeDesign(
+        JSON.stringify({
+          ...v2Design,
+          addedFurniture: [{ ...addedFurniture, width: -1 }],
+        }),
+      ),
+    ).toBeNull();
+  });
+
   it('rejects malformed visibility categories and duplicate hidden object ids', () => {
     expect(
       deserializeDesign(

@@ -345,6 +345,8 @@ export interface SavedDesignV2 {
   name: string;
   updatedAt: string;
   placements: CabinetPlacement[];
+  /** Furniture created by the customer in addition to the source apartment catalogue. */
+  addedFurniture?: FurniturePlacement[];
   furnitureOverrides: FurnitureOverride[];
   visibility: DesignVisibility;
   furniturePalette: FurniturePalette;

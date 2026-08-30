@@ -93,6 +93,41 @@ test('Tiferet furniture, layers and camera persist as one design', async ({ page
   }
 });
 
+test('Tiferet furniture catalogue adds, edits and restores a new item in 2D and 3D', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.addInitScript(
+    ({ storageKey, resetGuard }) => {
+      if (sessionStorage.getItem(resetGuard) === '1') return;
+      localStorage.removeItem(storageKey);
+      sessionStorage.setItem(resetGuard, '1');
+    },
+    { storageKey: STORAGE_KEY, resetGuard: 'tiferet:furniture-catalogue-e2e-storage-reset' },
+  );
+  await page.goto('/tiferet-carpentry/design/bedroom');
+
+  await page.getByRole('button', { name: 'הוסף ריהוט' }).click();
+  await expect(page.getByRole('dialog', { name: 'קטלוג ריהוט' })).toBeVisible();
+  await page.getByRole('tab', { name: 'הלבשה' }).click();
+  await page.getByRole('button', { name: 'הוסף צמח' }).click();
+
+  await expect(page.getByRole('heading', { name: 'עריכת צמח' })).toBeVisible();
+  await expect(page.getByText('פריט ריהוט אחד נוסף')).toBeVisible();
+  await page.getByRole('button', { name: 'סובב ימינה 90°' }).click();
+  await page.getByRole('button', { name: 'שמור תכנון' }).click();
+  await expect
+    .poll(() => page.evaluate((storageKey) => localStorage.getItem(storageKey), STORAGE_KEY))
+    .toContain('"kind":"plant"');
+
+  await page.getByRole('button', { name: 'הדמיית 3D' }).click();
+  const { canvas } = await expectSettled3D(page);
+  await expect(canvas).toHaveAttribute('data-scene-furniture', '5');
+
+  await page.reload();
+  await expect(page.getByText('פריט ריהוט אחד נוסף')).toBeVisible();
+  await page.getByRole('button', { name: 'תצוגה נקייה' }).click();
+  await expect(page.getByRole('button', { name: 'בחירת ריהוט צמח' })).toBeVisible();
+});
+
 test('Tiferet picker and planner pass WCAG 2.1 AA checks', async ({ page }) => {
   test.setTimeout(90_000);
   await page.goto('/tiferet-carpentry/');

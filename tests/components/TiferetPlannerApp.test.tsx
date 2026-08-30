@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { PlannerApp } from '../../src/apartment/PlannerApp';
+import { TIFERET_5_1 } from '../../src/apartment/data/tiferet';
 
 beforeEach(() => {
   const values = new Map<string, string>();
@@ -90,6 +91,59 @@ describe('Tiferet planner UI', () => {
 
     expect(furnitureToggle).toHaveAttribute('aria-checked', 'false');
     expect(screen.queryByTestId('furniture-bedroom-bed-a')).not.toBeInTheDocument();
+  });
+
+  it('פותח קטלוג ומוסיף כל סוג ריהוט לחדר שנבחר', () => {
+    render(
+      <PlannerApp
+        initialStarted
+        initialRoomId="bedroom"
+        initialApartment={{ ...TIFERET_5_1, id: 'empty-furniture-apartment', furniture: [] }}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'הוסף ריהוט' }));
+    const catalogue = screen.getByRole('dialog', { name: 'קטלוג ריהוט' });
+    expect(catalogue).toBeVisible();
+    expect(within(catalogue).getByRole('button', { name: 'הוסף מיטה זוגית' })).toBeEnabled();
+
+    fireEvent.click(within(catalogue).getByRole('button', { name: 'הוסף מיטה זוגית' }));
+
+    expect(screen.getByRole('heading', { name: 'עריכת מיטה זוגית' })).toBeVisible();
+    expect(screen.getAllByText('מיטה זוגית').length).toBeGreaterThan(0);
+  });
+
+  it('משכפל, מוחק ושומר ריהוט שהמשתמש הוסיף', () => {
+    const apartment = { ...TIFERET_5_1, id: 'editable-furniture-apartment', furniture: [] };
+    const view = render(<PlannerApp initialStarted initialRoomId="bedroom" initialApartment={apartment} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'הוסף ריהוט' }));
+    fireEvent.click(screen.getByRole('button', { name: 'הוסף שידת לילה' }));
+    fireEvent.click(screen.getByRole('button', { name: 'שכפל פריט' }));
+    expect(screen.getAllByRole('button', { name: 'בחירת ריהוט שידת לילה' })).toHaveLength(2);
+
+    fireEvent.click(screen.getByRole('button', { name: 'מחק פריט' }));
+    expect(screen.getAllByRole('button', { name: 'בחירת ריהוט שידת לילה' })).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: 'שמור תכנון' }));
+    expect(window.localStorage.getItem('tiferet:design:editable-furniture-apartment')).toContain('"addedFurniture"');
+
+    view.unmount();
+    render(<PlannerApp initialStarted initialRoomId="bedroom" initialApartment={apartment} />);
+    expect(screen.getByRole('button', { name: 'בחירת ריהוט שידת לילה' })).toBeVisible();
+  });
+
+  it('מציג את מספר פריטי הריהוט שנוספו ומנקה אותם באיפוס התכנון', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const apartment = { ...TIFERET_5_1, id: 'reset-furniture-apartment', furniture: [] };
+    render(<PlannerApp initialStarted initialRoomId="bedroom" initialApartment={apartment} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'הוסף ריהוט' }));
+    fireEvent.click(screen.getByRole('button', { name: 'הוסף שידת לילה' }));
+    expect(screen.getByText('פריט ריהוט אחד נוסף')).toBeVisible();
+
+    fireEvent.click(screen.getByRole('button', { name: 'אפס תכנון' }));
+    expect(screen.queryByRole('button', { name: 'בחירת ריהוט שידת לילה' })).not.toBeInTheDocument();
+    expect(screen.getByText('0 פריטי ריהוט נוספים')).toBeVisible();
   });
 
   it('בוחר רהיט, מזיז אותו בגריד ומאפשר להסתיר ולשחזר אותו', () => {

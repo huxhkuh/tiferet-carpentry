@@ -7,6 +7,7 @@ import type {
   CabinetPlacement,
   DesignVisibility,
   FurnitureOverride,
+  FurnitureKind,
   FurniturePalette,
   FurniturePlacement,
   RoomCameraOrbit,
@@ -45,6 +46,7 @@ import {
 } from './planner/design-state';
 import { ApartmentThumbnail } from './components/ApartmentThumbnail';
 import { FurnitureEditor } from './components/FurnitureEditor';
+import { FurnitureCatalogPanel } from './components/FurnitureCatalogPanel';
 import { FullSourcePlan } from './components/FullSourcePlan';
 import { Plan2D } from './components/Plan2D';
 import { Room3D } from './components/Room3D';
@@ -58,6 +60,7 @@ import {
 } from './data/tiferet-source-inventory';
 import { apartmentSourceLabel } from './source/display';
 import { BrandMark } from '../site/components/BrandMark';
+import { placeFurnitureInRoom } from './furniture/catalog';
 
 const LEGACY_STORAGE_KEY = 'tiferet:design:5-1';
 const DEFAULT_BUILDING = TIFERET_PROJECT.buildings[0];
@@ -81,6 +84,7 @@ type NumericField = 'width' | 'height' | 'depth' | 'shelfCount' | 'drawerCount' 
 
 interface DesignSnapshot {
   placements: CabinetPlacement[];
+  addedFurniture: FurniturePlacement[];
   furnitureOverrides: FurnitureOverride[];
   visibility: DesignVisibility;
   furniturePalette: FurniturePalette;
@@ -92,6 +96,7 @@ interface DesignHistory {
 }
 let placementSequence = 0;
 let designSequence = 0;
+let furnitureSequence = 0;
 
 function designStorageKey(apartmentId: string): string {
   return apartmentId === TIFERET_5_1.id ? LEGACY_STORAGE_KEY : `tiferet:design:${apartmentId}`;
@@ -126,6 +131,12 @@ function createDesignVersionId(): string {
   return `tiferet-design-${designSequence}`;
 }
 
+function createFurnitureId(): string {
+  furnitureSequence += 1;
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+  return `tiferet-furniture-${furnitureSequence}`;
+}
+
 export function PlannerApp({
   onExit,
   initialStarted = false,
@@ -158,6 +169,7 @@ export function PlannerApp({
   const [wallId, setWallId] = useState<string | null>(null);
   const [seedDesign] = useState(() => loadSavedDesign(startingApartment.id));
   const [placements, setPlacements] = useState<CabinetPlacement[]>(seedDesign?.placements ?? []);
+  const [addedFurniture, setAddedFurniture] = useState<FurniturePlacement[]>(seedDesign?.addedFurniture ?? []);
   const [furnitureOverrides, setFurnitureOverrides] = useState(seedDesign?.furnitureOverrides ?? []);
   const [visibility, setVisibility] = useState<DesignVisibility>(seedDesign?.visibility ?? createDefaultVisibility());
   const [furniturePalette, setFurniturePalette] = useState<FurniturePalette>(seedDesign?.furniturePalette ?? 'warm');
@@ -165,6 +177,7 @@ export function PlannerApp({
   const [designLibrary, setDesignLibrary] = useState(() => loadDesignLibrary(startingApartment.id));
   const [designName, setDesignName] = useState(seedDesign?.name ?? `תכנון ${startingApartment.name}`);
   const [showDesignLibrary, setShowDesignLibrary] = useState(false);
+  const [showFurnitureCatalog, setShowFurnitureCatalog] = useState(false);
   const [pdfImportDraft, setPdfImportDraft] = useState<ArchitecturalPdfImportDraft | null>(null);
   const [pdfImportState, setPdfImportState] = useState<'idle' | 'reading' | 'ready' | 'error'>('idle');
   const [cleanPlanLayers, setCleanPlanLayers] = useState({
@@ -178,8 +191,8 @@ export function PlannerApp({
   const [notice, setNotice] = useState('');
   const [editError, setEditError] = useState('');
   const furniture = useMemo(
-    () => applyFurnitureOverrides(apartment.furniture ?? [], furnitureOverrides),
-    [apartment.furniture, furnitureOverrides],
+    () => applyFurnitureOverrides([...(apartment.furniture ?? []), ...addedFurniture], furnitureOverrides),
+    [addedFurniture, apartment.furniture, furnitureOverrides],
   );
   const visibleFurniture = useMemo(
     () => furniture.filter((item) => isSceneObjectVisible(visibility, item.id, sceneCategoryForFurniture(item.kind))),
@@ -206,8 +219,13 @@ export function PlannerApp({
     () => (placements.length === 1 ? 'ארון אחד' : `${placements.length} ארונות`),
     [placements.length],
   );
+  const addedFurnitureLabel = useMemo(
+    () => (addedFurniture.length === 1 ? 'פריט ריהוט אחד נוסף' : `${addedFurniture.length} פריטי ריהוט נוספים`),
+    [addedFurniture.length],
+  );
   const designSnapshot = (): DesignSnapshot => ({
     placements: [...placements],
+    addedFurniture: [...addedFurniture],
     furnitureOverrides: [...furnitureOverrides],
     visibility: {
       hiddenObjectIds: [...visibility.hiddenObjectIds],
@@ -217,6 +235,7 @@ export function PlannerApp({
   });
   const restoreSnapshot = (snapshot: DesignSnapshot) => {
     setPlacements(snapshot.placements);
+    setAddedFurniture(snapshot.addedFurniture);
     setFurnitureOverrides(snapshot.furnitureOverrides);
     setVisibility(snapshot.visibility);
     setFurniturePalette(snapshot.furniturePalette);
@@ -267,6 +286,7 @@ export function PlannerApp({
     historyRef.current = { past: [], future: [] };
     setApartmentId(nextApartment.id);
     setPlacements(savedDesign?.placements ?? []);
+    setAddedFurniture(savedDesign?.addedFurniture ?? []);
     setFurnitureOverrides(savedDesign?.furnitureOverrides ?? []);
     setVisibility(savedDesign?.visibility ?? createDefaultVisibility());
     setFurniturePalette(savedDesign?.furniturePalette ?? 'warm');
@@ -274,6 +294,7 @@ export function PlannerApp({
     setDesignLibrary(savedLibrary);
     setDesignName(savedDesign?.name ?? `תכנון ${nextApartment.name}`);
     setShowDesignLibrary(false);
+    setShowFurnitureCatalog(false);
     setPdfImportDraft(null);
     setPdfImportState('idle');
     setRoomId(null);
@@ -282,6 +303,72 @@ export function PlannerApp({
     setActiveFurnitureId(null);
     setEditError('');
     setNotice('');
+  };
+  const addFurniture = (kind: FurnitureKind) => {
+    if (!selectedRoom) {
+      setEditError('בחרו חדר לפני הוספת ריהוט');
+      return;
+    }
+    try {
+      const item = placeFurnitureInRoom({
+        id: createFurnitureId(),
+        room: selectedRoom,
+        kind,
+        existingFurniture: furniture,
+        placements,
+        apartment,
+      });
+      recordHistory();
+      setAddedFurniture((items) => [...items, item]);
+      setVisibility((current) => ({
+        hiddenObjectIds: current.hiddenObjectIds.filter((id) => id !== item.id),
+        hiddenCategories: current.hiddenCategories.filter(
+          (category) => category !== sceneCategoryForFurniture(item.kind),
+        ),
+      }));
+      setActiveFurnitureId(item.id);
+      setActivePlacementId(null);
+      setShowFurnitureCatalog(false);
+      setEditError('');
+      setNotice(`${item.label} נוסף אל ${selectedRoom.name}`);
+    } catch (error) {
+      setEditError(error instanceof Error ? error.message : 'לא ניתן להוסיף את פריט הריהוט');
+    }
+  };
+  const duplicateFurniture = (item: FurniturePlacement) => {
+    const room = apartment.rooms.find((candidate) => candidate.id === item.roomId);
+    if (!room) return;
+    try {
+      const duplicate = placeFurnitureInRoom({
+        id: createFurnitureId(),
+        room,
+        kind: item.kind,
+        existingFurniture: furniture,
+        placements,
+        apartment,
+        template: item,
+      });
+      recordHistory();
+      setAddedFurniture((items) => [...items, duplicate]);
+      setActiveFurnitureId(duplicate.id);
+      setEditError('');
+      setNotice(`${item.label} שוכפל במקום פנוי`);
+    } catch (error) {
+      setEditError(error instanceof Error ? error.message : 'לא ניתן לשכפל את הפריט');
+    }
+  };
+  const deleteFurniture = (item: FurniturePlacement) => {
+    if (!addedFurniture.some((candidate) => candidate.id === item.id)) return;
+    recordHistory();
+    setAddedFurniture((items) => items.filter((candidate) => candidate.id !== item.id));
+    setFurnitureOverrides((items) => items.filter((override) => override.id !== item.id));
+    setVisibility((current) => ({
+      ...current,
+      hiddenObjectIds: current.hiddenObjectIds.filter((id) => id !== item.id),
+    }));
+    setActiveFurnitureId(null);
+    setEditError('');
+    setNotice(`${item.label} נמחק מהתכנון`);
   };
   const addCabinet = () => {
     if (!selectedWall) return;
@@ -447,6 +534,7 @@ export function PlannerApp({
     name,
     updatedAt: new Date().toISOString(),
     placements,
+    addedFurniture,
     furnitureOverrides,
     visibility,
     furniturePalette,
@@ -455,6 +543,7 @@ export function PlannerApp({
   const applySavedDesign = (design: SavedDesignV2) => {
     historyRef.current = { past: [], future: [] };
     setPlacements(design.placements);
+    setAddedFurniture(design.addedFurniture ?? []);
     setFurnitureOverrides(design.furnitureOverrides);
     setVisibility(design.visibility);
     setFurniturePalette(design.furniturePalette);
@@ -833,6 +922,13 @@ export function PlannerApp({
           onClose={() => setShowDesignLibrary(false)}
         />
       )}
+      {showFurnitureCatalog && selectedRoom && (
+        <FurnitureCatalogPanel
+          roomName={selectedRoom.name}
+          onAdd={addFurniture}
+          onClose={() => setShowFurnitureCatalog(false)}
+        />
+      )}
       <div
         className={`grid min-h-[calc(100vh-8rem)] ${view === 'full' || view === 'overlay' ? 'lg:grid-cols-1' : 'lg:grid-cols-[16rem_minmax(0,1fr)_19rem]'}`}
       >
@@ -894,6 +990,14 @@ export function PlannerApp({
                 />
               </button>
             </div>
+            <button
+              type="button"
+              disabled={!selectedRoom}
+              onClick={() => setShowFurnitureCatalog(true)}
+              className="mt-4 w-full rounded-xl bg-[#7b4f35] px-4 py-3 font-bold text-white disabled:cursor-not-allowed disabled:bg-stone-300"
+            >
+              הוסף ריהוט
+            </button>
             <div className="mt-4" role="group" aria-label="ערכת צבעים לריהוט">
               <p className="mb-2 text-xs font-semibold text-stone-600">אווירת צבע</p>
               <div className="grid grid-cols-3 gap-1">
@@ -968,18 +1072,21 @@ export function PlannerApp({
           </div>
           <div className="mt-8 border-t pt-5 text-sm text-stone-500">
             <p>{savedLabel} בתכנון</p>
+            <p className="mt-1">{addedFurnitureLabel}</p>
             <button
               type="button"
               onClick={() => {
                 if (!window.confirm(`לאפס את תכנון ${apartment.name} במכשיר הזה?`)) return;
                 recordHistory();
                 setPlacements([]);
+                setAddedFurniture([]);
                 setFurnitureOverrides([]);
                 setVisibility(createDefaultVisibility());
                 setFurniturePalette('warm');
                 setCameraByRoom({});
                 setActivePlacementId(null);
                 setActiveFurnitureId(null);
+                setShowFurnitureCatalog(false);
                 localStorage.removeItem(designStorageKey(apartment.id));
                 setEditError('');
                 setNotice('התכנון אופס');
@@ -1102,6 +1209,12 @@ export function PlannerApp({
                   setActiveFurnitureId(null);
                   setNotice(`${activeFurniture.label} הוסתר. אפשר לשחזר אותו מפאנל השכבות`);
                 }}
+                onDuplicate={() => duplicateFurniture(activeFurniture)}
+                onDelete={
+                  addedFurniture.some((item) => item.id === activeFurniture.id)
+                    ? () => deleteFurniture(activeFurniture)
+                    : undefined
+                }
               />
             </div>
           ) : null}

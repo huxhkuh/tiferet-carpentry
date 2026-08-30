@@ -1,4 +1,6 @@
 import type { FurnitureKind, FurniturePalette, FurniturePlacement } from '../types';
+import type { Apartment, CabinetPlacement, Room } from '../types';
+import { validateFurnitureMove } from '../geometry/scene-collision';
 
 /**
  * Catalogue shape adapted from the MIT-licensed openPlan3D furniture catalogue:
@@ -7,7 +9,7 @@ import type { FurnitureKind, FurniturePalette, FurniturePlacement } from '../typ
  * for the Tiferet apartment planner. See THIRD_PARTY_NOTICES.md.
  */
 
-type FurnitureCategory = 'bedroom' | 'living' | 'dining' | 'kitchen' | 'bathroom' | 'utility' | 'decor';
+export type FurnitureCategory = 'bedroom' | 'living' | 'dining' | 'kitchen' | 'bathroom' | 'utility' | 'decor';
 
 interface PaletteColors {
   primary: string;
@@ -138,4 +140,73 @@ export function createFurniturePlacement(
     rotation: 0,
     ...overrides,
   };
+}
+
+export interface PlaceFurnitureRequest {
+  id: string;
+  room: Room;
+  kind: FurnitureKind;
+  existingFurniture: readonly FurniturePlacement[];
+  placements?: readonly CabinetPlacement[];
+  apartment?: Apartment;
+  template?: FurniturePlacement;
+}
+
+function roomBounds(room: Room): { minX: number; minY: number; maxX: number; maxY: number } {
+  return {
+    minX: Math.min(...room.polygon.map((point) => point.x)),
+    minY: Math.min(...room.polygon.map((point) => point.y)),
+    maxX: Math.max(...room.polygon.map((point) => point.x)),
+    maxY: Math.max(...room.polygon.map((point) => point.y)),
+  };
+}
+
+function candidatePositions(room: Room): { x: number; y: number }[] {
+  const bounds = roomBounds(room);
+  const centre = { x: (bounds.minX + bounds.maxX) / 2, y: (bounds.minY + bounds.maxY) / 2 };
+  const span = Math.max(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+  const step = Math.max(100, Math.ceil(span / 100));
+  const positions = [centre];
+  for (let y = bounds.minY + step / 2; y < bounds.maxY; y += step) {
+    for (let x = bounds.minX + step / 2; x < bounds.maxX; x += step) {
+      positions.push({ x, y });
+    }
+  }
+  return positions.sort(
+    (left, right) =>
+      (left.x - centre.x) ** 2 + (left.y - centre.y) ** 2 - ((right.x - centre.x) ** 2 + (right.y - centre.y) ** 2),
+  );
+}
+
+export function placeFurnitureInRoom({
+  id,
+  room,
+  kind,
+  existingFurniture,
+  placements = [],
+  apartment,
+  template,
+}: PlaceFurnitureRequest): FurniturePlacement {
+  const positions = candidatePositions(room);
+  const rotations = template ? [template.rotation, template.rotation + Math.PI / 2] : [0, Math.PI / 2];
+  const templateOverrides = template
+    ? {
+        width: template.width,
+        depth: template.depth,
+        height: template.height,
+        elevation: template.elevation,
+        color: template.color,
+        accentColor: template.accentColor,
+      }
+    : {};
+  for (const rotation of rotations) {
+    for (const position of positions) {
+      const candidate = createFurniturePlacement(id, room.id, kind, position.x, position.y, {
+        ...templateOverrides,
+        rotation,
+      });
+      if (validateFurnitureMove(room, candidate, placements, apartment, existingFurniture) === null) return candidate;
+    }
+  }
+  throw new RangeError(`אין בחדר מקום פנוי עבור ${FURNITURE_CATALOG[kind].label}`);
 }
