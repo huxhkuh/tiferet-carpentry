@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tiferet Apartment Planner — 2026-08-27
 
+- Reconstructed the 5-1 clean plan from the official vector sheet: calibrated room dimensions,
+  source-traced wall thicknesses and openings, corrected wet-room fixtures and service areas,
+  explicit unknown vertical measurements, independent drawing-layer toggles, and an expanded
+  source overlay for 48 wall masses, 14 openings and 8 sanitary fixtures.
 - Completed the premium Hebrew site shell, pixel-aligned source comparison view, searchable
   99-plan catalog, named local design versions, richer project summary and room camera presets.
 - Deferred the professional workshop, cabinet store, i18n bundle, planner, site shell and every

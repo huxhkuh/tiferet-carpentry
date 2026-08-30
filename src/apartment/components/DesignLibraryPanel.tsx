@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import type { ArchitecturalPdfImportDraft } from '../import/pdf-import';
 import type { SavedDesignLibrary } from '../persistence/design-library';
 
 interface DesignLibraryPanelProps {
@@ -10,6 +11,9 @@ interface DesignLibraryPanelProps {
   onDelete: (designId: string) => void;
   onExport: () => void;
   onImport: (file: File) => void;
+  onImportPdf: (file: File) => void;
+  pdfImportDraft: ArchitecturalPdfImportDraft | null;
+  pdfImportState: 'idle' | 'reading' | 'ready' | 'error';
   onClose: () => void;
 }
 
@@ -22,6 +26,9 @@ export function DesignLibraryPanel({
   onDelete,
   onExport,
   onImport,
+  onImportPdf,
+  pdfImportDraft,
+  pdfImportState,
   onClose,
 }: DesignLibraryPanelProps) {
   const handleImport = (event: ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +36,17 @@ export function DesignLibraryPanel({
     if (file) onImport(file);
     event.target.value = '';
   };
+  const handlePdfImport = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) onImportPdf(file);
+    event.target.value = '';
+  };
+  const statusLabel =
+    pdfImportDraft?.status === 'draft-ready'
+      ? 'טיוטת ייבוא מוכנה'
+      : pdfImportDraft?.status === 'needs-manual-review'
+        ? 'נדרש סבב בדיקה'
+        : 'נדרש PDF וקטורי';
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-stone-950/35">
@@ -144,6 +162,64 @@ export function DesignLibraryPanel({
             <input className="sr-only" type="file" accept="application/json,.json" onChange={handleImport} />
           </label>
         </div>
+        <section className="mt-5 rounded-2xl border border-stone-200 bg-white p-4" aria-label="קליטת תוכנית PDF">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h3 className="text-lg font-bold text-stone-800">ייבוא PDF אדריכלי</h3>
+              <p className="mt-1 text-xs leading-5 text-stone-500">
+                העלו גיליון וקטורי כדי לקבל טיוטת ראיות לפני בניית מודל דירה.
+              </p>
+            </div>
+            {pdfImportState === 'reading' && (
+              <span className="rounded-full bg-amber-100 px-2 py-1 text-xs font-bold text-amber-900">קורא</span>
+            )}
+          </div>
+          <label className="mt-4 block cursor-pointer rounded-xl border border-[#6d4630] px-3 py-3 text-center text-sm font-bold text-[#6d4630]">
+            ייבוא PDF אדריכלי
+            <input className="sr-only" type="file" accept="application/pdf,.pdf" onChange={handlePdfImport} />
+          </label>
+          {pdfImportState === 'error' && (
+            <p role="alert" className="mt-3 rounded-lg bg-red-50 p-3 text-sm font-bold text-red-700">
+              לא ניתן לקרוא את קובץ ה-PDF
+            </p>
+          )}
+          {pdfImportDraft && (
+            <div className="mt-4 rounded-xl bg-stone-50 p-3 text-sm text-stone-700">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-bold text-stone-900">{statusLabel}</p>
+                  <p className="mt-1 text-xs text-stone-500">{pdfImportDraft.fileName}</p>
+                </div>
+                <span className="rounded-full bg-stone-200 px-2 py-1 text-xs font-bold text-stone-600">
+                  {pdfImportDraft.pageCount || 'לא ידוע'} עמודים
+                </span>
+              </div>
+              <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <dt className="font-bold text-stone-500">קווי וקטור</dt>
+                  <dd>{pdfImportDraft.vectorSummary.lineSegments}</dd>
+                </div>
+                <div>
+                  <dt className="font-bold text-stone-500">מלבנים</dt>
+                  <dd>{pdfImportDraft.vectorSummary.rectangles}</dd>
+                </div>
+                <div>
+                  <dt className="font-bold text-stone-500">מועמדי קיר</dt>
+                  <dd>{pdfImportDraft.vectorSummary.wallCandidates}</dd>
+                </div>
+                <div>
+                  <dt className="font-bold text-stone-500">מידות מטקסט</dt>
+                  <dd>{pdfImportDraft.vectorSummary.dimensionCandidates.length}</dd>
+                </div>
+              </dl>
+              <ul className="mt-3 space-y-1 text-xs text-stone-500">
+                {pdfImportDraft.qualityFlags.map((flag) => (
+                  <li key={flag}>{flag}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
         <p className="mt-4 text-xs leading-5 text-stone-500">
           קובץ ה‑JSON כולל את מיקומי הנגרות, הריהוט, שכבות התצוגה והמצלמה — ללא פרטי חשבון או מידע שנשלח לשרת.
         </p>

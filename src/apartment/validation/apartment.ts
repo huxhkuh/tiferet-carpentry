@@ -1,4 +1,4 @@
-import type { Apartment, Point, Project } from '../types';
+import type { Apartment, Point, Project, RoomDimension } from '../types';
 import { wallLength } from '../geometry/wall-frame';
 
 export type ApartmentValidationCode =
@@ -14,6 +14,7 @@ export type ApartmentValidationCode =
   | 'DUPLICATE_WALL_REFERENCE'
   | 'UNKNOWN_ROOM_REFERENCE'
   | 'INVALID_FURNITURE'
+  | 'INVALID_FIXTURE'
   | 'INVALID_MEASUREMENT_EVIDENCE'
   | 'INVALID_SOURCE';
 
@@ -36,6 +37,8 @@ const VALID_MEASUREMENT_ORIGINS = new Set([
 const VALID_CONFIDENCE = new Set(['high', 'medium', 'low', 'unresolved']);
 const VALID_GEOMETRY_STATUSES = new Set(['unresolved', 'partially-modeled', 'modeled', 'verified']);
 const VALID_VERIFICATION_STATUSES = new Set(['pending', 'passed']);
+const VALID_FIXTURE_KINDS = new Set(['bathtub', 'shower', 'toilet', 'vanity', 'sink', 'washer', 'dryer']);
+const VALID_ROOM_DIMENSION_AXES = new Set(['horizontal', 'vertical', 'segment']);
 
 function isValidMeasurementEvidence(value: unknown): boolean {
   if (typeof value !== 'object' || value === null) return false;
@@ -48,6 +51,30 @@ function isValidMeasurementEvidence(value: unknown): boolean {
     typeof evidence.confidence === 'string' &&
     VALID_CONFIDENCE.has(evidence.confidence) &&
     (evidence.sourcePage === undefined || (Number.isInteger(evidence.sourcePage) && Number(evidence.sourcePage) > 0))
+  );
+}
+
+function isValidGeometryTrace(value: unknown): boolean {
+  if (typeof value !== 'object' || value === null) return false;
+  const trace = value as Record<string, unknown>;
+  return (
+    typeof trace.sourceFileId === 'string' &&
+    isNonEmptyString(trace.sourceFileId) &&
+    Number.isInteger(trace.sourcePage) &&
+    Number(trace.sourcePage) > 0 &&
+    typeof trace.confidence === 'string' &&
+    VALID_CONFIDENCE.has(trace.confidence)
+  );
+}
+
+function isValidDimension(dimension: RoomDimension): boolean {
+  return (
+    isNonEmptyString(dimension.id) &&
+    isNonEmptyString(dimension.label) &&
+    Number.isFinite(dimension.value) &&
+    dimension.value > 0 &&
+    VALID_ROOM_DIMENSION_AXES.has(dimension.axis) &&
+    isValidMeasurementEvidence(dimension.evidence)
   );
 }
 
@@ -80,6 +107,7 @@ export function getApartmentValidationIssues(apartment: Apartment): ApartmentVal
     ...apartment.walls.flatMap((wall) => wall.openings.map((opening) => opening.id)),
     ...apartment.fixedElements.map((element) => element.id),
     ...(apartment.wallMasses ?? []).map((mass) => mass.id),
+    ...(apartment.fixtures ?? []).map((fixture) => fixture.id),
     ...(apartment.furniture ?? []).map((item) => item.id),
   ];
   for (const id of duplicateIds(entityIds)) {
@@ -138,6 +166,17 @@ export function getApartmentValidationIssues(apartment: Apartment): ApartmentVal
     if (!room.polygon.every(isFinitePoint)) {
       issues.push({ code: 'INVALID_POINT', entityId: room.id, message: 'נקודות החדר חייבות להיות סופיות' });
     }
+    if (
+      !(room.dimensions ?? []).every(isValidDimension) ||
+      (room.ceilingHeight !== undefined && (!Number.isFinite(room.ceilingHeight) || room.ceilingHeight <= 0)) ||
+      (room.ceilingHeightEvidence !== undefined && !isValidMeasurementEvidence(room.ceilingHeightEvidence))
+    ) {
+      issues.push({
+        code: 'INVALID_MEASUREMENT_EVIDENCE',
+        entityId: room.id,
+        message: 'מידות החדר חייבות לכלול ערך חיובי וראיית מקור תקינה',
+      });
+    }
     if (duplicateIds(room.wallIds).length > 0) {
       issues.push({
         code: 'DUPLICATE_WALL_REFERENCE',
@@ -182,6 +221,39 @@ export function getApartmentValidationIssues(apartment: Apartment): ApartmentVal
     }
     if (element.polygon.length < 3 || !element.polygon.every(isFinitePoint)) {
       issues.push({ code: 'INVALID_POLYGON', entityId: element.id, message: 'מכשול קבוע חייב לכלול מצולע תקין' });
+    }
+    if (!(element.dimensions ?? []).every(isValidDimension)) {
+      issues.push({
+        code: 'INVALID_MEASUREMENT_EVIDENCE',
+        entityId: element.id,
+        message: 'מידות האלמנט הקבוע חייבות לכלול ערך חיובי וראיית מקור תקינה',
+      });
+    }
+  }
+
+  for (const fixture of apartment.fixtures ?? []) {
+    const fixtureMeasurements = fixture.measurements === undefined ? [] : Object.values(fixture.measurements);
+    if (!roomIds.has(fixture.roomId)) {
+      issues.push({
+        code: 'UNKNOWN_ROOM_REFERENCE',
+        entityId: fixture.id,
+        message: `הקבועה האדריכלית מפנה לחדר לא מוכר: ${fixture.roomId}`,
+      });
+    }
+    if (
+      !isNonEmptyString(fixture.id) ||
+      !isNonEmptyString(fixture.label) ||
+      !VALID_FIXTURE_KINDS.has(fixture.kind) ||
+      fixture.polygon.length < 3 ||
+      !fixture.polygon.every(isFinitePoint) ||
+      !fixtureMeasurements.every(isValidMeasurementEvidence) ||
+      !isValidGeometryTrace(fixture.trace)
+    ) {
+      issues.push({
+        code: 'INVALID_FIXTURE',
+        entityId: fixture.id,
+        message: 'קבועה אדריכלית חייבת לכלול מצולע וראיית מקור תקינים',
+      });
     }
   }
 

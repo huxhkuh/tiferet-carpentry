@@ -2,6 +2,22 @@ import { describe, expect, it } from 'vitest';
 import { TIFERET_5_1, TIFERET_PROJECT } from '../../src/apartment/data/tiferet';
 import { wallLength } from '../../src/apartment/geometry/wall-frame';
 import { validateApartment, validateProject } from '../../src/apartment/validation/apartment';
+import type { MeasurementEvidence, Point } from '../../src/apartment/types';
+
+interface AuditedRoomDimension {
+  id: string;
+  label: string;
+  value: number;
+  evidence: MeasurementEvidence;
+}
+
+interface AuditedFixture {
+  id: string;
+  roomId: string;
+  kind: string;
+  polygon: Point[];
+  trace?: { confidence: string };
+}
 
 const wallLengthById = (id: string): number => {
   const wall = TIFERET_5_1.walls.find((candidate) => candidate.id === id);
@@ -74,14 +90,12 @@ describe('Tiferet apartment 5-1 normalized source model', () => {
     );
   });
 
-  it('distinguishes source geometry from unverified 3D presentation defaults', () => {
+  it('distinguishes source geometry from renderer-only presentation defaults', () => {
     expect(TIFERET_5_1.walls.every((wall) => wall.trace?.sourceFileId === TIFERET_5_1.source.sourceFileId)).toBe(true);
     expect(TIFERET_5_1.walls.every((wall) => wall.trace?.sourcePage === 1)).toBe(true);
-    expect(TIFERET_5_1.walls.every((wall) => wall.measurements?.height?.origin === 'presentation-default')).toBe(true);
+    expect(TIFERET_5_1.walls.every((wall) => wall.measurements?.height === undefined)).toBe(true);
     expect(
-      TIFERET_5_1.walls
-        .flatMap((wall) => wall.openings)
-        .every((opening) => opening.measurements?.height?.origin === 'presentation-default'),
+      TIFERET_5_1.walls.flatMap((wall) => wall.openings).every((opening) => opening.measurements?.height === undefined),
     ).toBe(true);
   });
 
@@ -161,5 +175,221 @@ describe('Tiferet apartment 5-1 normalized source model', () => {
     expect(bath?.wallIds).toEqual(['bath-n', 'bath-e', 'bath-s', 'bath-w']);
     expect(wallLengthById('bath-n')).toBe(2_290);
     expect(wallLengthById('bath-e')).toBe(1_700);
+  });
+
+  it('stores printed room dimensions as explicit evidence instead of deriving labels from bounding boxes', () => {
+    const expected = new Map([
+      ['safe-room', [2_950, 3_050]],
+      ['bedroom', [2_700, 3_000]],
+      ['living', [3_450, 8_450]],
+      ['shower', [1_650, 1_600]],
+      ['guest-wc', [1_500, 900]],
+      ['master', [3_850, 2_950]],
+      ['bath', [2_290, 1_700]],
+      ['kitchen', [3_850, 1_700]],
+    ]);
+
+    for (const [roomId, values] of expected) {
+      const room = TIFERET_5_1.rooms.find((candidate) => candidate.id === roomId) as
+        ({ dimensions?: AuditedRoomDimension[] } & (typeof TIFERET_5_1.rooms)[number]) | undefined;
+      expect(room?.dimensions?.map((dimension) => dimension.value)).toEqual(values);
+      expect(room?.dimensions?.every((dimension) => dimension.evidence.origin === 'explicit')).toBe(true);
+      expect(room?.dimensions?.every((dimension) => dimension.evidence.confidence === 'high')).toBe(true);
+    }
+  });
+
+  it('keeps unavailable vertical measurements unknown instead of persisting viewer defaults as source facts', () => {
+    expect(TIFERET_5_1.walls.every((wall) => wall.height === undefined)).toBe(true);
+    expect(
+      TIFERET_5_1.walls
+        .flatMap((wall) => wall.openings)
+        .every(
+          (opening) => opening.height === undefined && (opening.kind !== 'window' || opening.sillHeight === undefined),
+        ),
+    ).toBe(true);
+  });
+
+  it('uses vector-traced wall thicknesses and does not flatten reinforced and internal walls to one value', () => {
+    const thicknesses = new Set(TIFERET_5_1.walls.map((wall) => wall.thickness));
+
+    expect(thicknesses.size).toBeGreaterThan(3);
+    expect(TIFERET_5_1.walls.find((wall) => wall.id === 'safe-w')?.thickness).toBeGreaterThan(250);
+    expect(TIFERET_5_1.walls.find((wall) => wall.id === 'bed-e')?.thickness).toBe(100);
+    expect(TIFERET_5_1.walls.every((wall) => wall.measurements?.thickness?.origin === 'vector-traced')).toBe(true);
+  });
+
+  it('corrects the two most visibly misplaced door openings without overstating their source evidence', () => {
+    const bedroomDoor = TIFERET_5_1.walls.find((wall) => wall.id === 'bed-s')?.openings[0];
+    const bathroomDoor = TIFERET_5_1.walls.find((wall) => wall.id === 'bath-n')?.openings[0];
+
+    expect(bedroomDoor?.offset).toBeGreaterThan(1_700);
+    expect(bedroomDoor?.width).toBeGreaterThanOrEqual(700);
+    expect(bedroomDoor?.width).toBeLessThanOrEqual(850);
+    expect(bathroomDoor?.offset).toBeGreaterThanOrEqual(700);
+    expect(bathroomDoor?.offset).toBeLessThanOrEqual(850);
+    expect(bathroomDoor?.measurements?.offset?.origin).toBe('derived');
+  });
+
+  it('maps balcony glazing as one continuous opening per source bay', () => {
+    const bedroomOpenings = TIFERET_5_1.walls.find((wall) => wall.id === 'bed-n')?.openings ?? [];
+    const livingOpenings = TIFERET_5_1.walls.find((wall) => wall.id === 'living-n')?.openings ?? [];
+
+    expect(bedroomOpenings).toHaveLength(1);
+    expect(bedroomOpenings[0]).toMatchObject({ kind: 'window', offset: 817, width: 1_181 });
+    expect(livingOpenings).toHaveLength(1);
+    expect(livingOpenings[0]).toMatchObject({ kind: 'door', offset: 656, width: 2_361, swing: 'sliding' });
+  });
+
+  it('attaches wet-room doors to the horizontal doorway gaps shown in the source', () => {
+    const showerEast = TIFERET_5_1.walls.find((wall) => wall.id === 'shower-e');
+    const showerSouth = TIFERET_5_1.walls.find((wall) => wall.id === 'shower-s');
+    const guestEast = TIFERET_5_1.walls.find((wall) => wall.id === 'guest-wc-e');
+    const guestSouth = TIFERET_5_1.walls.find((wall) => wall.id === 'guest-wc-s');
+
+    expect(showerEast?.openings).toHaveLength(0);
+    expect(showerSouth?.openings[0]).toMatchObject({ id: 'shower-door', offset: 92, width: 791 });
+    expect(guestEast?.openings).toHaveLength(0);
+    expect(guestSouth?.openings[0]).toMatchObject({ id: 'guest-wc-door', offset: 90, width: 697 });
+  });
+
+  it('models the laundry hideaway and the 155 by 105 cm service shaft as separate source-traced areas', () => {
+    expect(roomBounds('laundry')).toEqual({ left: 2_764, right: 5_370, top: 8_402, bottom: 10_150 });
+
+    const laundryWindow = TIFERET_5_1.walls.find((wall) => wall.id === 'laundry-e')?.openings[0];
+    const kitchenWindow = TIFERET_5_1.walls.find((wall) => wall.id === 'kitchen-w')?.openings[0];
+    expect(laundryWindow).toMatchObject({ kind: 'window', offset: 469, width: 1_201 });
+    expect(kitchenWindow).toMatchObject({ kind: 'window', offset: 78, width: 1_201 });
+
+    const shaft = TIFERET_5_1.fixedElements.find((element) => element.id === 'bath-service-shaft');
+    const xs = shaft?.polygon.map((point) => point.x) ?? [];
+    const ys = shaft?.polygon.map((point) => point.y) ?? [];
+    expect({ left: Math.min(...xs), right: Math.max(...xs), top: Math.min(...ys), bottom: Math.max(...ys) }).toEqual({
+      left: 3_977,
+      right: 5_524,
+      top: 6_936,
+      bottom: 8_029,
+    });
+    expect(shaft?.kind).toBe('shaft');
+  });
+
+  it('rejects invalid dimensions attached to a fixed architectural element', () => {
+    const invalidApartment = {
+      ...TIFERET_5_1,
+      fixedElements: TIFERET_5_1.fixedElements.map((element) =>
+        element.id === 'bath-service-shaft'
+          ? {
+              ...element,
+              dimensions: [
+                {
+                  id: 'invalid-shaft-width',
+                  label: 'רוחב',
+                  value: -1,
+                  axis: 'horizontal' as const,
+                  evidence: { origin: 'explicit' as const, basis: 'clear' as const, confidence: 'high' as const },
+                },
+              ],
+            }
+          : element,
+      ),
+    };
+
+    expect(validateApartment(invalidApartment)).toBe(false);
+  });
+
+  it('keeps traced opening evidence auditable and marks untraced offsets as derived', () => {
+    const openings = TIFERET_5_1.walls.flatMap((wall) => wall.openings);
+    const traced = openings.filter((opening) => opening.measurements?.width?.origin === 'vector-traced');
+    const inferred = openings.filter((opening) => opening.measurements?.width?.origin === 'derived');
+
+    expect(traced.length).toBeGreaterThan(0);
+    expect(traced.every((opening) => opening.trace?.sourceRect !== undefined)).toBe(true);
+    expect(inferred.map((opening) => opening.id)).toEqual(
+      expect.arrayContaining([
+        'safe-door',
+        'safe-window',
+        'bed-door',
+        'shower-window',
+        'master-door',
+        'master-window',
+        'bath-door',
+      ]),
+    );
+  });
+
+  it('pins sanitary fixtures to the source-plan side of each wet room', () => {
+    const fixtures = (TIFERET_5_1 as typeof TIFERET_5_1 & { fixtures?: AuditedFixture[] }).fixtures ?? [];
+    const bathtub = fixtures.find((fixture) => fixture.id === 'bath-bathtub');
+    const showerTray = fixtures.find((fixture) => fixture.id === 'shower-tray');
+    const showerVanity = fixtures.find((fixture) => fixture.id === 'shower-vanity');
+
+    expect(fixtures.filter((fixture) => fixture.roomId === 'bath').map((fixture) => fixture.kind)).toEqual(
+      expect.arrayContaining(['bathtub', 'toilet', 'vanity']),
+    );
+    expect(Math.min(...(bathtub?.polygon.map((point) => point.x) ?? []))).toBeGreaterThan(5_400);
+    expect(Math.max(...(showerTray?.polygon.map((point) => point.x) ?? []))).toBeLessThan(1_100);
+    expect(Math.min(...(showerVanity?.polygon.map((point) => point.x) ?? []))).toBeGreaterThan(1_000);
+    expect(fixtures.every((fixture) => fixture.trace?.confidence !== 'unresolved')).toBe(true);
+  });
+
+  it('rejects a source fixture that points outside the room graph or has no polygon', () => {
+    const invalidApartment = {
+      ...TIFERET_5_1,
+      fixtures: [
+        {
+          id: 'invalid-source-fixture',
+          roomId: 'missing-room',
+          kind: 'bathtub' as const,
+          label: 'אמבט לא תקין',
+          polygon: [],
+          trace: { sourceFileId: 'source', sourcePage: 1, confidence: 'high' as const },
+        },
+      ],
+    };
+
+    expect(validateApartment(invalidApartment)).toBe(false);
+  });
+
+  it('rejects a source fixture with an unsupported kind', () => {
+    const invalidApartment = {
+      ...TIFERET_5_1,
+      fixtures: [
+        {
+          id: 'invalid-source-fixture-kind',
+          roomId: 'bath',
+          kind: 'jacuzzi',
+          label: 'סוג קבועה לא מוכר',
+          polygon: [
+            { x: 0, y: 0 },
+            { x: 1, y: 0 },
+            { x: 1, y: 1 },
+          ],
+          trace: { sourceFileId: 'source', sourcePage: 1, confidence: 'high' as const },
+        },
+      ],
+    } as unknown as typeof TIFERET_5_1;
+
+    expect(validateApartment(invalidApartment)).toBe(false);
+  });
+
+  it('rejects a source fixture without trace metadata without throwing', () => {
+    const fixtureWithoutTrace = {
+      ...TIFERET_5_1,
+      fixtures: [
+        {
+          id: 'fixture-without-trace',
+          roomId: 'bath',
+          kind: 'bathtub',
+          label: 'אמבט ללא מקור',
+          polygon: [
+            { x: 0, y: 0 },
+            { x: 1, y: 0 },
+            { x: 1, y: 1 },
+          ],
+        },
+      ],
+    } as unknown as typeof TIFERET_5_1;
+
+    expect(() => validateApartment(fixtureWithoutTrace)).not.toThrow();
+    expect(validateApartment(fixtureWithoutTrace)).toBe(false);
   });
 });

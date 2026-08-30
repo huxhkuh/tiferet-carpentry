@@ -154,3 +154,23 @@ test('Tiferet complete view serves the untouched full-resolution source sheet', 
     '/tiferet-carpentry/tiferet/sheet-5-1-original.pdf',
   );
 });
+
+test('Tiferet clean-plan layers and source audit expose architectural evidence', async ({ page }) => {
+  await page.goto('/tiferet-carpentry/design/shower');
+
+  await expect(page.getByTestId('architectural-fixture-shower-tray')).toBeVisible();
+  await expect(page.getByTestId('architectural-fixture-shower-vanity')).toBeVisible();
+  await expect(page.getByTestId('architectural-fixture-shower-toilet')).toBeVisible();
+  await expect(page.getByTestId('door-swing-shower-door')).toBeVisible();
+
+  await page.getByRole('switch', { name: 'הצג קשתות דלת' }).click();
+  await expect(page.getByTestId('door-swing-shower-door')).toHaveCount(0);
+  await page.getByRole('switch', { name: 'הצג מידות' }).click();
+  await expect(page.getByTestId('room-dimensions-shower')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'בדיקת חפיפה' }).click();
+  await expect(page.getByText('14 פתחים ממופים')).toBeVisible();
+  await expect(page.getByText('8 קבועות סניטריות')).toBeVisible();
+  await expect(page.getByTestId('source-overlay-opening-shower-door')).toHaveCount(1);
+  await expect(page.getByTestId('source-overlay-fixture-shower-tray')).toBeVisible();
+});

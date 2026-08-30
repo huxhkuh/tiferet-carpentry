@@ -23,4 +23,14 @@ describe('SourceComparisonPlan', () => {
 
     expect(screen.getByTestId('source-model-overlay')).toHaveAttribute('opacity', '0.25');
   });
+
+  it('overlays every modeled opening and fixed sanitary fixture for visual auditing', () => {
+    render(<SourceComparisonPlan apartment={TIFERET_5_1} />);
+
+    const openingCount = TIFERET_5_1.walls.reduce((total, wall) => total + wall.openings.length, 0);
+    expect(screen.getAllByTestId(/^source-overlay-opening-/)).toHaveLength(openingCount);
+    expect(screen.getAllByTestId(/^source-overlay-fixture-/)).toHaveLength(8);
+    expect(screen.getByText(`${openingCount} פתחים ממופים`)).toBeVisible();
+    expect(screen.getByText('8 קבועות סניטריות')).toBeVisible();
+  });
 });

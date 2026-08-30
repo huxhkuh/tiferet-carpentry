@@ -17,6 +17,7 @@ import { TIFERET_5_1, TIFERET_PROJECT } from './data/tiferet';
 import { createCabinetPlacement, deriveCabinet, updateCabinetPlacement } from './cabinet/adapter';
 import { validatePlacement, wallLength } from './geometry/placement';
 import { findCabinetFurnitureCollision, validateFurnitureMove } from './geometry/scene-collision';
+import { analyzeArchitecturalPdf, type ArchitecturalPdfImportDraft } from './import/pdf-import';
 import {
   deserializeDesign,
   restoreDesign,
@@ -129,35 +130,48 @@ export function PlannerApp({
   onExit,
   initialStarted = false,
   initialRoomId = null,
+  initialApartment,
   onSummary,
 }: {
   onExit?: () => void;
   initialStarted?: boolean;
   initialRoomId?: string | null;
+  initialApartment?: Apartment;
   onSummary?: () => void;
 }) {
+  const startingApartment = initialApartment ?? DEFAULT_APARTMENT;
   const [started, setStarted] = useState(initialStarted);
   const [view, setView] = useState<'clean' | 'overlay' | 'full' | '3d'>('clean');
   const [buildingId, setBuildingId] = useState(DEFAULT_BUILDING?.id ?? '');
   const building = TIFERET_PROJECT.buildings.find((item) => item.id === buildingId) ?? DEFAULT_BUILDING;
   const [floorNumber, setFloorNumber] = useState(DEFAULT_FLOOR?.number ?? 0);
   const floor = building?.floors.find((item) => item.number === floorNumber) ?? building?.floors[0];
-  const [apartmentId, setApartmentId] = useState(DEFAULT_APARTMENT.id);
+  const [apartmentId, setApartmentId] = useState(startingApartment.id);
   const apartment =
-    floor?.apartments.find((item) => item.id === apartmentId) ?? floor?.apartments[0] ?? DEFAULT_APARTMENT;
+    initialApartment ??
+    floor?.apartments.find((item) => item.id === apartmentId) ??
+    floor?.apartments[0] ??
+    DEFAULT_APARTMENT;
   const [roomId, setRoomId] = useState<string | null>(() =>
-    DEFAULT_APARTMENT.rooms.some((room) => room.id === initialRoomId) ? initialRoomId : null,
+    startingApartment.rooms.some((room) => room.id === initialRoomId) ? initialRoomId : null,
   );
   const [wallId, setWallId] = useState<string | null>(null);
-  const [seedDesign] = useState(() => loadSavedDesign(DEFAULT_APARTMENT.id));
+  const [seedDesign] = useState(() => loadSavedDesign(startingApartment.id));
   const [placements, setPlacements] = useState<CabinetPlacement[]>(seedDesign?.placements ?? []);
   const [furnitureOverrides, setFurnitureOverrides] = useState(seedDesign?.furnitureOverrides ?? []);
   const [visibility, setVisibility] = useState<DesignVisibility>(seedDesign?.visibility ?? createDefaultVisibility());
   const [furniturePalette, setFurniturePalette] = useState<FurniturePalette>(seedDesign?.furniturePalette ?? 'warm');
   const [cameraByRoom, setCameraByRoom] = useState<Record<string, RoomCameraOrbit>>(seedDesign?.cameraByRoom ?? {});
-  const [designLibrary, setDesignLibrary] = useState(() => loadDesignLibrary(DEFAULT_APARTMENT.id));
-  const [designName, setDesignName] = useState(seedDesign?.name ?? 'תכנון דירה 5-1');
+  const [designLibrary, setDesignLibrary] = useState(() => loadDesignLibrary(startingApartment.id));
+  const [designName, setDesignName] = useState(seedDesign?.name ?? `תכנון ${startingApartment.name}`);
   const [showDesignLibrary, setShowDesignLibrary] = useState(false);
+  const [pdfImportDraft, setPdfImportDraft] = useState<ArchitecturalPdfImportDraft | null>(null);
+  const [pdfImportState, setPdfImportState] = useState<'idle' | 'reading' | 'ready' | 'error'>('idle');
+  const [cleanPlanLayers, setCleanPlanLayers] = useState({
+    doorSwings: true,
+    dimensions: true,
+    labels: true,
+  });
   const historyRef = useRef<DesignHistory>({ past: [], future: [] });
   const [activePlacementId, setActivePlacementId] = useState<string | null>(null);
   const [activeFurnitureId, setActiveFurnitureId] = useState<string | null>(null);
@@ -260,6 +274,8 @@ export function PlannerApp({
     setDesignLibrary(savedLibrary);
     setDesignName(savedDesign?.name ?? `תכנון ${nextApartment.name}`);
     setShowDesignLibrary(false);
+    setPdfImportDraft(null);
+    setPdfImportState('idle');
     setRoomId(null);
     setWallId(null);
     setActivePlacementId(null);
@@ -462,7 +478,7 @@ export function PlannerApp({
       return;
     }
     const activeDesignId = designLibrary.activeDesignId ?? 'design-5-1';
-    const nextName = designName.trim() || 'תכנון דירה 5-1';
+    const nextName = designName.trim() || `תכנון ${apartment.name}`;
     persistDesignVersion(createSavedDesign(activeDesignId, nextName));
     setEditError('');
     setNotice('התכנון נשמר בהצלחה במכשיר זה');
@@ -539,6 +555,24 @@ export function PlannerApp({
       setNotice(`הגרסה “${design.name}” יובאה ונטענה`);
     } catch {
       setEditError('לא ניתן לקרוא את קובץ התכנון');
+    }
+  };
+  const importArchitecturalPdf = async (file: File) => {
+    setPdfImportState('reading');
+    setPdfImportDraft(null);
+    setEditError('');
+    try {
+      const draft = await analyzeArchitecturalPdf(file);
+      setPdfImportDraft(draft);
+      setPdfImportState('ready');
+      setNotice(
+        draft.status === 'draft-ready'
+          ? 'ה-PDF נותח ונוצרה טיוטת ראיות לייבוא'
+          : 'ה-PDF נקרא, אבל נדרש סבב בדיקה לפני בניית מודל דירה',
+      );
+    } catch (error) {
+      setPdfImportState('error');
+      setEditError(error instanceof Error ? error.message : 'לא ניתן לקרוא את קובץ ה-PDF');
     }
   };
   if (!started)
@@ -681,7 +715,9 @@ export function PlannerApp({
           <div>
             <strong className="block text-lg text-[#5f402f]">נגרות תפארת</strong>
             <p className="text-xs text-stone-500">
-              {building?.name} • קומה {floor?.number} • {apartmentSourceLabel(apartment)}
+              {initialApartment
+                ? `${apartment.source.building} • קומה ${apartment.source.floor} • ${apartment.name}`
+                : `${building?.name} • קומה ${floor?.number} • ${apartmentSourceLabel(apartment)}`}
             </p>
           </div>
         </div>
@@ -716,14 +752,16 @@ export function PlannerApp({
             role="group"
             aria-label="מצב תצוגה"
           >
-            <button
-              type="button"
-              aria-pressed={view === 'overlay'}
-              onClick={() => setView('overlay')}
-              className={`rounded-lg px-3 py-2 text-sm ${view === 'overlay' ? 'bg-white shadow' : ''}`}
-            >
-              בדיקת חפיפה
-            </button>
+            {!initialApartment && (
+              <button
+                type="button"
+                aria-pressed={view === 'overlay'}
+                onClick={() => setView('overlay')}
+                className={`rounded-lg px-3 py-2 text-sm ${view === 'overlay' ? 'bg-white shadow' : ''}`}
+              >
+                בדיקת חפיפה
+              </button>
+            )}
             <button
               type="button"
               aria-pressed={view === 'clean'}
@@ -732,14 +770,16 @@ export function PlannerApp({
             >
               תצוגה נקייה
             </button>
-            <button
-              type="button"
-              aria-pressed={view === 'full'}
-              onClick={() => setView('full')}
-              className={`rounded-lg px-3 py-2 text-sm ${view === 'full' ? 'bg-white shadow' : ''}`}
-            >
-              תצוגה מלאה
-            </button>
+            {!initialApartment && (
+              <button
+                type="button"
+                aria-pressed={view === 'full'}
+                onClick={() => setView('full')}
+                className={`rounded-lg px-3 py-2 text-sm ${view === 'full' ? 'bg-white shadow' : ''}`}
+              >
+                תצוגה מלאה
+              </button>
+            )}
             <button
               type="button"
               aria-pressed={view === '3d'}
@@ -787,6 +827,9 @@ export function PlannerApp({
           onDelete={deleteDesignVersion}
           onExport={exportActiveDesign}
           onImport={(file) => void importDesignVersion(file)}
+          onImportPdf={(file) => void importArchitecturalPdf(file)}
+          pdfImportDraft={pdfImportDraft}
+          pdfImportState={pdfImportState}
           onClose={() => setShowDesignLibrary(false)}
         />
       )}
@@ -893,12 +936,42 @@ export function PlannerApp({
               }}
             />
           </div>
+          <div className="mt-4 rounded-2xl border border-stone-200 bg-white p-4">
+            <p className="font-bold text-stone-800">שכבות שרטוט</p>
+            <p className="mt-1 text-xs leading-5 text-stone-500">הציגו רק את המידע הדרוש בלי לשנות את מידות התוכנית.</p>
+            <div className="mt-3 space-y-2">
+              {(
+                [
+                  ['doorSwings', 'הצג קשתות דלת'],
+                  ['dimensions', 'הצג מידות'],
+                  ['labels', 'הצג שמות חדרים'],
+                ] as const
+              ).map(([layer, label]) => (
+                <div key={layer} className="flex items-center justify-between gap-3 py-1">
+                  <span className="text-sm text-stone-700">{label}</span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-label={label}
+                    aria-checked={cleanPlanLayers[layer]}
+                    onClick={() => setCleanPlanLayers((current) => ({ ...current, [layer]: !current[layer] }))}
+                    className={`relative h-7 w-12 shrink-0 rounded-full transition ${cleanPlanLayers[layer] ? 'bg-[#7b4f35]' : 'bg-stone-300'}`}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-all ${cleanPlanLayers[layer] ? 'start-6' : 'start-1'}`}
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="mt-8 border-t pt-5 text-sm text-stone-500">
             <p>{savedLabel} בתכנון</p>
             <button
               type="button"
               onClick={() => {
-                if (!window.confirm('לאפס את תכנון דירה 5-1 במכשיר הזה?')) return;
+                if (!window.confirm(`לאפס את תכנון ${apartment.name} במכשיר הזה?`)) return;
                 recordHistory();
                 setPlacements([]);
                 setFurnitureOverrides([]);
@@ -932,6 +1005,9 @@ export function PlannerApp({
               activePlacementId={active?.id ?? null}
               activeFurnitureId={activeFurniture?.id ?? null}
               showFurniture={showFurniture}
+              showDoorSwings={cleanPlanLayers.doorSwings}
+              showDimensions={cleanPlanLayers.dimensions}
+              showLabels={cleanPlanLayers.labels}
               furniturePalette={furniturePalette}
               onRoom={(id) => {
                 setRoomId(id);

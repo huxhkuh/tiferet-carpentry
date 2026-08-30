@@ -12,6 +12,8 @@ import { cabinetFootprint, wallAngle } from '../geometry/placement';
 import { furnitureFootprint } from '../furniture/geometry';
 import { getFurnitureAppearance } from '../furniture/catalog';
 import { createDefaultVisibility, isSceneObjectVisible, sceneCategoryForFurniture } from '../planner/design-state';
+import { ArchitecturalDoorGraphic } from './ArchitecturalOpening2D';
+import { ArchitecturalFixture2D } from './ArchitecturalFixture2D';
 
 interface Props {
   apartment: Apartment;
@@ -23,6 +25,10 @@ interface Props {
   furniture?: readonly FurniturePlacement[];
   visibility?: DesignVisibility;
   showFurniture?: boolean;
+  showDoorSwings?: boolean;
+  showDimensions?: boolean;
+  showLabels?: boolean;
+  showFixtures?: boolean;
   furniturePalette?: FurniturePalette;
   onRoom(id: string): void;
   onWall(id: string): void;
@@ -59,6 +65,17 @@ function roomMetrics(room: Room) {
   };
 }
 
+function roomDimensionLabel(room: Room, metrics: ReturnType<typeof roomMetrics>): string {
+  const dimensions = room.dimensions ?? [];
+  if (dimensions.length >= 2) {
+    return `${Math.round(dimensions[0]!.value / 10)} × ${Math.round(dimensions[1]!.value / 10)} ס״מ`;
+  }
+  if (dimensions.length === 1) {
+    return `${dimensions[0]!.label}: ${Math.round(dimensions[0]!.value / 10)} ס״מ`;
+  }
+  return `${Math.round(metrics.width / 10)} × ${Math.round(metrics.height / 10)} ס״מ`;
+}
+
 export function Plan2D({
   apartment,
   placements,
@@ -69,6 +86,10 @@ export function Plan2D({
   furniture,
   visibility = createDefaultVisibility(),
   showFurniture = true,
+  showDoorSwings = true,
+  showDimensions = true,
+  showLabels = true,
+  showFixtures = true,
   furniturePalette = 'warm',
   onRoom,
   onWall,
@@ -84,6 +105,7 @@ export function Plan2D({
     ...apartment.walls.flatMap((wall) => [wall.start, wall.end]),
     ...(apartment.wallMasses ?? []).flatMap((mass) => mass.polygon),
     ...apartment.fixedElements.flatMap((element) => element.polygon),
+    ...(apartment.fixtures ?? []).flatMap((fixture) => fixture.polygon),
     ...resolvedFurniture.flatMap(furnitureFootprint),
   ];
   const selectedRoom = apartment.rooms.find((room) => room.id === roomId);
@@ -94,6 +116,9 @@ export function Plan2D({
   const visibleFixedElements = selectedRoom
     ? apartment.fixedElements.filter((element) => element.roomId === selectedRoom.id)
     : apartment.fixedElements;
+  const visibleFixtures = showFixtures
+    ? (apartment.fixtures ?? []).filter((fixture) => !selectedRoom || fixture.roomId === selectedRoom.id)
+    : [];
   const roomPlacements = selectedRoom
     ? placements.filter((placement) => placement.roomId === selectedRoom.id)
     : placements;
@@ -104,12 +129,27 @@ export function Plan2D({
     ? resolvedFurniture.filter(
         (item) =>
           (!selectedRoom || item.roomId === selectedRoom.id) &&
+          !(apartment.fixtures ?? []).some((fixture) => fixture.roomId === item.roomId && fixture.kind === item.kind) &&
           isSceneObjectVisible(visibility, item.id, sceneCategoryForFurniture(item.kind)),
       )
     : [];
   const usesSourceWallMasses = (apartment.wallMasses?.length ?? 0) > 0;
+  const visiblePlacementPoints = visiblePlacements.flatMap((placement) => {
+    const wall = apartment.walls.find((item) => item.id === placement.wallId);
+    const room = apartment.rooms.find((item) => item.id === placement.roomId);
+    return wall === undefined
+      ? []
+      : cabinetFootprint(wall, placement.distanceFromWallStart, placement.width, placement.depth, room);
+  });
   const visiblePoints = selectedRoom
-    ? [...selectedRoom.polygon, ...focusedWalls.flatMap((wall) => [wall.start, wall.end])]
+    ? [
+        ...selectedRoom.polygon,
+        ...focusedWalls.flatMap((wall) => [wall.start, wall.end]),
+        ...visibleFixedElements.flatMap((element) => element.polygon),
+        ...visibleFixtures.flatMap((fixture) => fixture.polygon),
+        ...visiblePlacementPoints,
+        ...visibleFurniture.flatMap(furnitureFootprint),
+      ]
     : allPoints;
   const padding = selectedRoom ? 260 : 300;
   const minX = Math.min(...visiblePoints.map((point) => point.x)) - padding;
@@ -133,7 +173,7 @@ export function Plan2D({
       className="h-full min-h-96 w-full"
       viewBox={`${minX} ${minY} ${viewWidth} ${viewHeight}`}
       role="group"
-      aria-label="תכנית דירה 5-1"
+      aria-label={`תכנית ${apartment.name}`}
     >
       <rect x={minX} y={minY} width={viewWidth} height={viewHeight} fill="#f7f4ed" rx="80" />
       {visibleRooms.map((room) => {
@@ -154,25 +194,30 @@ export function Plan2D({
               fill={room.id === roomId ? '#e8dcc6' : '#fffdf8'}
               stroke="transparent"
             />
-            {room.id !== roomId ? (
+            {room.id !== roomId && (showLabels || showDimensions) ? (
               <>
-                <text
-                  x={metrics.centerX}
-                  y={metrics.centerY - 70}
-                  textAnchor="middle"
-                  className="fill-stone-700 text-[180px] font-bold"
-                >
-                  {room.name}
-                </text>
-                <text
-                  data-testid={`room-dimensions-${room.id}`}
-                  x={metrics.centerX}
-                  y={metrics.centerY + 105}
-                  textAnchor="middle"
-                  className="fill-stone-500 text-[105px] font-semibold"
-                >
-                  {Math.round(metrics.width / 10)} × {Math.round(metrics.height / 10)} ס״מ
-                </text>
+                {showLabels ? (
+                  <text
+                    x={metrics.centerX}
+                    y={showDimensions ? metrics.centerY - 70 : metrics.centerY}
+                    textAnchor="middle"
+                    className="fill-stone-700 text-[180px] font-bold"
+                  >
+                    {room.name}
+                  </text>
+                ) : null}
+                {showDimensions ? (
+                  <text
+                    data-testid={`room-dimensions-${room.id}`}
+                    data-measurement-origin={room.dimensions?.length ? 'explicit' : 'derived'}
+                    x={metrics.centerX}
+                    y={showLabels ? metrics.centerY + 105 : metrics.centerY}
+                    textAnchor="middle"
+                    className="fill-stone-500 text-[105px] font-semibold"
+                  >
+                    {roomDimensionLabel(room, metrics)}
+                  </text>
+                ) : null}
               </>
             ) : null}
           </g>
@@ -205,6 +250,9 @@ export function Plan2D({
             {element.label}
           </text>
         </g>
+      ))}
+      {visibleFixtures.map((fixture) => (
+        <ArchitecturalFixture2D key={fixture.id} fixture={fixture} />
       ))}
       {visibleFurniture.map((item) => {
         const appearance = getFurnitureAppearance(item, furniturePalette);
@@ -334,16 +382,21 @@ export function Plan2D({
             const y1 = wall.start.y + Math.sin(a) * opening.offset;
             const x2 = x1 + Math.cos(a) * opening.width;
             const y2 = y1 + Math.sin(a) * opening.width;
+            const openingRoom = selectedRoom ?? apartment.rooms.find((room) => room.wallIds.includes(wall.id));
             return (
-              <line
-                key={opening.id}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke={opening.kind === 'door' ? '#c39a72' : '#72a5b6'}
-                strokeWidth="115"
-              />
+              <g key={opening.id}>
+                <line
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  stroke={opening.kind === 'door' ? '#f7f4ed' : '#72a5b6'}
+                  strokeWidth="115"
+                />
+                {showDoorSwings && opening.kind === 'door' ? (
+                  <ArchitecturalDoorGraphic door={opening} room={openingRoom} wall={wall} />
+                ) : null}
+              </g>
             );
           })}
         </g>

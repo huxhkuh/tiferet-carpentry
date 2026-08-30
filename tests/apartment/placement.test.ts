@@ -35,15 +35,15 @@ describe('Tiferet apartment geometry', () => {
   );
   it('prevents overlap with door openings', () => {
     const doorWall = TIFERET_5_1.walls.find((item) => item.id === 'bed-s')!;
-    expect(validatePlacement(doorWall, 900, 0)).toBe('מיקום הארון חופף לפתח בקיר');
+    expect(validatePlacement(doorWall, 900, 1_800)).toBe('מיקום הארון חופף לפתח בקיר');
   });
 
   it('returns usable wall segments split around openings', () => {
     const doorWall = TIFERET_5_1.walls.find((item) => item.id === 'bed-s')!;
 
     expect(getAvailableWallSegments(doorWall)).toEqual([
-      { start: 0, end: 180 },
-      { start: 980, end: 2700 },
+      { start: 0, end: 1_848 },
+      { start: 2_655, end: 2_700 },
     ]);
   });
 
@@ -61,8 +61,8 @@ describe('Tiferet apartment geometry', () => {
   it('accepts only physically possible placements', () => {
     const doorWall = TIFERET_5_1.walls.find((item) => item.id === 'bed-s')!;
 
-    expect(isPlacementValid(doorWall, 1200, 1200)).toBe(true);
-    expect(isPlacementValid(doorWall, 1200, 0)).toBe(false);
+    expect(isPlacementValid(doorWall, 1200, 0)).toBe(true);
+    expect(isPlacementValid(doorWall, 1200, 1_200)).toBe(false);
   });
 
   it.each([Number.NaN, Number.POSITIVE_INFINITY, 0, -1])(

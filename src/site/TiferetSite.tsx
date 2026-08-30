@@ -3,6 +3,7 @@ import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 import { HomePage } from './pages/HomePage';
 import { parseSiteLocation, sitePath, type SiteRoute } from './router';
+import { restoreImportedApartments } from '../apartment/persistence/imported-apartments';
 import './site.css';
 
 const PlannerApp = lazy(() => import('../apartment/PlannerApp').then((module) => ({ default: module.PlannerApp })));
@@ -22,6 +23,9 @@ const MaterialsPage = lazy(() =>
 const ProcessPage = lazy(() => import('./pages/EditorialPages').then((module) => ({ default: module.ProcessPage })));
 const AboutPage = lazy(() => import('./pages/EditorialPages').then((module) => ({ default: module.AboutPage })));
 const ContactPage = lazy(() => import('./pages/ContactPage').then((module) => ({ default: module.ContactPage })));
+const ImportApartmentPage = lazy(() =>
+  import('./pages/ImportApartmentPage').then((module) => ({ default: module.ImportApartmentPage })),
+);
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
 
 function readRoute(): SiteRoute {
@@ -39,6 +43,7 @@ function pageTitle(route: SiteRoute): string {
     process: 'תהליך העבודה — נגרות תפארת',
     about: 'אודות — נגרות תפארת',
     contact: 'צור קשר — נגרות תפארת',
+    import: 'ייבוא תוכנית — נגרות תפארת',
     'not-found': 'העמוד לא נמצא — נגרות תפארת',
   };
   return route.id === 'design' ? 'מתכנן הנגרות — נגרות תפארת' : titles[route.id];
@@ -67,13 +72,34 @@ export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) 
   }, []);
 
   if (route.id === 'design') {
+    const importedApartment = route.apartmentId
+      ? restoreImportedApartments(localStorage).find((apartment) => apartment.id === route.apartmentId)
+      : undefined;
+    if (route.apartmentId && importedApartment === undefined) {
+      return (
+        <main className="grid min-h-screen place-items-center bg-[#f5f1e9] p-6 text-center" dir="rtl">
+          <div>
+            <h1 className="text-3xl font-semibold text-stone-900">הדירה המיובאת לא נמצאה במכשיר הזה</h1>
+            <p className="mt-3 text-stone-600">המודלים נשמרים מקומית בדפדפן שבו בוצע הייבוא.</p>
+            <button
+              type="button"
+              onClick={() => navigate({ id: 'import' })}
+              className="mt-6 rounded-xl bg-[#6f4935] px-6 py-3 font-bold text-white"
+            >
+              ייבוא תוכנית
+            </button>
+          </div>
+        </main>
+      );
+    }
     return (
       <Suspense fallback={<main aria-busy="true">טוען את מתכנן הנגרות…</main>}>
         <PlannerApp
           initialStarted
           initialRoomId={route.roomId}
-          onExit={() => navigate({ id: 'my-apartment' })}
-          onSummary={() => navigate({ id: 'summary' })}
+          initialApartment={importedApartment}
+          onExit={() => navigate({ id: importedApartment ? 'import' : 'my-apartment' })}
+          onSummary={importedApartment ? undefined : () => navigate({ id: 'summary' })}
         />
       </Suspense>
     );
@@ -99,6 +125,8 @@ export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) 
         return <AboutPage navigate={navigate} />;
       case 'contact':
         return <ContactPage />;
+      case 'import':
+        return <ImportApartmentPage navigate={navigate} />;
       case 'not-found':
         return <NotFoundPage navigate={navigate} />;
     }

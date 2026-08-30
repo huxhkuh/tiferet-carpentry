@@ -25,16 +25,17 @@ describe('WoodworkingShop cabinet adapter', () => {
     expect(result.hasErrors).toBe(false);
   });
 
-  it('automatically places a wardrobe in the first usable interval that is also clear of furniture', () => {
+  it('automatically places a wardrobe in the first usable architectural interval', () => {
     const placement = createCabinetPlacement({
       apartment: TIFERET_5_1,
       room: bedroom,
       wall: southWall,
       cabinetConfig: { width: 1000 },
+      furniture: [],
       id: 'auto-fit',
     });
 
-    expect(placement.distanceFromWallStart).toBe(1620);
+    expect(placement.distanceFromWallStart).toBe(0);
   });
 
   it('skips furniture that occupies the first visually usable cabinet position', () => {

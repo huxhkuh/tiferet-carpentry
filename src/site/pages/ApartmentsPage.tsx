@@ -205,6 +205,20 @@ export function ApartmentsPage({ navigate }: { navigate: NavigateSite }) {
               : ''}
           </span>
         </div>
+        <div className="mt-8 rounded-3xl border border-[#d9c9b8] bg-[#f8f2e9] p-6 md:flex md:items-center md:justify-between md:gap-8">
+          <div>
+            <p className="ng-eyebrow">
+              <DiamondMark /> תוכנית נוספת
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold text-stone-900">יש לכם PDF אדריכלי אחר?</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
+              העלו אותו למעבדת הייבוא, כיילו לפי מידה כתובה, ואשרו טיוטה שניתנת לפתיחה במתכנן.
+            </p>
+          </div>
+          <SiteLink route={{ id: 'import' }} navigate={navigate} className="ng-button mt-5 md:mt-0">
+            ייבוא תוכנית PDF
+          </SiteLink>
+        </div>
       </section>
     </div>
   );

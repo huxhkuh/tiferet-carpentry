@@ -116,10 +116,10 @@ describe('scene collision geometry', () => {
       600,
       450,
       [],
-      [cabinetPlacement({ id: 'existing', wallId: 'bed-s', distanceFromWallStart: 980, width: 1_100 })],
+      [cabinetPlacement({ id: 'existing', wallId: 'bed-s', distanceFromWallStart: 0, width: 1_100 })],
     );
 
-    expect(offset).toBe(2_080);
+    expect(offset).toBe(1_100);
   });
 
   it('rejects a furniture move outside a concave room polygon', () => {

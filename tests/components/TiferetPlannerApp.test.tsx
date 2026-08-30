@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { PlannerApp } from '../../src/apartment/PlannerApp';
 
@@ -200,6 +200,30 @@ describe('Tiferet planner UI', () => {
     expect(screen.getByText('תצוגת מקור מלאה')).toBeVisible();
   });
 
+  it('lets users reduce clean-plan clutter by toggling door swings, dimensions and labels', () => {
+    render(<PlannerApp />);
+    fireEvent.click(screen.getByRole('button', { name: /התחל לתכנן/ }));
+
+    const doors = screen.getByRole('switch', { name: 'הצג קשתות דלת' });
+    const dimensions = screen.getByRole('switch', { name: 'הצג מידות' });
+    const labels = screen.getByRole('switch', { name: 'הצג שמות חדרים' });
+    expect(doors).toHaveAttribute('aria-checked', 'true');
+    expect(dimensions).toHaveAttribute('aria-checked', 'true');
+    expect(labels).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getAllByTestId(/^door-swing-/).length).toBeGreaterThan(0);
+    expect(screen.getByTestId('room-dimensions-safe-room')).toHaveAttribute('data-measurement-origin', 'explicit');
+    const cleanPlan = screen.getByRole('group', { name: 'תכנית דירה 5-1' });
+    expect(within(cleanPlan).getByText('ממ״ד')).toBeVisible();
+
+    fireEvent.click(doors);
+    fireEvent.click(dimensions);
+    fireEvent.click(labels);
+
+    expect(screen.queryByTestId(/^door-swing-/)).not.toBeInTheDocument();
+    expect(screen.queryByTestId('room-dimensions-safe-room')).not.toBeInTheDocument();
+    expect(within(cleanPlan).queryByText('ממ״ד')).not.toBeInTheDocument();
+  });
+
   it('opens a calibrated source overlay for line-by-line geometry inspection', () => {
     render(<PlannerApp initialStarted initialRoomId="bedroom" />);
 
@@ -251,6 +275,36 @@ describe('Tiferet planner UI', () => {
     expect(screen.getAllByRole('button', { name: /טען גרסה/ })).toHaveLength(2);
     expect(screen.getByRole('button', { name: 'ייצוא גרסה פעילה ל‑JSON' })).toBeEnabled();
     expect(screen.getByLabelText('ייבוא תכנון JSON')).toHaveAttribute('accept', 'application/json,.json');
+  });
+
+  it('מציע ייבוא PDF אדריכלי ומציג תקציר ראיות לאחר בחירת קובץ', async () => {
+    render(<PlannerApp initialStarted initialRoomId="bedroom" />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'גרסאות ושיתוף' }));
+
+    const pdfImport = screen.getByLabelText('ייבוא PDF אדריכלי');
+    expect(pdfImport).toHaveAttribute('accept', 'application/pdf,.pdf');
+
+    const pdf = new File(
+      [
+        `%PDF-1.7
+1 0 obj << /Type /Page /Contents 2 0 R >> endobj
+2 0 obj << /Length 64 >>
+stream
+0 0 m 200 0 l 200 100 l 0 100 l h S
+BT (חדר 300/250) Tj ET
+endstream
+endobj
+%%EOF`,
+      ],
+      'apartment.pdf',
+      { type: 'application/pdf' },
+    );
+    fireEvent.change(pdfImport, { target: { files: [pdf] } });
+
+    expect(await screen.findByText('טיוטת ייבוא מוכנה')).toBeVisible();
+    expect(screen.getByText('apartment.pdf')).toBeVisible();
+    expect(screen.getByText(/קווי וקטור/)).toBeVisible();
   });
 
   it('rejects an edit that would extend the wardrobe beyond the selected wall', async () => {

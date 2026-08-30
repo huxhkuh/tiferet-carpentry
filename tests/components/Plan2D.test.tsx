@@ -1,8 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import type { ComponentProps, ComponentType } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { createWardrobeConfig } from '../../src/apartment/cabinet/adapter';
 import { Plan2D } from '../../src/apartment/components/Plan2D';
 import type { Apartment, CabinetPlacement, FurniturePlacement } from '../../src/apartment/types';
+
+const LayeredPlan2D = Plan2D as ComponentType<
+  ComponentProps<typeof Plan2D> & { showDimensions?: boolean; showLabels?: boolean }
+>;
 
 const apartment: Apartment = {
   id: 'apartment-test',
@@ -117,7 +122,7 @@ describe('Plan2D', () => {
     };
 
     render(
-      <Plan2D
+      <LayeredPlan2D
         apartment={vectorApartment}
         placements={[]}
         roomId={null}
@@ -135,7 +140,7 @@ describe('Plan2D', () => {
 
   it('shows the metric room dimensions held by the semantic model', () => {
     render(
-      <Plan2D
+      <LayeredPlan2D
         apartment={apartment}
         placements={[]}
         roomId={null}
@@ -148,6 +153,102 @@ describe('Plan2D', () => {
     );
 
     expect(screen.getByTestId('room-dimensions-room-test')).toHaveTextContent('40 × 30 ס״מ');
+  });
+
+  it('prefers explicit source dimensions and can hide dimensions and room labels independently', () => {
+    const auditedApartment = {
+      ...apartment,
+      rooms: apartment.rooms.map((room) =>
+        room.id === 'room-test'
+          ? {
+              ...room,
+              dimensions: [
+                {
+                  id: 'room-test-width',
+                  label: 'רוחב נקי',
+                  value: 2_950,
+                  evidence: { origin: 'explicit', basis: 'clear', confidence: 'high' },
+                },
+                {
+                  id: 'room-test-depth',
+                  label: 'עומק נקי',
+                  value: 3_050,
+                  evidence: { origin: 'explicit', basis: 'clear', confidence: 'high' },
+                },
+              ],
+            }
+          : room,
+      ),
+    } as Apartment;
+
+    const { rerender } = render(
+      <LayeredPlan2D
+        apartment={auditedApartment}
+        placements={[]}
+        roomId={null}
+        wallId={null}
+        activePlacementId={null}
+        showDimensions
+        showLabels
+        onRoom={vi.fn()}
+        onWall={vi.fn()}
+        onPlacement={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId('room-dimensions-room-test')).toHaveTextContent('295 × 305 ס״מ');
+    expect(screen.getByText('חדר בדיקה')).toBeVisible();
+
+    rerender(
+      <LayeredPlan2D
+        apartment={auditedApartment}
+        placements={[]}
+        roomId={null}
+        wallId={null}
+        activePlacementId={null}
+        showDimensions={false}
+        showLabels={false}
+        onRoom={vi.fn()}
+        onWall={vi.fn()}
+        onPlacement={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByTestId('room-dimensions-room-test')).not.toBeInTheDocument();
+    expect(screen.queryByText('חדר בדיקה')).not.toBeInTheDocument();
+  });
+
+  it('renders source-traced fixtures as fixed architecture rather than draggable furniture', () => {
+    const fixture = {
+      id: 'fixture-bathtub',
+      roomId: 'room-test',
+      kind: 'bathtub',
+      label: 'אמבט',
+      polygon: [
+        { x: 280, y: 20 },
+        { x: 380, y: 20 },
+        { x: 380, y: 270 },
+        { x: 280, y: 270 },
+      ],
+      trace: { sourceFileId: 'source', sourcePage: 1, confidence: 'high' },
+    };
+    const auditedApartment = { ...apartment, fixtures: [fixture] } as Apartment;
+
+    render(
+      <Plan2D
+        apartment={auditedApartment}
+        placements={[]}
+        roomId="room-test"
+        wallId={null}
+        activePlacementId={null}
+        onRoom={vi.fn()}
+        onWall={vi.fn()}
+        onPlacement={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId('architectural-fixture-fixture-bathtub')).toHaveAttribute('aria-label', 'אמבט');
+    expect(screen.queryByRole('button', { name: 'בחירת ריהוט אמבט' })).not.toBeInTheDocument();
   });
 
   it('lets keyboard users select rooms and walls', () => {
@@ -188,11 +289,48 @@ describe('Plan2D', () => {
     );
 
     expect(screen.getByTestId('cabinet-footprint-cabinet-test')).toHaveAttribute('points', '20,0 120,0 120,50 20,50');
-    expect(screen.getByRole('group', { name: 'תכנית דירה 5-1' })).toHaveAttribute('viewBox', '-260 -260 920 820');
+    expect(screen.getByRole('group', { name: 'תכנית דירת בדיקה' })).toHaveAttribute('viewBox', '-260 -260 920 820');
     expect(screen.queryByTestId('room-plan-room-other')).not.toBeInTheDocument();
     expect(screen.queryByTestId('wall-select-wall-other')).not.toBeInTheDocument();
     expect(screen.queryByText('עמוד בחדר אחר')).not.toBeInTheDocument();
     expect(screen.queryByText('חדר בדיקה')).not.toBeInTheDocument();
+  });
+
+  it('expands a focused-room view to include fixed architecture assigned to that room', () => {
+    const focusedApartment: Apartment = {
+      ...apartment,
+      fixedElements: [
+        ...apartment.fixedElements,
+        {
+          id: 'room-test-shaft',
+          roomId: 'room-test',
+          kind: 'shaft',
+          label: 'פיר שירות',
+          polygon: [
+            { x: 800, y: 50 },
+            { x: 900, y: 50 },
+            { x: 900, y: 100 },
+            { x: 800, y: 100 },
+          ],
+        },
+      ],
+    };
+
+    render(
+      <Plan2D
+        apartment={focusedApartment}
+        placements={[]}
+        roomId="room-test"
+        wallId={null}
+        activePlacementId={null}
+        onRoom={vi.fn()}
+        onWall={vi.fn()}
+        onPlacement={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('group', { name: 'תכנית דירת בדיקה' })).toHaveAttribute('viewBox', '-260 -260 1420 820');
+    expect(screen.getByText('פיר שירות')).toBeInTheDocument();
   });
 
   it('lets users select furniture as an editable object and highlights the active item', () => {
@@ -277,7 +415,7 @@ describe('Plan2D', () => {
         onFurnitureMove={onFurnitureMove}
       />,
     );
-    const plan = screen.getByRole('group', { name: 'תכנית דירה 5-1' });
+    const plan = screen.getByRole('group', { name: 'תכנית דירת בדיקה' });
     vi.spyOn(plan, 'getBoundingClientRect').mockReturnValue({
       x: 0,
       y: 0,

@@ -13,6 +13,7 @@ describe('Tiferet site routing', () => {
     ['/tiferet-carpentry/process', '', 'process'],
     ['/tiferet-carpentry/about', '', 'about'],
     ['/tiferet-carpentry/contact', '', 'contact'],
+    ['/tiferet-carpentry/import', '', 'import'],
   ] as const)('maps %s to the %s page', (pathname, search, expectedId) => {
     expect(parseSiteLocation(pathname, search).route.id).toBe(expectedId);
   });
@@ -22,6 +23,17 @@ describe('Tiferet site routing', () => {
       id: 'design',
       roomId: 'bedroom',
     });
+  });
+
+  it('preserves an imported apartment id on a design route', () => {
+    expect(parseSiteLocation('/tiferet-carpentry/design/import-room-1', '?apartment=imported-sample').route).toEqual({
+      id: 'design',
+      roomId: 'import-room-1',
+      apartmentId: 'imported-sample',
+    });
+    expect(sitePath({ id: 'design', roomId: 'import-room-1', apartmentId: 'imported-sample' })).toBe(
+      '/tiferet-carpentry/design/import-room-1?apartment=imported-sample',
+    );
   });
 
   it('recovers a direct GitHub Pages route from the existing p query parameter', () => {

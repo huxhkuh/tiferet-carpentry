@@ -1,11 +1,15 @@
 import type {
   Apartment,
+  ArchitecturalFixture,
+  ArchitecturalFixtureKind,
   EvidenceConfidence,
   GeometryTrace,
   MeasurementEvidence,
   MeasurementOrigin,
   Point,
   Project,
+  RoomDimension,
+  RoomDimensionAxis,
   Wall,
 } from '../types';
 import { createFurniturePlacement } from '../furniture/catalog';
@@ -18,9 +22,6 @@ import {
 
 const SOURCE_FILE_ID = '1RTrFsQ1eBTVzudl3wC0Ocv5DirPh6tBq';
 const SOURCE_PAGE = 1;
-/** Viewer-only fallback; the supplied sheet has not yet yielded an audited wall/ceiling height. */
-const PRESENTATION_WALL_HEIGHT = 2_750;
-const WALL_THICKNESS = 140;
 
 function sourceTrace(confidence: EvidenceConfidence = 'medium'): GeometryTrace {
   return { sourceFileId: SOURCE_FILE_ID, sourcePage: SOURCE_PAGE, confidence };
@@ -30,10 +31,11 @@ function measurement(
   origin: MeasurementOrigin,
   confidence: EvidenceConfidence,
   annotation?: string,
+  basis: MeasurementEvidence['basis'] = origin === 'presentation-default' ? 'unknown' : 'construction',
 ): MeasurementEvidence {
   return {
     origin,
-    basis: origin === 'presentation-default' ? 'unknown' : 'construction',
+    basis,
     confidence,
     sourceFileId: SOURCE_FILE_ID,
     sourcePage: SOURCE_PAGE,
@@ -41,33 +43,169 @@ function measurement(
   };
 }
 
-function wall(id: string, start: Point, end: Point, openings: Wall['openings'] = [], thickness = WALL_THICKNESS): Wall {
+function sourceHorizontalThickness(x0: number, x1: number): number {
+  return Math.abs(
+    sourcePlanPoint(x1, TIFERET_SOURCE_PLAN_BOUNDS.top).x - sourcePlanPoint(x0, TIFERET_SOURCE_PLAN_BOUNDS.top).x,
+  );
+}
+
+function sourceVerticalThickness(top: number, bottom: number): number {
+  return Math.abs(
+    sourcePlanPoint(TIFERET_SOURCE_PLAN_BOUNDS.x0, bottom).y - sourcePlanPoint(TIFERET_SOURCE_PLAN_BOUNDS.x0, top).y,
+  );
+}
+
+function explicitRoomDimension(id: string, label: string, value: number, axis: RoomDimensionAxis): RoomDimension {
+  return {
+    id,
+    label,
+    value,
+    axis,
+    evidence: measurement('explicit', 'high', 'Printed dimension string on official sales plan', 'clear'),
+  };
+}
+
+function roomDimensions(id: string, horizontal: number, vertical: number): RoomDimension[] {
+  return [
+    explicitRoomDimension(`${id}-horizontal`, 'רוחב נקי', horizontal, 'horizontal'),
+    explicitRoomDimension(`${id}-vertical`, 'עומק נקי', vertical, 'vertical'),
+  ];
+}
+
+function fixture(
+  id: string,
+  roomId: string,
+  kind: ArchitecturalFixtureKind,
+  label: string,
+  x0: number,
+  top: number,
+  x1: number,
+  bottom: number,
+  confidence: EvidenceConfidence = 'medium',
+): ArchitecturalFixture {
+  return {
+    id,
+    roomId,
+    kind,
+    label,
+    polygon: sourcePlanRect(x0, top, x1, bottom),
+    trace: { ...sourceTrace(confidence), sourceRect: { x0, x1, top, bottom } },
+    measurements: {
+      position: measurement('vector-traced', confidence, 'Position traced from PDF line geometry'),
+      extent: measurement('vector-traced', confidence, 'Fixture outline extent; no printed fixture size'),
+    },
+  };
+}
+
+function horizontalOpening(
+  id: string,
+  kind: Wall['openings'][number]['kind'],
+  wallStartX: number,
+  sourceY: number,
+  sourceX0: number,
+  sourceX1: number,
+  swing?: 'left' | 'right' | 'sliding',
+): Wall['openings'][number] {
+  const wallStart = sourcePlanPoint(wallStartX, sourceY).x;
+  const first = sourcePlanPoint(sourceX0, sourceY).x;
+  const second = sourcePlanPoint(sourceX1, sourceY).x;
+  const opening = {
+    id,
+    kind,
+    offset: Math.min(Math.abs(first - wallStart), Math.abs(second - wallStart)),
+    width: Math.abs(second - first),
+    trace: {
+      ...sourceTrace('low'),
+      sourceRect: {
+        x0: Math.min(sourceX0, sourceX1),
+        x1: Math.max(sourceX0, sourceX1),
+        top: sourceY - 0.01,
+        bottom: sourceY + 0.01,
+      },
+    },
+    measurements: {
+      offset: measurement('vector-traced', 'low', 'Opening position traced from PDF line geometry'),
+      width: measurement('vector-traced', 'low', 'Opening span traced from PDF line geometry'),
+    },
+  };
+  return kind === 'door' ? { ...opening, kind, ...(swing === undefined ? {} : { swing }) } : { ...opening, kind };
+}
+
+function verticalOpening(
+  id: string,
+  kind: Wall['openings'][number]['kind'],
+  sourceX: number,
+  wallStartY: number,
+  sourceY0: number,
+  sourceY1: number,
+  swing?: 'left' | 'right' | 'sliding',
+): Wall['openings'][number] {
+  const wallStart = sourcePlanPoint(sourceX, wallStartY).y;
+  const first = sourcePlanPoint(sourceX, sourceY0).y;
+  const second = sourcePlanPoint(sourceX, sourceY1).y;
+  const opening = {
+    id,
+    kind,
+    offset: Math.min(Math.abs(first - wallStart), Math.abs(second - wallStart)),
+    width: Math.abs(second - first),
+    trace: {
+      ...sourceTrace('low'),
+      sourceRect: {
+        x0: sourceX - 0.01,
+        x1: sourceX + 0.01,
+        top: Math.min(sourceY0, sourceY1),
+        bottom: Math.max(sourceY0, sourceY1),
+      },
+    },
+    measurements: {
+      offset: measurement('vector-traced', 'low', 'Opening position traced from PDF line geometry'),
+      width: measurement('vector-traced', 'low', 'Opening span traced from PDF line geometry'),
+    },
+  };
+  return kind === 'door' ? { ...opening, kind, ...(swing === undefined ? {} : { swing }) } : { ...opening, kind };
+}
+
+function derivedOpening(
+  id: string,
+  kind: Wall['openings'][number]['kind'],
+  offset: number,
+  width: number,
+  swing?: 'left' | 'right' | 'sliding',
+): Wall['openings'][number] {
+  const opening = {
+    id,
+    kind,
+    offset,
+    width,
+    measurements: {
+      offset: measurement(
+        'derived',
+        'low',
+        'Estimated from the normalized plan; exact source span is not isolated',
+        'unknown',
+      ),
+      width: measurement('derived', 'low', 'Estimated from the normalized plan; no printed opening width', 'unknown'),
+    },
+  };
+  return kind === 'door' ? { ...opening, kind, ...(swing === undefined ? {} : { swing }) } : { ...opening, kind };
+}
+
+function wall(id: string, start: Point, end: Point, openings: Wall['openings'] = [], thickness = 100): Wall {
   return {
     id,
     start,
     end,
     openings: openings.map((opening) => ({
       ...opening,
-      trace: sourceTrace('low'),
-      measurements: {
-        offset: measurement('vector-traced', 'low'),
-        width: measurement('vector-traced', 'low'),
-        ...(opening.height === undefined
-          ? {}
-          : { height: measurement('presentation-default', 'unresolved', 'Viewer fallback; not source-verified') }),
-        ...(opening.kind === 'window' && opening.sillHeight !== undefined
-          ? {
-              sillHeight: measurement('presentation-default', 'unresolved', 'Viewer fallback; not source-verified'),
-            }
-          : {}),
+      measurements: opening.measurements ?? {
+        offset: measurement('derived', 'low', 'Opening offset inferred from the drawing', 'unknown'),
+        width: measurement('derived', 'low', 'Opening width inferred from the drawing', 'unknown'),
       },
     })),
-    height: PRESENTATION_WALL_HEIGHT,
     thickness,
     measurements: {
       length: measurement('derived', 'medium', 'Derived from the calibrated source-plan coordinate frame'),
       thickness: measurement('vector-traced', 'medium'),
-      height: measurement('presentation-default', 'unresolved', 'Viewer fallback; not source-verified'),
     },
     trace: sourceTrace(),
   };
@@ -125,69 +263,265 @@ export const TIFERET_5_1: Apartment = {
       'Forty-eight filled structural wall rectangles and their joins were extracted from the official vector PDF. Piecewise calibration anchors preserve the printed clear-room dimensions in millimetres. This is not an as-built survey.',
   },
   walls: [
-    wall('safe-n', sourcePlanPoint(627.96, 402.12), sourcePlanPoint(798.12, 402.12)),
-    wall('safe-e', sourcePlanPoint(798.12, 402.12), sourcePlanPoint(798.12, 577.92)),
-    wall('safe-s', sourcePlanPoint(798.12, 577.92), sourcePlanPoint(627.96, 577.92), [
-      { id: 'safe-door', kind: 'door', offset: 250, width: 800, height: 2_100, swing: 'right' },
-    ]),
-    wall('safe-w', sourcePlanPoint(627.96, 577.92), sourcePlanPoint(627.96, 402.12), [
-      { id: 'safe-window', kind: 'window', offset: 850, width: 1_200, height: 1_200, sillHeight: 900 },
-    ]),
-    wall('bed-n', sourcePlanPoint(815.04, 395.88), sourcePlanPoint(970.92, 395.88), [
-      { id: 'bed-window', kind: 'window', offset: 850, width: 1_000, height: 1_200, sillHeight: 900 },
-    ]),
-    wall('bed-e', sourcePlanPoint(970.92, 395.88), sourcePlanPoint(970.92, 568.8)),
-    wall('bed-s', sourcePlanPoint(970.92, 568.8), sourcePlanPoint(815.04, 568.8), [
-      { id: 'bed-door', kind: 'door', offset: 180, width: 800, height: 2_100, swing: 'left' },
-    ]),
-    wall('bed-w', sourcePlanPoint(815.04, 568.8), sourcePlanPoint(815.04, 395.88)),
-    wall('living-n', sourcePlanPoint(976.68, 395.88), sourcePlanPoint(1_175.04, 395.88), [
-      { id: 'living-balcony-door', kind: 'door', offset: 420, width: 1_800, height: 2_300, swing: 'sliding' },
-    ]),
-    wall('living-e', sourcePlanPoint(1_175.04, 395.88), sourcePlanPoint(1_175.04, 883.44), [
-      { id: 'main-entry', kind: 'door', offset: 7_250, width: 1_050, height: 2_300, swing: 'right' },
-    ]),
-    wall('living-s', sourcePlanPoint(1_175.04, 883.44), sourcePlanPoint(1_082.64, 883.44)),
-    wall('living-entry-return', sourcePlanPoint(1_082.64, 883.44), sourcePlanPoint(1_082.64, 877.8)),
-    wall('living-w-upper', sourcePlanPoint(976.68, 568.8), sourcePlanPoint(976.68, 395.88)),
-    wall('shower-n', sourcePlanPoint(629.64, 592.08), sourcePlanPoint(724.32, 592.08)),
-    wall('shower-e', sourcePlanPoint(724.32, 592.08), sourcePlanPoint(724.32, 686.76), [
-      { id: 'shower-door', kind: 'door', offset: 700, width: 800, height: 2_100, swing: 'left' },
-    ]),
-    wall('shower-s', sourcePlanPoint(724.32, 686.76), sourcePlanPoint(629.64, 686.76)),
-    wall('shower-w', sourcePlanPoint(629.64, 686.76), sourcePlanPoint(629.64, 592.08), [
-      { id: 'shower-window', kind: 'window', offset: 450, width: 650, height: 650, sillHeight: 1_450 },
-    ]),
-    wall('guest-wc-n', sourcePlanPoint(899.52, 574.44), sourcePlanPoint(987.96, 574.44)),
-    wall('guest-wc-e', sourcePlanPoint(987.96, 574.44), sourcePlanPoint(987.96, 628.92), [
-      { id: 'guest-wc-door', kind: 'door', offset: 80, width: 720, height: 2_100, swing: 'left' },
-    ]),
-    wall('guest-wc-s', sourcePlanPoint(987.96, 628.92), sourcePlanPoint(899.52, 628.92)),
-    wall('guest-wc-w', sourcePlanPoint(899.52, 628.92), sourcePlanPoint(899.52, 574.44)),
-    wall('master-n', sourcePlanPoint(627.96, 694.08), sourcePlanPoint(849.12, 694.08), [
-      { id: 'master-door', kind: 'door', offset: 2_650, width: 800, height: 2_100, swing: 'right' },
-    ]),
-    wall('master-e', sourcePlanPoint(849.12, 694.08), sourcePlanPoint(849.12, 863.64)),
-    wall('master-s', sourcePlanPoint(849.12, 863.64), sourcePlanPoint(627.96, 863.64)),
-    wall('master-w', sourcePlanPoint(627.96, 863.64), sourcePlanPoint(627.96, 694.08), [
-      { id: 'master-window', kind: 'window', offset: 850, width: 1_400, height: 1_200, sillHeight: 900 },
-    ]),
-    wall('bath-n', sourcePlanPoint(856.44, 695.76), sourcePlanPoint(987.96, 695.76), [
-      { id: 'bath-door', kind: 'door', offset: 180, width: 720, height: 2_100, swing: 'right' },
-    ]),
-    wall('bath-e', sourcePlanPoint(987.96, 695.76), sourcePlanPoint(987.96, 793.92)),
-    wall('bath-s', sourcePlanPoint(987.96, 793.92), sourcePlanPoint(856.44, 793.92)),
-    wall('bath-w', sourcePlanPoint(856.44, 793.92), sourcePlanPoint(856.44, 695.76)),
-    wall('laundry-n', sourcePlanPoint(787.32, 880.68), sourcePlanPoint(936.96, 880.68), [
-      { id: 'laundry-door', kind: 'door', offset: 1_700, width: 850, height: 2_200, swing: 'sliding' },
-    ]),
-    wall('laundry-e', sourcePlanPoint(936.96, 880.68), sourcePlanPoint(936.96, 979.8)),
-    wall('laundry-s', sourcePlanPoint(936.96, 979.8), sourcePlanPoint(787.32, 979.8)),
-    wall('laundry-w', sourcePlanPoint(787.32, 979.8), sourcePlanPoint(787.32, 880.68)),
-    wall('kitchen-n', sourcePlanPoint(1_082.64, 883.44), sourcePlanPoint(1_175.04, 883.44)),
-    wall('kitchen-e', sourcePlanPoint(1_175.04, 883.44), sourcePlanPoint(1_175.04, 979.8)),
-    wall('kitchen-s', sourcePlanPoint(1_175.04, 979.8), sourcePlanPoint(954, 979.8)),
-    wall('kitchen-w', sourcePlanPoint(954, 979.8), sourcePlanPoint(954, 883.44)),
+    wall(
+      'safe-n',
+      sourcePlanPoint(627.96, 402.12),
+      sourcePlanPoint(798.12, 402.12),
+      [],
+      sourceVerticalThickness(378.84, 402.12),
+    ),
+    wall(
+      'safe-e',
+      sourcePlanPoint(798.12, 402.12),
+      sourcePlanPoint(798.12, 577.92),
+      [],
+      sourceHorizontalThickness(798.12, 815.04),
+    ),
+    wall(
+      'safe-s',
+      sourcePlanPoint(798.12, 577.92),
+      sourcePlanPoint(627.96, 577.92),
+      [derivedOpening('safe-door', 'door', 250, 800, 'right')],
+      sourceVerticalThickness(577.92, 592.08),
+    ),
+    wall(
+      'safe-w',
+      sourcePlanPoint(627.96, 577.92),
+      sourcePlanPoint(627.96, 402.12),
+      [derivedOpening('safe-window', 'window', 985, 982)],
+      sourceHorizontalThickness(610.92, 627.96),
+    ),
+    wall(
+      'bed-n',
+      sourcePlanPoint(815.04, 395.88),
+      sourcePlanPoint(970.92, 395.88),
+      [horizontalOpening('bed-window', 'window', 815.04, 395.88, 861, 929.04)],
+      sourceVerticalThickness(378.84, 395.88),
+    ),
+    wall(
+      'bed-e',
+      sourcePlanPoint(970.92, 395.88),
+      sourcePlanPoint(970.92, 568.8),
+      [],
+      sourceHorizontalThickness(970.92, 976.68),
+    ),
+    wall(
+      'bed-s',
+      sourcePlanPoint(970.92, 568.8),
+      sourcePlanPoint(815.04, 568.8),
+      [derivedOpening('bed-door', 'door', 1_848, 807, 'left')],
+      sourceVerticalThickness(568.8, 574.44),
+    ),
+    wall(
+      'bed-w',
+      sourcePlanPoint(815.04, 568.8),
+      sourcePlanPoint(815.04, 395.88),
+      [],
+      sourceHorizontalThickness(798.12, 815.04),
+    ),
+    wall(
+      'living-n',
+      sourcePlanPoint(976.68, 395.88),
+      sourcePlanPoint(1_175.04, 395.88),
+      [horizontalOpening('living-balcony-door', 'door', 976.68, 395.88, 1_014.12, 1_150.08, 'sliding')],
+      sourceVerticalThickness(378.84, 395.88),
+    ),
+    wall(
+      'living-e',
+      sourcePlanPoint(1_175.04, 395.88),
+      sourcePlanPoint(1_175.04, 883.44),
+      [verticalOpening('main-entry', 'door', 1_175.04, 395.88, 806.88, 877.8, 'right')],
+      sourceHorizontalThickness(1_175.04, 1_192.08),
+    ),
+    wall(
+      'living-s',
+      sourcePlanPoint(1_175.04, 883.44),
+      sourcePlanPoint(1_082.64, 883.44),
+      [],
+      sourceVerticalThickness(877.8, 883.44),
+    ),
+    wall(
+      'living-entry-return',
+      sourcePlanPoint(1_082.64, 883.44),
+      sourcePlanPoint(1_082.64, 877.8),
+      [],
+      sourceHorizontalThickness(1_075.32, 1_082.64),
+    ),
+    wall(
+      'living-w-upper',
+      sourcePlanPoint(976.68, 568.8),
+      sourcePlanPoint(976.68, 395.88),
+      [],
+      sourceHorizontalThickness(970.92, 976.68),
+    ),
+    wall(
+      'shower-n',
+      sourcePlanPoint(629.64, 592.08),
+      sourcePlanPoint(724.32, 592.08),
+      [],
+      sourceVerticalThickness(580.68, 592.08),
+    ),
+    wall(
+      'shower-e',
+      sourcePlanPoint(724.32, 592.08),
+      sourcePlanPoint(724.32, 686.76),
+      [],
+      sourceHorizontalThickness(724.32, 735.72),
+    ),
+    wall(
+      'shower-s',
+      sourcePlanPoint(724.32, 686.76),
+      sourcePlanPoint(629.64, 686.76),
+      [horizontalOpening('shower-door', 'door', 724.32, 686.76, 673.68, 719.04, 'left')],
+      sourceVerticalThickness(686.76, 694.08),
+    ),
+    wall(
+      'shower-w',
+      sourcePlanPoint(629.64, 686.76),
+      sourcePlanPoint(629.64, 592.08),
+      [derivedOpening('shower-window', 'window', 390, 720)],
+      sourceHorizontalThickness(610.92, 629.64),
+    ),
+    wall(
+      'guest-wc-n',
+      sourcePlanPoint(899.52, 574.44),
+      sourcePlanPoint(987.96, 574.44),
+      [],
+      sourceVerticalThickness(568.8, 574.44),
+    ),
+    wall(
+      'guest-wc-e',
+      sourcePlanPoint(987.96, 574.44),
+      sourcePlanPoint(987.96, 628.92),
+      [],
+      sourceHorizontalThickness(987.96, 993.6),
+    ),
+    wall(
+      'guest-wc-s',
+      sourcePlanPoint(987.96, 628.92),
+      sourcePlanPoint(899.52, 628.92),
+      [horizontalOpening('guest-wc-door', 'door', 987.96, 628.92, 943.8, 983.4, 'left')],
+      sourceVerticalThickness(628.92, 634.56),
+    ),
+    wall(
+      'guest-wc-w',
+      sourcePlanPoint(899.52, 628.92),
+      sourcePlanPoint(899.52, 574.44),
+      [],
+      sourceHorizontalThickness(893.88, 899.52),
+    ),
+    wall(
+      'master-n',
+      sourcePlanPoint(627.96, 694.08),
+      sourcePlanPoint(849.12, 694.08),
+      [derivedOpening('master-door', 'door', 2_322, 782, 'right')],
+      sourceVerticalThickness(688.44, 694.08),
+    ),
+    wall(
+      'master-e',
+      sourcePlanPoint(849.12, 694.08),
+      sourcePlanPoint(849.12, 863.64),
+      [],
+      sourceHorizontalThickness(849.12, 854.76),
+    ),
+    wall(
+      'master-s',
+      sourcePlanPoint(849.12, 863.64),
+      sourcePlanPoint(627.96, 863.64),
+      [],
+      sourceVerticalThickness(863.64, 880.68),
+    ),
+    wall(
+      'master-w',
+      sourcePlanPoint(627.96, 863.64),
+      sourcePlanPoint(627.96, 694.08),
+      [derivedOpening('master-window', 'window', 944, 1_181)],
+      sourceHorizontalThickness(610.92, 627.96),
+    ),
+    wall(
+      'bath-n',
+      sourcePlanPoint(856.44, 695.76),
+      sourcePlanPoint(987.96, 695.76),
+      [derivedOpening('bath-door', 'door', 770, 733, 'right')],
+      sourceVerticalThickness(688.44, 695.76),
+    ),
+    wall(
+      'bath-e',
+      sourcePlanPoint(987.96, 695.76),
+      sourcePlanPoint(987.96, 793.92),
+      [],
+      sourceHorizontalThickness(987.96, 993.6),
+    ),
+    wall(
+      'bath-s',
+      sourcePlanPoint(987.96, 793.92),
+      sourcePlanPoint(856.44, 793.92),
+      [],
+      sourceVerticalThickness(793.92, 799.56),
+    ),
+    wall(
+      'bath-w',
+      sourcePlanPoint(856.44, 793.92),
+      sourcePlanPoint(856.44, 695.76),
+      [],
+      sourceHorizontalThickness(849.12, 856.44),
+    ),
+    wall(
+      'laundry-n',
+      sourcePlanPoint(787.32, 880.68),
+      sourcePlanPoint(936.96, 880.68),
+      [],
+      sourceVerticalThickness(869.28, 880.68),
+    ),
+    wall(
+      'laundry-e',
+      sourcePlanPoint(936.96, 880.68),
+      sourcePlanPoint(936.96, 979.8),
+      [verticalOpening('laundry-window', 'window', 936.96, 880.68, 907.32, 975.36)],
+      sourceHorizontalThickness(936.96, 954),
+    ),
+    wall(
+      'laundry-s',
+      sourcePlanPoint(936.96, 979.8),
+      sourcePlanPoint(787.32, 979.8),
+      [],
+      sourceVerticalThickness(979.8, 991.2),
+    ),
+    wall(
+      'laundry-w',
+      sourcePlanPoint(787.32, 979.8),
+      sourcePlanPoint(787.32, 880.68),
+      [],
+      sourceHorizontalThickness(782.64, 787.32),
+    ),
+    wall(
+      'kitchen-n',
+      sourcePlanPoint(1_082.64, 883.44),
+      sourcePlanPoint(1_175.04, 883.44),
+      [],
+      sourceVerticalThickness(877.8, 883.44),
+    ),
+    wall(
+      'kitchen-e',
+      sourcePlanPoint(1_175.04, 883.44),
+      sourcePlanPoint(1_175.04, 979.8),
+      [],
+      sourceHorizontalThickness(1_175.04, 1_192.08),
+    ),
+    wall(
+      'kitchen-s',
+      sourcePlanPoint(1_175.04, 979.8),
+      sourcePlanPoint(954, 979.8),
+      [],
+      sourceVerticalThickness(979.8, 991.2),
+    ),
+    wall(
+      'kitchen-w',
+      sourcePlanPoint(954, 979.8),
+      sourcePlanPoint(954, 883.44),
+      [verticalOpening('kitchen-window', 'window', 954, 979.8, 907.32, 975.36)],
+      sourceHorizontalThickness(945.48, 954),
+    ),
   ],
   wallMasses: TIFERET_5_1_WALL_MASSES.map((mass) => ({
     ...mass,
@@ -199,12 +533,16 @@ export const TIFERET_5_1: Apartment = {
       name: 'ממ״ד',
       polygon: sourcePlanRect(627.96, 402.12, 798.12, 577.92),
       wallIds: ['safe-n', 'safe-e', 'safe-s', 'safe-w'],
+      dimensions: roomDimensions('safe-room', 2_950, 3_050),
+      trace: sourceTrace('high'),
     },
     {
       id: 'bedroom',
       name: 'חדר שינה',
       polygon: sourcePlanRect(815.04, 395.88, 970.92, 568.8),
       wallIds: ['bed-n', 'bed-e', 'bed-s', 'bed-w'],
+      dimensions: roomDimensions('bedroom', 2_700, 3_000),
+      trace: sourceTrace('high'),
     },
     {
       id: 'living',
@@ -218,43 +556,67 @@ export const TIFERET_5_1: Apartment = {
         sourcePlanPoint(976.68, 568.8),
       ],
       wallIds: ['living-n', 'living-e', 'living-s', 'living-entry-return', 'living-w-upper'],
+      dimensions: roomDimensions('living', 3_450, 8_450),
+      trace: sourceTrace('high'),
     },
     {
       id: 'shower',
       name: 'חדר רחצה',
       polygon: sourcePlanRect(629.64, 592.08, 724.32, 686.76),
       wallIds: ['shower-n', 'shower-e', 'shower-s', 'shower-w'],
+      dimensions: roomDimensions('shower', 1_650, 1_600),
+      trace: sourceTrace('high'),
     },
     {
       id: 'guest-wc',
       name: 'שירותי אורחים',
       polygon: sourcePlanRect(899.52, 574.44, 987.96, 628.92),
       wallIds: ['guest-wc-n', 'guest-wc-e', 'guest-wc-s', 'guest-wc-w'],
+      dimensions: roomDimensions('guest-wc', 1_500, 900),
+      trace: sourceTrace('high'),
     },
     {
       id: 'master',
       name: 'חדר שינה הורים',
       polygon: sourcePlanRect(627.96, 694.08, 849.12, 863.64),
       wallIds: ['master-n', 'master-e', 'master-s', 'master-w'],
+      dimensions: roomDimensions('master', 3_850, 2_950),
+      trace: sourceTrace('high'),
     },
     {
       id: 'bath',
       name: 'אמבטיה',
       polygon: sourcePlanRect(856.44, 695.76, 987.96, 793.92),
       wallIds: ['bath-n', 'bath-e', 'bath-s', 'bath-w'],
+      dimensions: roomDimensions('bath', 2_290, 1_700),
+      trace: sourceTrace('high'),
     },
     {
       id: 'laundry',
       name: 'מסתור כביסה',
       polygon: sourcePlanRect(787.32, 880.68, 936.96, 979.8),
       wallIds: ['laundry-n', 'laundry-e', 'laundry-s', 'laundry-w'],
+      dimensions: [explicitRoomDimension('laundry-vertical', 'עומק נקי', 1_700, 'vertical')],
+      trace: sourceTrace('medium'),
     },
     {
       id: 'kitchen',
       name: 'מטבח',
       polygon: sourcePlanRect(954, 883.44, 1_175.04, 979.8),
       wallIds: ['kitchen-n', 'kitchen-e', 'kitchen-s', 'kitchen-w'],
+      dimensions: roomDimensions('kitchen', 3_850, 1_700),
+      trace: sourceTrace('high'),
     },
+  ],
+  fixtures: [
+    fixture('shower-tray', 'shower', 'shower', 'מקלחון', 632.52, 596.88, 686.52, 644.4, 'high'),
+    fixture('shower-vanity', 'shower', 'vanity', 'כיור רחצה', 686.52, 596.88, 722.4, 644.4, 'medium'),
+    fixture('shower-toilet', 'shower', 'toilet', 'אסלה', 632.52, 647.28, 686.52, 684, 'medium'),
+    fixture('guest-wc-vanity', 'guest-wc', 'vanity', 'כיור אורחים', 899.52, 575.88, 918.24, 627.48, 'medium'),
+    fixture('guest-wc-toilet', 'guest-wc', 'toilet', 'אסלה', 918.24, 581.64, 962.4, 623.16, 'medium'),
+    fixture('bath-vanity', 'bath', 'vanity', 'כיור אמבטיה', 856.44, 695.76, 898.44, 751.32, 'medium'),
+    fixture('bath-toilet', 'bath', 'toilet', 'אסלה', 856.44, 751.32, 899.52, 793.92, 'medium'),
+    fixture('bath-bathtub', 'bath', 'bathtub', 'אמבט', 946.56, 695.76, 986.28, 791.64, 'high'),
   ],
   furniture: [
     createFurniturePlacement('safe-room-guest-bed', 'safe-room', 'single-bed', 650, 1_450, {
@@ -293,19 +655,19 @@ export const TIFERET_5_1: Apartment = {
       rotation: Math.PI,
     }),
     createFurniturePlacement('living-plant', 'living', 'plant', 9_050, 700),
-    createFurniturePlacement('shower-cubicle', 'shower', 'shower', 1_150, 4_300),
-    createFurniturePlacement('shower-vanity', 'shower', 'vanity', 430, 3_650, {
+    createFurniturePlacement('scene-shower-tray', 'shower', 'shower', 550, 3_840),
+    createFurniturePlacement('scene-shower-vanity', 'shower', 'vanity', 1_350, 3_840, {
       width: 650,
       rotation: Math.PI / 2,
     }),
-    createFurniturePlacement('shower-toilet', 'shower', 'toilet', 450, 4_350, {
+    createFurniturePlacement('scene-shower-toilet', 'shower', 'toilet', 550, 4_650, {
       rotation: Math.PI / 2,
     }),
-    createFurniturePlacement('guest-wc-toilet', 'guest-wc', 'toilet', 5_050, 3_650, {
+    createFurniturePlacement('scene-guest-wc-toilet', 'guest-wc', 'toilet', 5_300, 3_560, {
       depth: 560,
       rotation: Math.PI / 2,
     }),
-    createFurniturePlacement('guest-wc-vanity', 'guest-wc', 'vanity', 5_750, 3_570, {
+    createFurniturePlacement('scene-guest-wc-vanity', 'guest-wc', 'vanity', 6_050, 3_550, {
       width: 520,
       depth: 360,
     }),
@@ -316,11 +678,11 @@ export const TIFERET_5_1: Apartment = {
       width: 950,
       rotation: Math.PI / 2,
     }),
-    createFurniturePlacement('bath-bathtub', 'bath', 'bathtub', 4_480, 6_600, {
+    createFurniturePlacement('scene-bath-bathtub', 'bath', 'bathtub', 5_880, 5_970, {
       rotation: Math.PI / 2,
     }),
-    createFurniturePlacement('bath-vanity', 'bath', 'vanity', 5_650, 5_250),
-    createFurniturePlacement('bath-toilet', 'bath', 'toilet', 5_950, 6_050, {
+    createFurniturePlacement('scene-bath-vanity', 'bath', 'vanity', 4_350, 5_540),
+    createFurniturePlacement('scene-bath-toilet', 'bath', 'toilet', 4_350, 6_350, {
       rotation: Math.PI / 2,
     }),
     createFurniturePlacement('laundry-washer', 'laundry', 'washer', 3_180, 9_150),
@@ -333,11 +695,31 @@ export const TIFERET_5_1: Apartment = {
   ],
   fixedElements: [
     {
+      id: 'bath-service-shaft',
+      roomId: 'bath',
+      kind: 'shaft',
+      label: 'פיר שירות',
+      polygon: sourcePlanRect(856.44, 799.56, 946.56, 861.96),
+      trace: {
+        ...sourceTrace('high'),
+        sourceRect: { x0: 856.44, x1: 946.56, top: 799.56, bottom: 861.96 },
+      },
+      dimensions: roomDimensions('bath-service-shaft', 1_550, 1_050),
+    },
+    {
       id: 'sales-plan-balcony',
       roomId: 'living',
       kind: 'balcony-void',
       label: 'מרפסת',
       polygon: sourcePlanRect(806.52, 220.2, 1_180.8, 378.84),
+      trace: {
+        ...sourceTrace('high'),
+        sourceRect: { x0: 806.52, x1: 1_180.8, top: 220.2, bottom: 378.84 },
+      },
+      dimensions: [
+        ...roomDimensions('sales-plan-balcony', 5_650, 2_750),
+        explicitRoomDimension('sales-plan-sukkah-segment', 'מקטע סוכה', 850, 'segment'),
+      ],
     },
     {
       id: 'sales-plan-kitchen-counter',
@@ -352,7 +734,6 @@ export const TIFERET_5_1: Apartment = {
         { x: 9_450, y: 9_500 },
         { x: 6_000, y: 9_500 },
       ],
-      height: 900,
     },
     {
       id: 'laundry-machine-zone',
@@ -365,7 +746,6 @@ export const TIFERET_5_1: Apartment = {
         { x: 3_500, y: 9_500 },
         { x: 2_850, y: 9_500 },
       ],
-      height: 900,
     },
   ],
 };

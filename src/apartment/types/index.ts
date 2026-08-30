@@ -89,6 +89,7 @@ export interface FixedObstacle {
   polygon: Point[];
   height?: number;
   trace?: GeometryTrace;
+  dimensions?: RoomDimension[];
 }
 
 /** Backwards-compatible name used by the first normalized Tiferet data file. */
@@ -130,6 +131,37 @@ export interface Room {
   polygon: Point[];
   wallIds: EntityId[];
   trace?: GeometryTrace;
+  /** Printed clear dimensions. Omitted axes must not be inferred from the polygon bounding box. */
+  dimensions?: RoomDimension[];
+  /** Present only when the source drawing explicitly states a vertical room height. */
+  ceilingHeight?: number;
+  ceilingHeightEvidence?: MeasurementEvidence;
+}
+
+export type RoomDimensionAxis = 'horizontal' | 'vertical' | 'segment';
+
+export interface RoomDimension {
+  id: EntityId;
+  label: string;
+  value: number;
+  axis: RoomDimensionAxis;
+  evidence: MeasurementEvidence;
+}
+
+export type ArchitecturalFixtureKind = 'bathtub' | 'shower' | 'toilet' | 'vanity' | 'sink' | 'washer' | 'dryer';
+
+/** A source-plan fixture. It is fixed architecture and is never treated as draggable furniture. */
+export interface ArchitecturalFixture {
+  id: EntityId;
+  roomId: EntityId;
+  kind: ArchitecturalFixtureKind;
+  label: string;
+  polygon: Point[];
+  trace: GeometryTrace;
+  measurements?: {
+    position?: MeasurementEvidence;
+    extent?: MeasurementEvidence;
+  };
 }
 
 export type FurnitureKind =
@@ -230,6 +262,7 @@ export interface Apartment {
   walls: Wall[];
   wallMasses?: WallMass[];
   fixedElements: FixedObstacle[];
+  fixtures?: ArchitecturalFixture[];
   furniture?: FurniturePlacement[];
   source: ApartmentSource;
 }
