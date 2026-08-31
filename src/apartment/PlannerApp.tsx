@@ -20,6 +20,7 @@ import { validatePlacement, wallLength } from './geometry/placement';
 import { findCabinetFurnitureCollision, validateFurnitureMove } from './geometry/scene-collision';
 import { analyzeArchitecturalPdf, type ArchitecturalPdfImportDraft } from './import/pdf-import';
 import {
+  clearDesign,
   deserializeDesign,
   restoreDesign,
   SAVED_DESIGN_SCHEMA_VERSION,
@@ -119,22 +120,41 @@ function loadDesignLibrary(apartmentId: string): SavedDesignLibrary {
   );
 }
 
-function createPlacementId(): string {
-  placementSequence += 1;
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
-  return `tiferet-placement-${placementSequence}`;
+function createUniqueId(prefix: string, occupiedIds: readonly string[], nextSequence: () => number): string {
+  const occupied = new Set(occupiedIds);
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    const randomId = crypto.randomUUID();
+    if (!occupied.has(randomId)) return randomId;
+  }
+  let candidate: string;
+  do {
+    candidate = `${prefix}-${nextSequence()}`;
+  } while (occupied.has(candidate));
+  return candidate;
 }
 
-function createDesignVersionId(): string {
-  designSequence += 1;
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
-  return `tiferet-design-${designSequence}`;
+function createPlacementId(existingPlacements: readonly CabinetPlacement[]): string {
+  return createUniqueId(
+    'tiferet-placement',
+    existingPlacements.map((placement) => placement.id),
+    () => ++placementSequence,
+  );
 }
 
-function createFurnitureId(): string {
-  furnitureSequence += 1;
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
-  return `tiferet-furniture-${furnitureSequence}`;
+function createDesignVersionId(existingDesigns: readonly SavedDesignV2[]): string {
+  return createUniqueId(
+    'tiferet-design',
+    existingDesigns.map((design) => design.id),
+    () => ++designSequence,
+  );
+}
+
+function createFurnitureId(existingFurniture: readonly FurniturePlacement[]): string {
+  return createUniqueId(
+    'tiferet-furniture',
+    existingFurniture.map((item) => item.id),
+    () => ++furnitureSequence,
+  );
 }
 
 export function PlannerApp({
@@ -311,7 +331,7 @@ export function PlannerApp({
     }
     try {
       const item = placeFurnitureInRoom({
-        id: createFurnitureId(),
+        id: createFurnitureId(furniture),
         room: selectedRoom,
         kind,
         existingFurniture: furniture,
@@ -340,7 +360,7 @@ export function PlannerApp({
     if (!room) return;
     try {
       const duplicate = placeFurnitureInRoom({
-        id: createFurnitureId(),
+        id: createFurnitureId(furniture),
         room,
         kind: item.kind,
         existingFurniture: furniture,
@@ -386,7 +406,7 @@ export function PlannerApp({
         cabinetConfig: { width: 1800, height: 2400, depth: 600 },
         existingPlacements: placements,
         furniture,
-        id: createPlacementId(),
+        id: createPlacementId(placements),
       });
     } catch (error) {
       setEditError(error instanceof Error ? error.message : 'לא ניתן למקם ארון בקיר הזה');
@@ -499,7 +519,19 @@ export function PlannerApp({
     updatePlacement({ [key]: value });
   };
   const getCurrentDesignError = (): string | null => {
-    const invalid = placements
+    const sourceFurnitureIds = new Set((apartment.furniture ?? []).map((item) => item.id));
+    const invalidFurniture = addedFurniture
+      .map((addedItem) => {
+        if (sourceFurnitureIds.has(addedItem.id)) return 'מזהה הריהוט מתנגש בפריט קיים בדירה';
+        const currentItem = furniture.find((item) => item.id === addedItem.id);
+        if (!currentItem) return 'פריט הריהוט אינו קיים בתכנון הנוכחי';
+        const room = apartment.rooms.find((candidate) => candidate.id === currentItem.roomId);
+        if (!room) return 'החדר של פריט הריהוט אינו קיים בתכנית';
+        return validateFurnitureMove(room, currentItem, placements, apartment, furniture);
+      })
+      .find((error) => error !== null);
+    if (invalidFurniture) return invalidFurniture;
+    const invalidPlacement = placements
       .map((placement) => {
         const wall = apartment.walls.find((item) => item.id === placement.wallId);
         if (!wall) return 'קיר ההצבה אינו קיים בדירה';
@@ -525,7 +557,7 @@ export function PlannerApp({
           : null;
       })
       .find((error) => error !== null);
-    return invalid ?? null;
+    return invalidPlacement ?? null;
   };
   const createSavedDesign = (id: string, name: string): SavedDesignV2 => ({
     schemaVersion: SAVED_DESIGN_SCHEMA_VERSION,
@@ -553,12 +585,18 @@ export function PlannerApp({
     setActiveFurnitureId(null);
     setEditError('');
   };
-  const persistDesignVersion = (design: SavedDesignV2) => {
-    const nextLibrary = addDesignVersion(designLibrary, design);
-    saveDesign(localStorage, designStorageKey(apartment.id), design);
-    saveDesignLibrary(localStorage, designLibraryStorageKey(apartment.id), nextLibrary);
-    setDesignLibrary(nextLibrary);
-    setDesignName(design.name);
+  const persistDesignVersion = (design: SavedDesignV2): boolean => {
+    try {
+      const nextLibrary = addDesignVersion(designLibrary, design);
+      saveDesign(localStorage, designStorageKey(apartment.id), design);
+      saveDesignLibrary(localStorage, designLibraryStorageKey(apartment.id), nextLibrary);
+      setDesignLibrary(nextLibrary);
+      setDesignName(design.name);
+      return true;
+    } catch {
+      setEditError('לא ניתן לשמור את התכנון באחסון המקומי. בדקו שיש מקום פנוי ושהאחסון מאופשר');
+      return false;
+    }
   };
   const save = () => {
     const invalid = getCurrentDesignError();
@@ -568,7 +606,7 @@ export function PlannerApp({
     }
     const activeDesignId = designLibrary.activeDesignId ?? 'design-5-1';
     const nextName = designName.trim() || `תכנון ${apartment.name}`;
-    persistDesignVersion(createSavedDesign(activeDesignId, nextName));
+    if (!persistDesignVersion(createSavedDesign(activeDesignId, nextName))) return;
     setEditError('');
     setNotice('התכנון נשמר בהצלחה במכשיר זה');
   };
@@ -583,7 +621,7 @@ export function PlannerApp({
       setEditError('הזינו שם לגרסה');
       return;
     }
-    persistDesignVersion(createSavedDesign(createDesignVersionId(), nextName));
+    if (!persistDesignVersion(createSavedDesign(createDesignVersionId(designLibrary.designs), nextName))) return;
     setEditError('');
     setNotice(`הגרסה “${nextName}” נשמרה`);
   };
@@ -601,15 +639,27 @@ export function PlannerApp({
     const design = designLibrary.designs.find((candidate) => candidate.id === designId);
     if (!design || !window.confirm(`למחוק את הגרסה “${design.name}”?`)) return;
     const nextLibrary = removeDesignVersion(designLibrary, designId);
+    const deletedActiveDesign = designLibrary.activeDesignId === designId;
+    const nextActive = deletedActiveDesign
+      ? nextLibrary.designs.find((candidate) => candidate.id === nextLibrary.activeDesignId)
+      : undefined;
+    try {
+      saveDesignLibrary(localStorage, designLibraryStorageKey(apartment.id), nextLibrary);
+      if (deletedActiveDesign) {
+        if (nextActive) saveDesign(localStorage, designStorageKey(apartment.id), nextActive);
+        else clearDesign(localStorage, designStorageKey(apartment.id));
+      }
+    } catch {
+      setEditError('לא ניתן למחוק את הגרסה מהאחסון המקומי');
+      return;
+    }
     setDesignLibrary(nextLibrary);
-    saveDesignLibrary(localStorage, designLibraryStorageKey(apartment.id), nextLibrary);
     if (designLibrary.activeDesignId === designId) {
-      const nextActive = nextLibrary.designs.find((candidate) => candidate.id === nextLibrary.activeDesignId);
       if (nextActive) {
         applySavedDesign(nextActive);
-        saveDesign(localStorage, designStorageKey(apartment.id), nextActive);
       }
     }
+    setEditError('');
     setNotice(`הגרסה “${design.name}” נמחקה`);
   };
   const exportActiveDesign = () => {
@@ -635,12 +685,12 @@ export function PlannerApp({
       }
       const design: SavedDesignV2 = {
         ...imported,
-        id: createDesignVersionId(),
+        id: createDesignVersionId(designLibrary.designs),
         name: `${imported.name} (מיובא)`,
         updatedAt: new Date().toISOString(),
       };
       applySavedDesign(design);
-      persistDesignVersion(design);
+      if (!persistDesignVersion(design)) return;
       setNotice(`הגרסה “${design.name}” יובאה ונטענה`);
     } catch {
       setEditError('לא ניתן לקרוא את קובץ התכנון');

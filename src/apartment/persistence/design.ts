@@ -289,10 +289,14 @@ export function saveDesign(storage: DesignStorage, key: string, design: SavedDes
 }
 
 export function restoreDesign(storage: DesignStorage, key: string, apartmentId?: string): SavedDesignV2 | null {
-  const serialized = storage.getItem(key);
-  if (serialized === null) return null;
-  const design = deserializeDesign(serialized);
-  return design && (apartmentId === undefined || design.apartmentId === apartmentId) ? design : null;
+  try {
+    const serialized = storage.getItem(key);
+    if (serialized === null) return null;
+    const design = deserializeDesign(serialized);
+    return design && (apartmentId === undefined || design.apartmentId === apartmentId) ? design : null;
+  } catch {
+    return null;
+  }
 }
 
 export function clearDesign(storage: DesignStorage, key: string): void {

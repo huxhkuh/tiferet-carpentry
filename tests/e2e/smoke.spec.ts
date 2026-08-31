@@ -37,6 +37,7 @@ test('configurator tab is reachable and renders dimension controls', async ({ pa
   await page.getByRole('tab', { name: /configure/i }).click();
   // At least one dimension slider must be on the page.
   await expect(page.getByRole('slider').first()).toBeVisible();
+  await expect(page.getByRole('region', { name: /named parametric expressions panel/i })).toBeVisible();
 });
 
 test('keyboard shortcut Alt+2 switches to preview', async ({ page }) => {

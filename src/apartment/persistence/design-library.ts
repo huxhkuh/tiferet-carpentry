@@ -103,6 +103,10 @@ export function restoreDesignLibrary(
   key: string,
   apartmentId: string,
 ): SavedDesignLibrary | null {
-  const serialized = storage.getItem(key);
-  return serialized === null ? null : deserializeDesignLibrary(serialized, apartmentId);
+  try {
+    const serialized = storage.getItem(key);
+    return serialized === null ? null : deserializeDesignLibrary(serialized, apartmentId);
+  } catch {
+    return null;
+  }
 }

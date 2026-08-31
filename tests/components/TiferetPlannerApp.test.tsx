@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest';
 import { PlannerApp } from '../../src/apartment/PlannerApp';
 import { TIFERET_5_1 } from '../../src/apartment/data/tiferet';
 
@@ -14,6 +14,10 @@ beforeEach(() => {
   Object.defineProperty(window, 'localStorage', { configurable: true, value: storage });
   Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: storage });
   window.localStorage.clear();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 describe('Tiferet planner UI', () => {
@@ -144,6 +148,41 @@ describe('Tiferet planner UI', () => {
     fireEvent.click(screen.getByRole('button', { name: 'אפס תכנון' }));
     expect(screen.queryByRole('button', { name: 'בחירת ריהוט שידת לילה' })).not.toBeInTheDocument();
     expect(screen.getByText('0 פריטי ריהוט נוספים')).toBeVisible();
+  });
+
+  it('יוצר מזהה ריהוט ייחודי גם אם randomUUID מחזיר מזהה שכבר קיים', () => {
+    const repeatedId = '00000000-0000-4000-8000-000000000000';
+    const apartment = { ...TIFERET_5_1, id: 'unique-furniture-apartment', furniture: [] };
+    const existingFurniture = {
+      ...TIFERET_5_1.furniture?.find((item) => item.id === 'bedroom-nightstand'),
+      id: repeatedId,
+    };
+    window.localStorage.setItem(
+      'tiferet:design:unique-furniture-apartment',
+      JSON.stringify({
+        schemaVersion: 2,
+        id: 'unique-furniture-design',
+        apartmentId: apartment.id,
+        name: 'בדיקת מזהים',
+        updatedAt: '2026-08-31T00:00:00.000Z',
+        placements: [],
+        addedFurniture: [existingFurniture],
+        furnitureOverrides: [],
+        visibility: { hiddenObjectIds: [], hiddenCategories: [] },
+        furniturePalette: 'warm',
+        cameraByRoom: {},
+      }),
+    );
+    vi.spyOn(globalThis.crypto, 'randomUUID').mockReturnValue(repeatedId);
+    render(<PlannerApp initialStarted initialRoomId="bedroom" initialApartment={apartment} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'הוסף ריהוט' }));
+    fireEvent.click(screen.getByRole('button', { name: 'הוסף צמח' }));
+
+    const furnitureIds = screen
+      .getAllByRole('button', { name: /^בחירת ריהוט/ })
+      .map((item) => item.getAttribute('data-testid'));
+    expect(new Set(furnitureIds).size).toBe(furnitureIds.length);
   });
 
   it('בוחר רהיט, מזיז אותו בגריד ומאפשר להסתיר ולשחזר אותו', () => {
@@ -312,6 +351,47 @@ describe('Tiferet planner UI', () => {
     expect(window.localStorage.getItem('tiferet:design:5-1')).toBeNull();
   });
 
+  it('מציג שגיאה ידידותית כאשר האחסון המקומי חוסם שמירה', () => {
+    render(<PlannerApp initialStarted initialRoomId="bedroom" />);
+    vi.spyOn(window.localStorage, 'setItem').mockImplementation(() => {
+      throw new DOMException('Storage quota exceeded', 'QuotaExceededError');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'שמור תכנון' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('לא ניתן לשמור');
+    expect(screen.queryByText('התכנון נשמר בהצלחה במכשיר זה')).not.toBeInTheDocument();
+  });
+
+  it('מסרב לשמור ריהוט טעון שנמצא מחוץ לגבולות החדר', () => {
+    const sourceFurniture = TIFERET_5_1.furniture?.find((item) => item.id === 'bedroom-nightstand');
+    if (!sourceFurniture) throw new Error('Missing bedroom furniture fixture');
+    const apartment = { ...TIFERET_5_1, id: 'invalid-furniture-apartment', furniture: [] };
+    window.localStorage.setItem(
+      'tiferet:design:invalid-furniture-apartment',
+      JSON.stringify({
+        schemaVersion: 2,
+        id: 'invalid-furniture-design',
+        apartmentId: apartment.id,
+        name: 'ריהוט לא תקין',
+        updatedAt: '2026-08-31T00:00:00.000Z',
+        placements: [],
+        addedFurniture: [{ ...sourceFurniture, id: 'outside-room', x: -10_000, y: -10_000 }],
+        furnitureOverrides: [],
+        visibility: { hiddenObjectIds: [], hiddenCategories: [] },
+        furniturePalette: 'warm',
+        cameraByRoom: {},
+      }),
+    );
+    render(<PlannerApp initialStarted initialRoomId="bedroom" initialApartment={apartment} />);
+    vi.mocked(window.localStorage.setItem).mockClear();
+
+    fireEvent.click(screen.getByRole('button', { name: 'שמור תכנון' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('הריהוט יוצא מגבולות החדר');
+    expect(window.localStorage.setItem).not.toHaveBeenCalled();
+  });
+
   it('שומר כמה גרסאות בשם ומציג אותן בספריית התכנון', () => {
     render(<PlannerApp initialStarted initialRoomId="bedroom" />);
 
@@ -329,6 +409,20 @@ describe('Tiferet planner UI', () => {
     expect(screen.getAllByRole('button', { name: /טען גרסה/ })).toHaveLength(2);
     expect(screen.getByRole('button', { name: 'ייצוא גרסה פעילה ל‑JSON' })).toBeEnabled();
     expect(screen.getByLabelText('ייבוא תכנון JSON')).toHaveAttribute('accept', 'application/json,.json');
+  });
+
+  it('מוחק את השמירה הפעילה כאשר נמחקת הגרסה האחרונה', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    render(<PlannerApp initialStarted initialRoomId="bedroom" />);
+    fireEvent.click(screen.getByRole('button', { name: 'גרסאות ושיתוף' }));
+    fireEvent.change(screen.getByLabelText('שם הגרסה'), { target: { value: 'גרסה למחיקה' } });
+    fireEvent.click(screen.getByRole('button', { name: 'שמור כגרסה חדשה' }));
+    expect(window.localStorage.getItem('tiferet:design:5-1')).not.toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'מחק גרסה גרסה למחיקה' }));
+
+    expect(window.localStorage.getItem('tiferet:design:5-1')).toBeNull();
+    expect(screen.getByText('עדיין לא נשמרו חלופות. התכנון נשמר בדפדפן בלבד.')).toBeVisible();
   });
 
   it('מציע ייבוא PDF אדריכלי ומציג תקציר ראיות לאחר בחירת קובץ', async () => {

@@ -51,6 +51,12 @@ describe('ConfiguratorPanel', () => {
     render(<ConfiguratorPanel />);
     expect(screen.getByText(/my saved cabinets/i)).toBeInTheDocument();
   });
+
+  it('renders the named expressions editor promised by the configurator sprint', () => {
+    render(<ConfiguratorPanel />);
+
+    expect(screen.getByRole('region', { name: /named parametric expressions panel/i })).toBeInTheDocument();
+  });
 });
 
 describe('SubstitutionPanel integration (Sprint 43)', () => {

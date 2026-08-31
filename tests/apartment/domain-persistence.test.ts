@@ -192,6 +192,19 @@ describe('safe design restoration', () => {
     expect(restoreDesign(storage, 'design')).toBeNull();
   });
 
+  it('returns null when browser storage cannot be read', () => {
+    const storage: DesignStorage = {
+      getItem: () => {
+        throw new DOMException('Storage is disabled', 'SecurityError');
+      },
+      setItem: () => undefined,
+      removeItem: () => undefined,
+    };
+
+    expect(() => restoreDesign(storage, 'design')).not.toThrow();
+    expect(restoreDesign(storage, 'design')).toBeNull();
+  });
+
   it('clears a stored design', () => {
     const storage = createMemoryStorage(serializeDesign(v2Design));
 

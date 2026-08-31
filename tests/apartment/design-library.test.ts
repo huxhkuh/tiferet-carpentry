@@ -4,8 +4,10 @@ import {
   createDesignLibrary,
   deserializeDesignLibrary,
   removeDesignVersion,
+  restoreDesignLibrary,
   serializeDesignLibrary,
 } from '../../src/apartment/persistence/design-library';
+import type { DesignStorage } from '../../src/apartment/persistence/design';
 import type { SavedDesignV2 } from '../../src/apartment/types';
 
 const firstDesign: SavedDesignV2 = {
@@ -75,5 +77,18 @@ describe('saved design version library', () => {
       activeDesignId: null,
       designs: [],
     });
+  });
+
+  it('returns null when browser storage cannot be read', () => {
+    const storage: DesignStorage = {
+      getItem: () => {
+        throw new DOMException('Storage is disabled', 'SecurityError');
+      },
+      setItem: () => undefined,
+      removeItem: () => undefined,
+    };
+
+    expect(() => restoreDesignLibrary(storage, 'library', firstDesign.apartmentId)).not.toThrow();
+    expect(restoreDesignLibrary(storage, 'library', firstDesign.apartmentId)).toBeNull();
   });
 });

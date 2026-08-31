@@ -17,6 +17,7 @@ import { MeasurementHintsPanel } from './MeasurementHintsPanel';
 import { PresetsPanel } from './PresetsPanel';
 import { SaveLoadPanel } from './SaveLoadPanel';
 import { ConstraintSuggestionsPanel } from './ConstraintSuggestionsPanel';
+import { NamedExpressionsPanel } from './NamedExpressionsPanel';
 import type { FurnitureType, JoineryType } from '../../engine/types';
 
 export function ConfiguratorPanel() {
@@ -108,6 +109,7 @@ export function ConfiguratorPanel() {
       )}
 
       <DimensionSliders />
+      <NamedExpressionsPanel />
       <MaterialSelector />
       <CustomMaterialEditor />
       <CatalogImportPanel />

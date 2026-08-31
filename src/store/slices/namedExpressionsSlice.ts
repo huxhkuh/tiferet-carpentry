@@ -12,6 +12,9 @@
  */
 
 const STORAGE_KEY = 'woodworkingshop:namedExpressions';
+const NAME_PATTERN = /^[a-z_]\w*$/i;
+const MAX_NAME_LENGTH = 32;
+const MAX_EXPRESSION_LENGTH = 256;
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -45,6 +48,19 @@ export type NamedExpressionsSlice = {
   clearExpressionErrors: () => void;
 };
 
+function isNamedExpression(value: unknown): value is NamedExpression {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.name === 'string' &&
+    candidate.name.length <= MAX_NAME_LENGTH &&
+    NAME_PATTERN.test(candidate.name) &&
+    typeof candidate.expression === 'string' &&
+    candidate.expression.trim().length > 0 &&
+    candidate.expression.length <= MAX_EXPRESSION_LENGTH
+  );
+}
+
 // ─── Persistence helpers ──────────────────────────────────────────────────────
 
 export function loadNamedExpressionsFromStorage(): NamedExpression[] {
@@ -53,7 +69,9 @@ export function loadNamedExpressionsFromStorage(): NamedExpression[] {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as unknown;
-    return Array.isArray(parsed) ? (parsed as NamedExpression[]) : [];
+    if (!Array.isArray(parsed) || !parsed.every(isNamedExpression)) return [];
+    const names = parsed.map((entry) => entry.name);
+    return new Set(names).size === names.length ? parsed : [];
   } catch {
     return [];
   }

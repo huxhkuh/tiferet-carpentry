@@ -185,4 +185,24 @@ describe('loadNamedExpressionsFromStorage', () => {
     globalThis.localStorage.setItem('woodworkingshop:namedExpressions', JSON.stringify({ foo: 'bar' }));
     expect(loadNamedExpressionsFromStorage()).toEqual([]);
   });
+
+  it('rejects arrays containing malformed expression entries', () => {
+    if (globalThis.window === undefined) return;
+    globalThis.localStorage.setItem(
+      'woodworkingshop:namedExpressions',
+      JSON.stringify([ENTRY_A, null, { name: 'missing_expression' }]),
+    );
+
+    expect(loadNamedExpressionsFromStorage()).toEqual([]);
+  });
+
+  it('rejects duplicate persisted expression names', () => {
+    if (globalThis.window === undefined) return;
+    globalThis.localStorage.setItem(
+      'woodworkingshop:namedExpressions',
+      JSON.stringify([ENTRY_A, { ...ENTRY_A, expression: 'height / 2' }]),
+    );
+
+    expect(loadNamedExpressionsFromStorage()).toEqual([]);
+  });
 });
