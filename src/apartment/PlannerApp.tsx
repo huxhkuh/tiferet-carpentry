@@ -11,13 +11,19 @@ import type {
   FurniturePalette,
   FurniturePlacement,
   RoomCameraOrbit,
-  SavedDesignV2,
+  SavedDesignV3,
   SceneObjectCategory,
 } from './types';
 import { TIFERET_5_1, TIFERET_PROJECT } from './data/tiferet';
 import { createCabinetPlacement, deriveCabinet, updateCabinetPlacement } from './cabinet/adapter';
 import { validatePlacement, wallLength } from './geometry/placement';
 import { findCabinetFurnitureCollision, validateFurnitureMove } from './geometry/scene-collision';
+import {
+  resizeFurniture,
+  rotateFurniture,
+  snapFurnitureToGrid,
+  snapFurnitureToNearestWall,
+} from './furniture/transform';
 import { analyzeArchitecturalPdf, type ArchitecturalPdfImportDraft } from './import/pdf-import';
 import {
   clearDesign,
@@ -103,7 +109,7 @@ function designStorageKey(apartmentId: string): string {
   return apartmentId === TIFERET_5_1.id ? LEGACY_STORAGE_KEY : `tiferet:design:${apartmentId}`;
 }
 
-function loadSavedDesign(apartmentId: string): SavedDesignV2 | null {
+function loadSavedDesign(apartmentId: string): SavedDesignV3 | null {
   if (typeof localStorage === 'undefined') return null;
   return restoreDesign(localStorage, designStorageKey(apartmentId), apartmentId);
 }
@@ -141,7 +147,7 @@ function createPlacementId(existingPlacements: readonly CabinetPlacement[]): str
   );
 }
 
-function createDesignVersionId(existingDesigns: readonly SavedDesignV2[]): string {
+function createDesignVersionId(existingDesigns: readonly SavedDesignV3[]): string {
   return createUniqueId(
     'tiferet-design',
     existingDesigns.map((design) => design.id),
@@ -460,11 +466,9 @@ export function PlannerApp({
       setEditError(error instanceof Error ? error.message : 'לא ניתן לעדכן את הארון');
     }
   };
-  const updateFurniture = (
+  const commitFurnitureUpdate = (
     item: FurniturePlacement,
-    x: number,
-    y: number,
-    rotation: number,
+    nextItem: FurniturePlacement,
     shouldRecordHistory = true,
   ) => {
     const room = apartment.rooms.find((candidate) => candidate.id === item.roomId);
@@ -472,16 +476,39 @@ export function PlannerApp({
       setEditError('החדר של פריט הריהוט אינו קיים בתכנית');
       return;
     }
-    const nextItem = { ...item, x, y, rotation };
     const placementError = validateFurnitureMove(room, nextItem, placements, apartment, furniture);
     if (placementError) {
       setEditError(placementError);
       return;
     }
     if (shouldRecordHistory) recordHistory();
-    setFurnitureOverrides((current) => upsertFurnitureOverride(current, { id: item.id, x, y, rotation }));
+    setFurnitureOverrides((current) =>
+      upsertFurnitureOverride(current, {
+        id: item.id,
+        x: nextItem.x,
+        y: nextItem.y,
+        rotation: nextItem.rotation,
+        width: nextItem.width,
+        depth: nextItem.depth,
+        height: nextItem.height,
+        elevation: nextItem.elevation,
+        color: nextItem.color,
+        accentColor: nextItem.accentColor,
+        material: nextItem.material,
+        style: nextItem.style,
+      }),
+    );
     setEditError('');
     setNotice(`${item.label} עודכן בתכנית`);
+  };
+  const updateFurniture = (
+    item: FurniturePlacement,
+    x: number,
+    y: number,
+    rotation: number,
+    shouldRecordHistory = true,
+  ) => {
+    commitFurnitureUpdate(item, rotateFurniture({ ...item, x, y }, rotation), shouldRecordHistory);
   };
   const updateNumber = (key: NumericField, value: number) => {
     if (!active) return;
@@ -559,7 +586,7 @@ export function PlannerApp({
       .find((error) => error !== null);
     return invalidPlacement ?? null;
   };
-  const createSavedDesign = (id: string, name: string): SavedDesignV2 => ({
+  const createSavedDesign = (id: string, name: string): SavedDesignV3 => ({
     schemaVersion: SAVED_DESIGN_SCHEMA_VERSION,
     id,
     apartmentId: apartment.id,
@@ -572,7 +599,7 @@ export function PlannerApp({
     furniturePalette,
     cameraByRoom,
   });
-  const applySavedDesign = (design: SavedDesignV2) => {
+  const applySavedDesign = (design: SavedDesignV3) => {
     historyRef.current = { past: [], future: [] };
     setPlacements(design.placements);
     setAddedFurniture(design.addedFurniture ?? []);
@@ -585,7 +612,7 @@ export function PlannerApp({
     setActiveFurnitureId(null);
     setEditError('');
   };
-  const persistDesignVersion = (design: SavedDesignV2): boolean => {
+  const persistDesignVersion = (design: SavedDesignV3): boolean => {
     try {
       const nextLibrary = addDesignVersion(designLibrary, design);
       saveDesign(localStorage, designStorageKey(apartment.id), design);
@@ -683,7 +710,7 @@ export function PlannerApp({
         setEditError('קובץ התכנון אינו תקין או שייך לדירה אחרת');
         return;
       }
-      const design: SavedDesignV2 = {
+      const design: SavedDesignV3 = {
         ...imported,
         id: createDesignVersionId(designLibrary.designs),
         name: `${imported.name} (מיובא)`,
@@ -1201,6 +1228,12 @@ export function PlannerApp({
                 const item = furniture.find((candidate) => candidate.id === id);
                 if (item) updateFurniture(item, x, y, item.rotation, false);
               }}
+              onFurnitureResizeStart={() => recordHistory()}
+              onFurnitureResize={(id, width, depth) => {
+                const item = furniture.find((candidate) => candidate.id === id);
+                if (!item) return;
+                commitFurnitureUpdate(item, resizeFurniture(item, { width, depth }), false);
+              }}
             />
           ) : view === 'overlay' ? (
             <SourceComparisonPlan apartment={apartment} />
@@ -1228,6 +1261,14 @@ export function PlannerApp({
                   return { ...current, [cameraRoomId]: camera };
                 });
               }}
+              onObjectSelect={(id) => {
+                const item = furniture.find((candidate) => candidate.id === id);
+                setActiveFurnitureId(id);
+                setActivePlacementId(null);
+                setRoomId(item?.roomId ?? roomId);
+                setWallId(null);
+                setEditError('');
+              }}
             />
           )}
         </section>
@@ -1253,6 +1294,20 @@ export function PlannerApp({
                 onRotationChange={(rotation) =>
                   updateFurniture(activeFurniture, activeFurniture.x, activeFurniture.y, rotation)
                 }
+                onDimensionsChange={(width, depth, height) =>
+                  commitFurnitureUpdate(activeFurniture, resizeFurniture(activeFurniture, { width, depth, height }))
+                }
+                onAppearanceChange={(patch) => commitFurnitureUpdate(activeFurniture, { ...activeFurniture, ...patch })}
+                onSnapToGrid={() => commitFurnitureUpdate(activeFurniture, snapFurnitureToGrid(activeFurniture, 50))}
+                onSnapToWall={() => {
+                  const room = apartment.rooms.find((candidate) => candidate.id === activeFurniture.roomId);
+                  if (room) {
+                    commitFurnitureUpdate(
+                      activeFurniture,
+                      snapFurnitureToNearestWall(apartment, room, activeFurniture),
+                    );
+                  }
+                }}
                 onHide={() => {
                   recordHistory();
                   setVisibility((current) => toggleObjectVisibility(current, activeFurniture.id));

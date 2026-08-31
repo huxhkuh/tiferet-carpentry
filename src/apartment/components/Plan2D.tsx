@@ -14,6 +14,7 @@ import { getFurnitureAppearance } from '../furniture/catalog';
 import { createDefaultVisibility, isSceneObjectVisible, sceneCategoryForFurniture } from '../planner/design-state';
 import { ArchitecturalDoorGraphic } from './ArchitecturalOpening2D';
 import { ArchitecturalFixture2D } from './ArchitecturalFixture2D';
+import { FurnitureSymbol2D } from './FurnitureSymbol2D';
 
 interface Props {
   apartment: Apartment;
@@ -36,12 +37,21 @@ interface Props {
   onFurniture?(id: string): void;
   onFurnitureMoveStart?(id: string): void;
   onFurnitureMove?(id: string, x: number, y: number): void;
+  onFurnitureResizeStart?(id: string): void;
+  onFurnitureResize?(id: string, width: number, depth: number): void;
 }
 
 interface FurnitureDrag {
   id: string;
   offsetX: number;
   offsetY: number;
+}
+
+interface FurnitureResizeDrag {
+  id: string;
+  centerX: number;
+  centerY: number;
+  rotation: number;
 }
 
 function activateFromKeyboard(event: KeyboardEvent<SVGGElement>, activate: () => void): void {
@@ -97,8 +107,11 @@ export function Plan2D({
   onFurniture,
   onFurnitureMoveStart,
   onFurnitureMove,
+  onFurnitureResizeStart,
+  onFurnitureResize,
 }: Props) {
   const furnitureDragRef = useRef<FurnitureDrag | null>(null);
+  const furnitureResizeRef = useRef<FurnitureResizeDrag | null>(null);
   const resolvedFurniture = furniture ?? apartment.furniture ?? [];
   const allPoints = [
     ...apartment.rooms.flatMap((room) => room.polygon),
@@ -129,7 +142,6 @@ export function Plan2D({
     ? resolvedFurniture.filter(
         (item) =>
           (!selectedRoom || item.roomId === selectedRoom.id) &&
-          !(apartment.fixtures ?? []).some((fixture) => fixture.roomId === item.roomId && fixture.kind === item.kind) &&
           isSceneObjectVisible(visibility, item.id, sceneCategoryForFurniture(item.kind)),
       )
     : [];
@@ -158,7 +170,7 @@ export function Plan2D({
   const maxY = Math.max(...visiblePoints.map((point) => point.y)) + padding;
   const viewWidth = maxX - minX;
   const viewHeight = maxY - minY;
-  const pointerPlanPoint = (event: ReactPointerEvent<SVGGElement>) => {
+  const pointerPlanPoint = (event: ReactPointerEvent<SVGGraphicsElement>) => {
     const svg = event.currentTarget.ownerSVGElement;
     if (!svg) return null;
     const bounds = svg.getBoundingClientRect();
@@ -259,98 +271,163 @@ export function Plan2D({
         const footprint = furnitureFootprint(item);
         const isRug = item.kind === 'rug';
         return (
-          <g
-            key={item.id}
-            data-testid={`furniture-${item.id}`}
-            data-selected={item.id === activeFurnitureId ? 'true' : 'false'}
-            role={onFurniture ? 'button' : 'img'}
-            tabIndex={onFurniture ? 0 : undefined}
-            aria-label={onFurniture ? `בחירת ריהוט ${item.label}` : item.label}
-            className={onFurniture ? 'cursor-pointer' : 'pointer-events-none'}
-            onClick={
-              onFurniture
-                ? (event) => {
-                    event.stopPropagation();
-                    onFurniture(item.id);
-                  }
-                : undefined
-            }
-            onKeyDown={onFurniture ? (event) => activateFromKeyboard(event, () => onFurniture(item.id)) : undefined}
-            onPointerDown={
-              onFurnitureMove
-                ? (event) => {
-                    const point = pointerPlanPoint(event);
-                    if (!point) return;
-                    event.stopPropagation();
-                    onFurniture?.(item.id);
-                    onFurnitureMoveStart?.(item.id);
-                    furnitureDragRef.current = {
-                      id: item.id,
-                      offsetX: item.x - point.x,
-                      offsetY: item.y - point.y,
-                    };
-                    if (typeof event.currentTarget.setPointerCapture === 'function') {
-                      event.currentTarget.setPointerCapture(event.pointerId);
+          <g key={item.id}>
+            <g
+              data-testid={`furniture-${item.id}`}
+              data-selected={item.id === activeFurnitureId ? 'true' : 'false'}
+              role={onFurniture ? 'button' : 'img'}
+              tabIndex={onFurniture ? 0 : undefined}
+              aria-label={onFurniture ? `בחירת ריהוט ${item.label}` : item.label}
+              className={onFurniture ? 'cursor-pointer' : 'pointer-events-none'}
+              onClick={
+                onFurniture
+                  ? (event) => {
+                      event.stopPropagation();
+                      onFurniture(item.id);
                     }
-                  }
-                : undefined
-            }
-            onPointerMove={
-              onFurnitureMove
-                ? (event) => {
-                    const drag = furnitureDragRef.current;
-                    if (!drag || drag.id !== item.id) return;
-                    const point = pointerPlanPoint(event);
-                    if (!point) return;
-                    onFurnitureMove(item.id, Math.round(point.x + drag.offsetX), Math.round(point.y + drag.offsetY));
-                  }
-                : undefined
-            }
-            onPointerUp={
-              onFurnitureMove
-                ? (event) => {
-                    furnitureDragRef.current = null;
-                    if (
-                      typeof event.currentTarget.hasPointerCapture === 'function' &&
-                      event.currentTarget.hasPointerCapture(event.pointerId)
-                    ) {
-                      event.currentTarget.releasePointerCapture(event.pointerId);
+                  : undefined
+              }
+              onKeyDown={onFurniture ? (event) => activateFromKeyboard(event, () => onFurniture(item.id)) : undefined}
+              onPointerDown={
+                onFurnitureMove
+                  ? (event) => {
+                      const point = pointerPlanPoint(event);
+                      if (!point) return;
+                      event.stopPropagation();
+                      onFurniture?.(item.id);
+                      onFurnitureMoveStart?.(item.id);
+                      furnitureDragRef.current = {
+                        id: item.id,
+                        offsetX: item.x - point.x,
+                        offsetY: item.y - point.y,
+                      };
+                      if (typeof event.currentTarget.setPointerCapture === 'function') {
+                        event.currentTarget.setPointerCapture(event.pointerId);
+                      }
                     }
-                  }
-                : undefined
-            }
-            onPointerCancel={() => {
-              furnitureDragRef.current = null;
-            }}
-          >
-            <polygon
-              points={footprint.map((point) => `${point.x},${point.y}`).join(' ')}
-              fill={isRug ? appearance.soft : appearance.primary}
-              fillOpacity={isRug ? 0.72 : 0.9}
-              stroke={item.id === activeFurnitureId ? '#b45309' : appearance.accent}
-              strokeWidth={item.id === activeFurnitureId ? 52 : isRug ? 22 : 28}
-              strokeDasharray={isRug ? '50 28' : undefined}
-            />
-            {item.kind.includes('bed') ? (
-              <line
-                x1={footprint[0].x}
-                y1={footprint[0].y}
-                x2={footprint[1].x}
-                y2={footprint[1].y}
-                stroke={appearance.soft}
-                strokeWidth="120"
+                  : undefined
+              }
+              onPointerMove={
+                onFurnitureMove
+                  ? (event) => {
+                      const drag = furnitureDragRef.current;
+                      if (!drag || drag.id !== item.id) return;
+                      const point = pointerPlanPoint(event);
+                      if (!point) return;
+                      onFurnitureMove(item.id, Math.round(point.x + drag.offsetX), Math.round(point.y + drag.offsetY));
+                    }
+                  : undefined
+              }
+              onPointerUp={
+                onFurnitureMove
+                  ? (event) => {
+                      furnitureDragRef.current = null;
+                      if (
+                        typeof event.currentTarget.hasPointerCapture === 'function' &&
+                        event.currentTarget.hasPointerCapture(event.pointerId)
+                      ) {
+                        event.currentTarget.releasePointerCapture(event.pointerId);
+                      }
+                    }
+                  : undefined
+              }
+              onPointerCancel={() => {
+                furnitureDragRef.current = null;
+              }}
+            >
+              <polygon
+                points={footprint.map((point) => `${point.x},${point.y}`).join(' ')}
+                fill={isRug ? appearance.soft : appearance.primary}
+                fillOpacity={isRug ? 0.72 : 0.9}
+                stroke={item.id === activeFurnitureId ? '#b45309' : appearance.accent}
+                strokeWidth={item.id === activeFurnitureId ? 52 : isRug ? 22 : 28}
+                strokeDasharray={isRug ? '50 28' : undefined}
               />
-            ) : null}
-            {selectedRoom ? (
-              <text
-                x={item.x}
-                y={item.y}
-                textAnchor="middle"
-                dominantBaseline="central"
-                className="fill-stone-800 text-[72px] font-semibold"
-              >
-                {item.label}
-              </text>
+              <FurnitureSymbol2D item={item} appearance={appearance} />
+              {selectedRoom ? (
+                <text
+                  x={item.x}
+                  y={item.y}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  className="fill-stone-800 text-[72px] font-semibold"
+                >
+                  {item.label}
+                </text>
+              ) : null}
+            </g>
+            {item.id === activeFurnitureId && onFurnitureResize ? (
+              <circle
+                role="slider"
+                tabIndex={0}
+                aria-label={`שינוי גודל ${item.label}`}
+                aria-valuemin={10}
+                aria-valuemax={1_000}
+                aria-valuenow={Math.round(item.width / 10)}
+                aria-valuetext={`${Math.round(item.width / 10)} על ${Math.round(item.depth / 10)} ס״מ`}
+                cx={footprint[2].x}
+                cy={footprint[2].y}
+                r="72"
+                fill="#fffdf8"
+                stroke="#b45309"
+                strokeWidth="30"
+                className="cursor-nwse-resize"
+                onPointerDown={(event) => {
+                  event.stopPropagation();
+                  onFurnitureResizeStart?.(item.id);
+                  furnitureResizeRef.current = {
+                    id: item.id,
+                    centerX: item.x,
+                    centerY: item.y,
+                    rotation: item.rotation,
+                  };
+                  if (typeof event.currentTarget.setPointerCapture === 'function') {
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                  }
+                }}
+                onPointerMove={(event) => {
+                  const drag = furnitureResizeRef.current;
+                  if (!drag || drag.id !== item.id) return;
+                  const point = pointerPlanPoint(event);
+                  if (!point) return;
+                  const deltaX = point.x - drag.centerX;
+                  const deltaY = point.y - drag.centerY;
+                  const cosine = Math.cos(drag.rotation);
+                  const sine = Math.sin(drag.rotation);
+                  const localX = deltaX * cosine + deltaY * sine;
+                  const localY = -deltaX * sine + deltaY * cosine;
+                  onFurnitureResize(
+                    item.id,
+                    Math.max(100, Math.round(Math.abs(localX) * 2)),
+                    Math.max(100, Math.round(Math.abs(localY) * 2)),
+                  );
+                }}
+                onPointerUp={(event) => {
+                  furnitureResizeRef.current = null;
+                  if (
+                    typeof event.currentTarget.hasPointerCapture === 'function' &&
+                    event.currentTarget.hasPointerCapture(event.pointerId)
+                  ) {
+                    event.currentTarget.releasePointerCapture(event.pointerId);
+                  }
+                }}
+                onPointerCancel={() => {
+                  furnitureResizeRef.current = null;
+                }}
+                onKeyDown={(event) => {
+                  if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onFurnitureResizeStart?.(item.id);
+                  const widthDelta = event.key === 'ArrowRight' ? 50 : event.key === 'ArrowLeft' ? -50 : 0;
+                  const depthDelta = event.key === 'ArrowDown' ? 50 : event.key === 'ArrowUp' ? -50 : 0;
+                  onFurnitureResize(
+                    item.id,
+                    Math.max(100, item.width + widthDelta),
+                    Math.max(100, item.depth + depthDelta),
+                  );
+                }}
+              />
             ) : null}
           </g>
         );

@@ -420,6 +420,11 @@ function isCameraFacingWall(wall: Wall, scale: SceneScale, cameraYaw: number): b
 }
 
 function materialForFurniture(item: FurniturePlacement): RoomMaterialId {
+  if (item.material === 'fabric') return ROOM_MATERIAL_IDS.fabric;
+  if (item.material === 'metal') return ROOM_MATERIAL_IDS.metal;
+  if (item.material === 'glass') return ROOM_MATERIAL_IDS.glass;
+  if (item.material === 'ceramic') return ROOM_MATERIAL_IDS.ceramic;
+  if (item.material === 'wood' || item.material === 'painted') return ROOM_MATERIAL_IDS.wood;
   if (item.kind === 'single-bed' || item.kind === 'double-bed' || item.kind === 'sofa' || item.kind === 'rug') {
     return ROOM_MATERIAL_IDS.fabric;
   }

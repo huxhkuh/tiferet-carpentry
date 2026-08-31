@@ -72,19 +72,43 @@ function bedPrimitives(item: FurniturePlacement, palette: FurniturePalette): Fur
 function tablePrimitives(item: FurniturePlacement, palette: FurniturePalette, topHeight: number): FurniturePrimitive[] {
   const appearance = getFurnitureAppearance(item, palette);
   const topThickness = Math.max(45, item.height * 0.09);
+  const classicDetails =
+    item.style === 'classic'
+      ? [
+          box(0, topHeight * 0.34, 0, item.width * 0.72, 70, 70, appearance.accent),
+          box(0, topHeight * 0.34, 0, 70, 70, item.depth * 0.68, appearance.accent),
+        ]
+      : [];
   return [
     box(0, topHeight - topThickness, 0, item.width, topThickness, item.depth, appearance.primary),
     ...fourLegs(item, topHeight - topThickness, appearance.accent),
+    ...classicDetails,
   ];
 }
 
 function chairPrimitives(item: FurniturePlacement, palette: FurniturePalette): FurniturePrimitive[] {
   const appearance = getFurnitureAppearance(item, palette);
   const seatHeight = 450;
+  const upholstery =
+    item.style === 'soft'
+      ? [
+          box(0, seatHeight + 90, -item.depth * 0.03, item.width * 0.78, 75, item.depth * 0.65, appearance.soft),
+          box(
+            0,
+            seatHeight + 150,
+            item.depth * 0.32,
+            item.width * 0.74,
+            item.height - seatHeight - 210,
+            70,
+            appearance.soft,
+          ),
+        ]
+      : [];
   return [
     box(0, seatHeight, 0, item.width * 0.88, 90, item.depth * 0.8, appearance.primary),
     box(0, seatHeight + 70, item.depth * 0.37, item.width * 0.88, item.height - seatHeight, 80, appearance.accent),
     ...fourLegs(item, seatHeight, appearance.accent),
+    ...upholstery,
   ];
 }
 

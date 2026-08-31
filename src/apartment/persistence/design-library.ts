@@ -1,6 +1,6 @@
-import type { SavedDesignV2 } from '../types';
+import type { SavedDesignV3 } from '../types';
 import type { DesignStorage } from './design';
-import { isSavedDesign } from './design';
+import { deserializeDesign, isSavedDesign } from './design';
 
 export const DESIGN_LIBRARY_SCHEMA_VERSION = 1 as const;
 
@@ -8,7 +8,7 @@ export interface SavedDesignLibrary {
   schemaVersion: typeof DESIGN_LIBRARY_SCHEMA_VERSION;
   apartmentId: string;
   activeDesignId: string | null;
-  designs: SavedDesignV2[];
+  designs: SavedDesignV3[];
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -45,11 +45,11 @@ export function isSavedDesignLibrary(value: unknown): value is SavedDesignLibrar
   );
 }
 
-function newestFirst(designs: readonly SavedDesignV2[]): SavedDesignV2[] {
+function newestFirst(designs: readonly SavedDesignV3[]): SavedDesignV3[] {
   return [...designs].sort((left, right) => Date.parse(right.updatedAt) - Date.parse(left.updatedAt));
 }
 
-export function addDesignVersion(library: SavedDesignLibrary, design: SavedDesignV2): SavedDesignLibrary {
+export function addDesignVersion(library: SavedDesignLibrary, design: SavedDesignV3): SavedDesignLibrary {
   if (!isSavedDesignLibrary(library)) throw new TypeError('ספריית התכנונים אינה תקינה');
   if (!isSavedDesign(design) || design.apartmentId !== library.apartmentId) {
     throw new TypeError('גרסת התכנון אינה תואמת לדירה');
@@ -87,8 +87,12 @@ export function serializeDesignLibrary(library: SavedDesignLibrary): string {
 export function deserializeDesignLibrary(serialized: string, apartmentId?: string): SavedDesignLibrary | null {
   try {
     const parsed: unknown = JSON.parse(serialized);
-    if (!isSavedDesignLibrary(parsed)) return null;
-    return apartmentId === undefined || parsed.apartmentId === apartmentId ? parsed : null;
+    if (!isRecord(parsed) || !Array.isArray(parsed.designs)) return null;
+    const designs = parsed.designs.map((design) => deserializeDesign(JSON.stringify(design)));
+    if (designs.some((design) => design === null)) return null;
+    const migrated = { ...parsed, designs };
+    if (!isSavedDesignLibrary(migrated)) return null;
+    return apartmentId === undefined || migrated.apartmentId === apartmentId ? migrated : null;
   } catch {
     return null;
   }

@@ -47,7 +47,21 @@ export function applyFurnitureOverrides(
   const overridesById = new Map(overrides.map((override) => [override.id, override]));
   return furniture.map((item) => {
     const override = overridesById.get(item.id);
-    return override ? { ...item, x: override.x, y: override.y, rotation: override.rotation } : item;
+    if (!override) return item;
+    return {
+      ...item,
+      x: override.x,
+      y: override.y,
+      rotation: override.rotation,
+      ...(override.width === undefined ? {} : { width: override.width }),
+      ...(override.depth === undefined ? {} : { depth: override.depth }),
+      ...(override.height === undefined ? {} : { height: override.height }),
+      ...(override.elevation === undefined ? {} : { elevation: override.elevation }),
+      ...(override.color === undefined ? {} : { color: override.color }),
+      ...(override.accentColor === undefined ? {} : { accentColor: override.accentColor }),
+      ...(override.material === undefined ? {} : { material: override.material }),
+      ...(override.style === undefined ? {} : { style: override.style }),
+    };
   });
 }
 

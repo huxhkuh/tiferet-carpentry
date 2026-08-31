@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_CONFIG } from '../../src/engine/materials';
 import { TIFERET_5_1 } from '../../src/apartment/data/tiferet';
-import type { CabinetPlacement, FurniturePlacement, Room, Wall } from '../../src/apartment/types';
+import type { Apartment, CabinetPlacement, FurniturePlacement, Room, Wall } from '../../src/apartment/types';
 import {
   findCabinetFurnitureCollision,
   findFirstCollisionFreeCabinetOffset,
@@ -166,5 +166,112 @@ describe('scene collision geometry', () => {
     const movedBed = { ...firstBed, x: secondBed.x, y: secondBed.y };
 
     expect(validateFurnitureMove(bedroom, movedBed, [], TIFERET_5_1, beds)).toBe('הריהוט חופף לפריט ריהוט אחר');
+  });
+
+  it('treats refrigerators and base cabinets as solid editable furniture', () => {
+    const kitchen: Room = {
+      id: 'kitchen-test',
+      name: 'מטבח',
+      wallIds: [],
+      polygon: [
+        { x: 0, y: 0 },
+        { x: 3_000, y: 0 },
+        { x: 3_000, y: 3_000 },
+        { x: 0, y: 3_000 },
+      ],
+    };
+    const refrigerator: FurniturePlacement = {
+      id: 'fridge-a',
+      roomId: kitchen.id,
+      kind: 'refrigerator',
+      label: 'מקרר',
+      x: 1_500,
+      y: 1_500,
+      width: 700,
+      depth: 700,
+      height: 1_900,
+      elevation: 0,
+      rotation: 0,
+    };
+
+    expect(validateFurnitureMove(kitchen, { ...refrigerator, id: 'fridge-b' }, [], undefined, [refrigerator])).toBe(
+      'הריהוט חופף לפריט ריהוט אחר',
+    );
+  });
+
+  it('rejects furniture overlapping a fixed obstacle or a traced architectural fixture', () => {
+    const room: Room = {
+      id: 'room-fixed',
+      name: 'חדר',
+      wallIds: [],
+      polygon: [
+        { x: 0, y: 0 },
+        { x: 2_000, y: 0 },
+        { x: 2_000, y: 2_000 },
+        { x: 0, y: 2_000 },
+      ],
+    };
+    const apartment: Apartment = {
+      id: 'apartment-fixed',
+      name: 'דירה',
+      type: 'test',
+      rooms: [room],
+      walls: [],
+      fixedElements: [
+        {
+          id: 'column',
+          roomId: room.id,
+          kind: 'column',
+          label: 'עמוד',
+          polygon: [
+            { x: 300, y: 300 },
+            { x: 700, y: 300 },
+            { x: 700, y: 700 },
+            { x: 300, y: 700 },
+          ],
+        },
+      ],
+      fixtures: [
+        {
+          id: 'fixed-bath',
+          roomId: room.id,
+          kind: 'bathtub',
+          label: 'אמבט קבוע',
+          polygon: [
+            { x: 1_200, y: 1_200 },
+            { x: 1_800, y: 1_200 },
+            { x: 1_800, y: 1_800 },
+            { x: 1_200, y: 1_800 },
+          ],
+          trace: { sourceFileId: 'source', sourcePage: 1, confidence: 'high' },
+        },
+      ],
+      source: {
+        project: 'Tiferet',
+        building: 'Techelet',
+        floor: 5,
+        sheet: 'test',
+        sourceType: 'sales-plan-pdf',
+        modelingMethod: 'manually-normalized',
+      },
+    };
+    const desk: FurniturePlacement = {
+      id: 'desk',
+      roomId: room.id,
+      kind: 'desk',
+      label: 'שולחן',
+      x: 500,
+      y: 500,
+      width: 300,
+      depth: 300,
+      height: 750,
+      elevation: 0,
+      rotation: 0,
+    };
+
+    expect(validateFurnitureMove(room, desk, [], apartment, [])).toBe('הריהוט חופף לאלמנט קבוע בחדר');
+    expect(validateFurnitureMove(room, { ...desk, x: 1_500, y: 1_500 }, [], apartment, [])).toBe(
+      'הריהוט חופף לפריט אדריכלי קבוע',
+    );
   });
 });

@@ -214,7 +214,7 @@ describe('Tiferet planner UI', () => {
     fireEvent.click(screen.getByRole('button', { name: 'שמור תכנון' }));
 
     const serialized = window.localStorage.getItem('tiferet:design:5-1');
-    expect(serialized).toContain('"schemaVersion":2');
+    expect(serialized).toContain('"schemaVersion":3');
     expect(serialized).toContain('"id":"bedroom-bed-a","x":3800');
     expect(serialized).toContain('"hiddenCategories":["decor"]');
 
@@ -226,6 +226,21 @@ describe('Tiferet planner UI', () => {
 
     expect(screen.getByLabelText(/מיקום X/)).toHaveValue(380);
     expect(screen.getByRole('button', { name: 'שכבת עיצוב והלבשה' })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('משנה מידות וצבע של ריהוט מקור ושומר אותם בתכנון', () => {
+    render(<PlannerApp />);
+    fireEvent.click(screen.getByRole('button', { name: /התחל לתכנן/ }));
+    fireEvent.click(screen.getByTestId('room-select-bedroom'));
+    fireEvent.click(screen.getByTestId('furniture-bedroom-bed-a'));
+
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'רוחב בס״מ' }), { target: { value: '90' } });
+    fireEvent.change(screen.getByLabelText('צבע ראשי'), { target: { value: '#123456' } });
+    fireEvent.click(screen.getByRole('button', { name: 'שמור תכנון' }));
+
+    expect(screen.getByRole('spinbutton', { name: 'רוחב בס״מ' })).toHaveValue(90);
+    expect(window.localStorage.getItem('tiferet:design:5-1')).toContain('"width":900');
+    expect(window.localStorage.getItem('tiferet:design:5-1')).toContain('"color":"#123456"');
   });
 
   it('מבטל ומבצע מחדש שינוי מרחבי בלי לאבד את הפריט הנבחר', () => {

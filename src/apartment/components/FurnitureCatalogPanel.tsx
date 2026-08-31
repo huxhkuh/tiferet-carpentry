@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FURNITURE_CATALOG, type FurnitureCategory, type FurnitureDefinition } from '../furniture/catalog';
 import type { FurnitureKind } from '../types';
+import { FurnitureCatalogPreview } from './FurnitureCatalogPreview';
 
 interface FurnitureCatalogPanelProps {
   roomName: string;
@@ -22,27 +23,34 @@ const CATEGORY_LABELS: readonly [CatalogFilter, string][] = [
   ['decor', 'הלבשה'],
 ];
 
-const CATEGORY_MARKS: Readonly<Record<FurnitureCategory, string>> = {
-  bedroom: '▱',
-  living: '◒',
-  dining: '◇',
-  kitchen: '▤',
-  bathroom: '◯',
-  utility: '⌁',
-  decor: '✦',
-};
-
 function dimensionsLabel(item: FurnitureDefinition): string {
   return `${Math.round(item.width / 10)}×${Math.round(item.depth / 10)} ס״מ`;
+}
+
+function recommendedCategories(roomName: string): readonly FurnitureCategory[] {
+  if (roomName.includes('מטבח')) return ['kitchen', 'dining'];
+  if (roomName.includes('סלון') || roomName.includes('דיור')) return ['living', 'dining', 'decor'];
+  if (roomName.includes('רחצה') || roomName.includes('אמבט') || roomName.includes('שירותים')) {
+    return ['bathroom', 'utility'];
+  }
+  if (roomName.includes('כביסה')) return ['utility', 'bathroom'];
+  if (roomName.includes('חדר') || roomName.includes('ממ״ד') || roomName.includes('ממ"ד')) {
+    return ['bedroom', 'decor'];
+  }
+  return ['decor'];
 }
 
 export function FurnitureCatalogPanel({ roomName, onAdd, onClose }: FurnitureCatalogPanelProps) {
   const [filter, setFilter] = useState<CatalogFilter>('all');
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const items = useMemo(
-    () => Object.values(FURNITURE_CATALOG).filter((item) => filter === 'all' || item.category === filter),
-    [filter],
-  );
+  const roomRecommendations = useMemo(() => recommendedCategories(roomName), [roomName]);
+  const items = useMemo(() => {
+    const filtered = Object.values(FURNITURE_CATALOG).filter((item) => filter === 'all' || item.category === filter);
+    return [...filtered].sort(
+      (left, right) =>
+        Number(roomRecommendations.includes(right.category)) - Number(roomRecommendations.includes(left.category)),
+    );
+  }, [filter, roomRecommendations]);
 
   useEffect(() => {
     closeButtonRef.current?.focus();
@@ -110,12 +118,17 @@ export function FurnitureCatalogPanel({ roomName, onAdd, onClose }: FurnitureCat
                 type="button"
                 aria-label={`הוסף ${item.label}`}
                 onClick={() => onAdd(item.kind)}
-                className="group rounded-2xl border border-stone-200 bg-white p-4 text-start shadow-sm transition hover:-translate-y-0.5 hover:border-[#b88a68] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7b4f35]"
+                className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-4 text-start shadow-sm transition hover:-translate-y-0.5 hover:border-[#b88a68] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7b4f35]"
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eee4d8] text-2xl text-[#6f4935] group-hover:bg-[#e4d2c1]">
-                  {CATEGORY_MARKS[item.category]}
+                <span className="block rounded-xl bg-[linear-gradient(145deg,#f8f3eb,#e9ded0)] px-3 py-1 transition group-hover:bg-[#eee2d4]">
+                  <FurnitureCatalogPreview definition={item} />
                 </span>
-                <strong className="mt-4 block text-base text-stone-900">{item.label}</strong>
+                {roomRecommendations.includes(item.category) ? (
+                  <span className="absolute start-3 top-3 rounded-full bg-[#342e2a] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm">
+                    מומלץ ל{roomName}
+                  </span>
+                ) : null}
+                <strong className="mt-3 block text-base text-stone-900">{item.label}</strong>
                 <span className="mt-1 block text-xs text-stone-500">{dimensionsLabel(item)}</span>
               </button>
             ))}

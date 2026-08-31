@@ -435,4 +435,127 @@ describe('Plan2D', () => {
 
     expect(onFurnitureMove).toHaveBeenLastCalledWith(bed.id, 310, 200);
   });
+
+  it('shows a semantic front direction and a direct resize handle for selected furniture', () => {
+    const onFurnitureResize = vi.fn();
+    const chair: FurniturePlacement = {
+      ...bed,
+      id: 'chair-test',
+      kind: 'dining-chair',
+      label: 'כיסא אוכל',
+      width: 48,
+      depth: 52,
+      rotation: Math.PI / 2,
+    };
+
+    render(
+      <Plan2D
+        apartment={apartment}
+        placements={[]}
+        furniture={[chair]}
+        visibility={{ hiddenObjectIds: [], hiddenCategories: [] }}
+        roomId="room-test"
+        wallId={null}
+        activePlacementId={null}
+        activeFurnitureId={chair.id}
+        onRoom={vi.fn()}
+        onWall={vi.fn()}
+        onPlacement={vi.fn()}
+        onFurniture={vi.fn()}
+        onFurnitureResize={onFurnitureResize}
+      />,
+    );
+
+    expect(screen.getByTestId('furniture-back-chair-test')).toBeInTheDocument();
+    expect(screen.getByTestId('furniture-front-chair-test')).toBeInTheDocument();
+    const resizeHandle = screen.getByRole('slider', { name: 'שינוי גודל כיסא אוכל' });
+    expect(resizeHandle).toHaveAttribute('aria-valuenow', '5');
+    fireEvent.keyDown(resizeHandle, { key: 'ArrowRight' });
+    expect(onFurnitureResize).toHaveBeenCalledWith(chair.id, 100, 100);
+  });
+
+  it('resizes selected furniture directly in local plan coordinates', () => {
+    const onFurnitureResize = vi.fn();
+    render(
+      <Plan2D
+        apartment={apartment}
+        placements={[]}
+        furniture={[bed]}
+        visibility={{ hiddenObjectIds: [], hiddenCategories: [] }}
+        roomId="room-test"
+        wallId={null}
+        activePlacementId={null}
+        activeFurnitureId={bed.id}
+        onRoom={vi.fn()}
+        onWall={vi.fn()}
+        onPlacement={vi.fn()}
+        onFurniture={vi.fn()}
+        onFurnitureResizeStart={vi.fn()}
+        onFurnitureResize={onFurnitureResize}
+      />,
+    );
+    const plan = screen.getByRole('group', { name: 'תכנית דירת בדיקה' });
+    vi.spyOn(plan, 'getBoundingClientRect').mockReturnValue({
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 0,
+      right: 920,
+      bottom: 820,
+      width: 920,
+      height: 820,
+      toJSON: () => ({}),
+    });
+
+    const handle = screen.getByRole('slider', { name: 'שינוי גודל מיטת יחיד' });
+    fireEvent.pointerDown(handle, { pointerId: 2, clientX: 500, clientY: 450 });
+    fireEvent.pointerMove(handle, { pointerId: 2, clientX: 600, clientY: 500 });
+    fireEvent.pointerUp(handle, { pointerId: 2 });
+
+    expect(onFurnitureResize).toHaveBeenCalledWith(bed.id, expect.any(Number), expect.any(Number));
+  });
+
+  it('keeps user-added furniture visible when a fixed fixture has the same kind', () => {
+    const movableBath: FurniturePlacement = {
+      ...bed,
+      id: 'user-bathtub',
+      kind: 'bathtub',
+      label: 'אמבטיה נוספת',
+    };
+    const auditedApartment: Apartment = {
+      ...apartment,
+      fixtures: [
+        {
+          id: 'fixture-bathtub',
+          roomId: 'room-test',
+          kind: 'bathtub',
+          label: 'אמבט קבוע',
+          polygon: [
+            { x: 10, y: 10 },
+            { x: 60, y: 10 },
+            { x: 60, y: 100 },
+            { x: 10, y: 100 },
+          ],
+          trace: { sourceFileId: 'source', sourcePage: 1, confidence: 'high' },
+        },
+      ],
+    };
+
+    render(
+      <Plan2D
+        apartment={auditedApartment}
+        placements={[]}
+        furniture={[movableBath]}
+        roomId="room-test"
+        wallId={null}
+        activePlacementId={null}
+        onRoom={vi.fn()}
+        onWall={vi.fn()}
+        onPlacement={vi.fn()}
+        onFurniture={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId('furniture-user-bathtub')).toBeInTheDocument();
+  });
 });

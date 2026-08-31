@@ -14,6 +14,7 @@ interface Room3DProps {
   selectedObjectId?: string | null;
   initialCamera?: CameraOrbit;
   onCameraChange?: (roomId: string, camera: CameraOrbit) => void;
+  onObjectSelect?: (id: string) => void;
 }
 
 interface DragOrigin {
@@ -23,7 +24,7 @@ interface DragOrigin {
   pitch: number;
 }
 
-const INITIAL_CAMERA: CameraOrbit = { yaw: DEFAULT_ROOM_CAMERA_YAW, pitch: -0.52, zoom: 0.78 };
+const INITIAL_CAMERA: CameraOrbit = { yaw: DEFAULT_ROOM_CAMERA_YAW, pitch: -0.52, zoom: 0.98 };
 
 const clamp = (value: number, minimum: number, maximum: number): number => Math.max(minimum, Math.min(maximum, value));
 
@@ -47,6 +48,7 @@ export function Room3D({
   selectedObjectId = null,
   initialCamera,
   onCameraChange,
+  onObjectSelect,
 }: Room3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragOriginRef = useRef<DragOrigin | null>(null);
@@ -175,12 +177,12 @@ export function Room3D({
 
   return (
     <div className="relative h-full min-h-96 overflow-hidden rounded-3xl bg-stone-100">
-      <div className="pointer-events-none absolute start-4 top-4 z-10 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-stone-700 shadow-sm">
+      <div className="pointer-events-none absolute inset-x-4 top-4 z-10 truncate rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-stone-700 shadow-sm">
         {room.name} • {scene.furnitureCount} פריטי ריהוט • {scene.openingCount} פתחים • גררו לסיבוב
       </div>
       {rendererStatus === 'ready' ? (
         <div
-          className="absolute end-4 top-4 z-10 flex max-w-[48%] flex-wrap justify-end gap-1 rounded-xl bg-white/90 p-1 shadow-sm backdrop-blur"
+          className="absolute end-4 top-16 z-10 flex max-w-[calc(100%_-_2rem)] flex-wrap justify-end gap-1 rounded-xl bg-white/90 p-1 shadow-sm backdrop-blur"
           role="group"
           aria-label="מבטים מוכנים"
         >
@@ -278,6 +280,27 @@ export function Room3D({
           }
         }}
       />
+      {rendererStatus === 'ready' && onObjectSelect && roomFurniture.length > 0 ? (
+        <div
+          className="absolute start-4 bottom-20 z-10 flex max-w-[70%] gap-1.5 overflow-x-auto rounded-2xl bg-white/90 p-2 shadow-lg backdrop-blur"
+          role="listbox"
+          aria-label="בחירת ריהוט בחדר"
+        >
+          {roomFurniture.map((item, index) => (
+            <button
+              key={item.id}
+              type="button"
+              role="option"
+              aria-selected={item.id === selectedObjectId}
+              aria-label={`עריכת ${item.label}, פריט ${index + 1}`}
+              onClick={() => onObjectSelect(item.id)}
+              className={`shrink-0 rounded-xl px-3 py-2 text-xs font-bold transition ${item.id === selectedObjectId ? 'bg-amber-700 text-white shadow-sm' : 'bg-stone-100 text-stone-700 hover:bg-stone-200'}`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
       {rendererStatus === 'ready' ? (
         <div
           className="absolute inset-x-0 bottom-4 z-10 mx-auto flex w-fit gap-1 rounded-full bg-stone-950/75 p-1.5 shadow-lg backdrop-blur"

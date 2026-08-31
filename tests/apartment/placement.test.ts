@@ -190,7 +190,7 @@ describe('design persistence', () => {
     };
     expect(deserializeDesign(serializeDesign(design))).toEqual({
       ...design,
-      schemaVersion: 2,
+      schemaVersion: 3,
       furnitureOverrides: [],
       visibility: { hiddenObjectIds: [], hiddenCategories: [] },
       furniturePalette: 'warm',

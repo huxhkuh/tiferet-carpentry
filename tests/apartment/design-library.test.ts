@@ -8,10 +8,10 @@ import {
   serializeDesignLibrary,
 } from '../../src/apartment/persistence/design-library';
 import type { DesignStorage } from '../../src/apartment/persistence/design';
-import type { SavedDesignV2 } from '../../src/apartment/types';
+import type { SavedDesignV3 } from '../../src/apartment/types';
 
-const firstDesign: SavedDesignV2 = {
-  schemaVersion: 2,
+const firstDesign: SavedDesignV3 = {
+  schemaVersion: 3,
   id: 'design-a',
   apartmentId: 'apartment-5-1',
   name: 'חלופה בהירה',

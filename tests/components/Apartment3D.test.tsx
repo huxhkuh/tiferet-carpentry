@@ -106,7 +106,7 @@ describe('Room3D', () => {
     expect(canvas).toHaveAttribute('data-scene-cutaway-walls', '2');
     expect(canvas).toHaveAttribute('data-scene-cabinets', '1');
     expect(canvas).toHaveAttribute('data-camera-yaw', '2.62');
-    expect(canvas).toHaveAttribute('data-camera-zoom', '0.78');
+    expect(canvas).toHaveAttribute('data-camera-zoom', '0.98');
     expect(fixture.bufferData).toHaveBeenCalledWith(
       fixture.context.ARRAY_BUFFER,
       expect.any(Float32Array),
@@ -212,6 +212,7 @@ describe('Room3D', () => {
     const canvas = screen.getByTestId('apartment-3d-canvas');
     expect(canvas).toHaveAttribute('data-camera-pitch', '-0.52');
     expect(screen.getByRole('toolbar', { name: 'בקרי מצלמה תלת־ממדית' })).toHaveClass('inset-x-0', 'w-fit');
+    expect(screen.getByRole('group', { name: 'מבטים מוכנים' })).toHaveClass('top-16');
 
     fireEvent.click(screen.getByRole('button', { name: 'הטה מעלה' }));
 
@@ -234,7 +235,7 @@ describe('Room3D', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'התאם חדר למסך' }));
     expect(canvas).toHaveAttribute('data-camera-yaw', '2.62');
-    expect(canvas).toHaveAttribute('data-camera-zoom', '0.78');
+    expect(canvas).toHaveAttribute('data-camera-zoom', '0.98');
   });
 
   it('שומר renderer יחיד בזמן סיבוב וזום של המצלמה בחדר', () => {
@@ -285,6 +286,18 @@ describe('Room3D', () => {
     );
 
     expect(screen.getByTestId('apartment-3d-canvas')).toHaveAttribute('data-selected-object', BEDROOM_PLACEMENT.id);
+  });
+
+  it('מאפשר לבחור רהיט מתוך תצוגת התלת־ממד ולהעביר אותו לעורך', () => {
+    const fixture = createWebGLFixture();
+    const onObjectSelect = vi.fn();
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(fixture.context);
+    render(<Room3D apartment={TIFERET_5_1} roomId="bedroom" placements={[]} onObjectSelect={onObjectSelect} />);
+
+    const furnitureOptions = screen.getAllByRole('option', { name: /^עריכת מיטת יחיד/ });
+    fireEvent.click(furnitureOptions[0]!);
+
+    expect(onObjectSelect).toHaveBeenCalledWith('bedroom-bed-a');
   });
 
   it('מתאר לקורא מסך את מידות הארון המוצג', () => {

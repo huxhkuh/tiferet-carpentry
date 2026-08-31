@@ -3,17 +3,20 @@ import type {
   CabinetPlacement,
   DesignVisibility,
   FurnitureOverride,
+  FurnitureMaterial,
   FurniturePalette,
   FurniturePlacement,
+  FurnitureStyle,
   RoomCameraOrbit,
   SavedDesign,
   SavedDesignV1,
   SavedDesignV2,
+  SavedDesignV3,
   SavedDesignMetadata,
   SceneObjectCategory,
 } from '../types';
 
-export const SAVED_DESIGN_SCHEMA_VERSION = 2 as const;
+export const SAVED_DESIGN_SCHEMA_VERSION = 3 as const;
 
 export interface DesignStorage {
   getItem(key: string): string | null;
@@ -32,6 +35,8 @@ const CUT_MODES = ['guillotine', 'freeform'] as const;
 const LANGUAGES = ['en', 'he'] as const;
 const PANEL_MATERIAL_SOURCES = ['carcass', 'back'] as const;
 const FURNITURE_PALETTES: readonly FurniturePalette[] = ['warm', 'light', 'sage'];
+const FURNITURE_MATERIALS: readonly FurnitureMaterial[] = ['wood', 'fabric', 'metal', 'glass', 'ceramic', 'painted'];
+const FURNITURE_STYLES: readonly FurnitureStyle[] = ['minimal', 'classic', 'soft', 'architectural'];
 const FURNITURE_KINDS = [
   'single-bed',
   'double-bed',
@@ -77,6 +82,10 @@ const isNonNegativeNumber = (value: unknown): value is number => isFiniteNumber(
 const isNonNegativeInteger = (value: unknown): value is number => Number.isInteger(value) && isNonNegativeNumber(value);
 const isOptionalBoolean = (value: unknown): boolean => value === undefined || typeof value === 'boolean';
 const isOptionalString = (value: unknown): boolean => value === undefined || typeof value === 'string';
+const isOptionalPositiveNumber = (value: unknown): boolean => value === undefined || isPositiveNumber(value);
+const isOptionalNonNegativeNumber = (value: unknown): boolean => value === undefined || isNonNegativeNumber(value);
+const isOptionalHexColor = (value: unknown): boolean =>
+  value === undefined || (typeof value === 'string' && /^#[\dA-F]{6}$/i.test(value));
 const isOneOf = (value: unknown, options: readonly string[]): value is string =>
   typeof value === 'string' && options.includes(value);
 const isOptionalOneOf = (value: unknown, options: readonly string[]): boolean =>
@@ -155,7 +164,15 @@ function isFurnitureOverride(value: unknown): value is FurnitureOverride {
     isNonEmptyString(value.id) &&
     isFiniteNumber(value.x) &&
     isFiniteNumber(value.y) &&
-    isFiniteNumber(value.rotation)
+    isFiniteNumber(value.rotation) &&
+    isOptionalPositiveNumber(value.width) &&
+    isOptionalPositiveNumber(value.depth) &&
+    isOptionalPositiveNumber(value.height) &&
+    isOptionalNonNegativeNumber(value.elevation) &&
+    isOptionalHexColor(value.color) &&
+    isOptionalHexColor(value.accentColor) &&
+    isOptionalOneOf(value.material, FURNITURE_MATERIALS) &&
+    isOptionalOneOf(value.style, FURNITURE_STYLES)
   );
 }
 
@@ -174,7 +191,9 @@ function isFurniturePlacement(value: unknown): value is FurniturePlacement {
     isNonNegativeNumber(value.elevation) &&
     isFiniteNumber(value.rotation) &&
     isOptionalString(value.color) &&
-    isOptionalString(value.accentColor)
+    isOptionalString(value.accentColor) &&
+    isOptionalOneOf(value.material, FURNITURE_MATERIALS) &&
+    isOptionalOneOf(value.style, FURNITURE_STYLES)
   );
 }
 
@@ -225,8 +244,8 @@ function isLegacySavedDesign(value: unknown): value is SavedDesignV1 {
   return isRecord(value) && value.schemaVersion === 1 && hasValidPlacementEnvelope(value);
 }
 
-export function isSavedDesign(value: unknown): value is SavedDesignV2 {
-  if (!isRecord(value) || value.schemaVersion !== SAVED_DESIGN_SCHEMA_VERSION || !hasValidPlacementEnvelope(value)) {
+function hasValidFurnitureEnvelope(value: Record<string, unknown>): boolean {
+  if (!hasValidPlacementEnvelope(value)) {
     return false;
   }
   if (
@@ -253,7 +272,18 @@ export function isSavedDesign(value: unknown): value is SavedDesignV2 {
   );
 }
 
-function migrateLegacyDesign(design: SavedDesignV1): SavedDesignV2 {
+export function isSavedDesign(value: unknown): value is SavedDesignV3 {
+  return isRecord(value) && value.schemaVersion === SAVED_DESIGN_SCHEMA_VERSION && hasValidFurnitureEnvelope(value);
+}
+
+function isPreviousSavedDesign(value: unknown): value is SavedDesignV2 {
+  return isRecord(value) && value.schemaVersion === 2 && hasValidFurnitureEnvelope(value);
+}
+
+function migrateLegacyDesign(design: SavedDesignV1 | SavedDesignV2): SavedDesignV3 {
+  if (design.schemaVersion === 2) {
+    return { ...design, schemaVersion: SAVED_DESIGN_SCHEMA_VERSION };
+  }
   return {
     ...design,
     schemaVersion: SAVED_DESIGN_SCHEMA_VERSION,
@@ -268,15 +298,16 @@ function migrateLegacyDesign(design: SavedDesignV1): SavedDesignV2 {
 }
 
 export function serializeDesign(design: SavedDesign): string {
-  const persisted = design.schemaVersion === 1 ? migrateLegacyDesign(design) : design;
+  const persisted = design.schemaVersion === SAVED_DESIGN_SCHEMA_VERSION ? design : migrateLegacyDesign(design);
   if (!isSavedDesign(persisted)) throw new TypeError('התכנון אינו תואם לסכימת השמירה הנוכחית');
   return JSON.stringify(persisted);
 }
 
-export function deserializeDesign(serialized: string): SavedDesignV2 | null {
+export function deserializeDesign(serialized: string): SavedDesignV3 | null {
   try {
     const parsed: unknown = JSON.parse(serialized);
     if (isSavedDesign(parsed)) return parsed;
+    if (isPreviousSavedDesign(parsed)) return migrateLegacyDesign(parsed);
     if (isLegacySavedDesign(parsed)) return migrateLegacyDesign(parsed);
     return null;
   } catch {
@@ -288,7 +319,7 @@ export function saveDesign(storage: DesignStorage, key: string, design: SavedDes
   storage.setItem(key, serializeDesign(design));
 }
 
-export function restoreDesign(storage: DesignStorage, key: string, apartmentId?: string): SavedDesignV2 | null {
+export function restoreDesign(storage: DesignStorage, key: string, apartmentId?: string): SavedDesignV3 | null {
   try {
     const serialized = storage.getItem(key);
     if (serialized === null) return null;

@@ -2,10 +2,35 @@ import { describe, expect, it } from 'vitest';
 import { TIFERET_5_1 } from '../../src/apartment/data/tiferet';
 import { furnitureFootprint } from '../../src/apartment/furniture/geometry';
 import { cabinetFootprint } from '../../src/apartment/geometry/placement';
+import { validateFurnitureMove } from '../../src/apartment/geometry/scene-collision';
 import type { Apartment, FurniturePlacement } from '../../src/apartment/types';
 import { validateApartment } from '../../src/apartment/validation/apartment';
 
 describe('Tiferet furniture model', () => {
+  it('starts every furnished room in a valid editable state', () => {
+    const invalidItems = (TIFERET_5_1.furniture ?? []).flatMap((item) => {
+      const room = TIFERET_5_1.rooms.find((candidate) => candidate.id === item.roomId);
+      if (!room) return [`${item.id}: חדר לא קיים`];
+      const error = validateFurnitureMove(room, item, [], TIFERET_5_1, TIFERET_5_1.furniture);
+      return error ? [`${item.id}: ${error}`] : [];
+    });
+
+    expect(invalidItems).toEqual([]);
+  });
+
+  it('orients every dining chair toward the dining table', () => {
+    const furniture = TIFERET_5_1.furniture ?? [];
+    const table = furniture.find((item) => item.id === 'living-dining-table');
+    const chairs = furniture.filter((item) => item.kind === 'dining-chair');
+    if (!table) throw new Error('Missing dining table');
+
+    for (const chair of chairs) {
+      const towardTable = { x: table.x - chair.x, y: table.y - chair.y };
+      const chairForward = { x: Math.sin(chair.rotation), y: -Math.cos(chair.rotation) };
+      expect(chairForward.x * towardTable.x + chairForward.y * towardTable.y, chair.id).toBeGreaterThan(0);
+    }
+  });
+
   it('keeps the two single beds separate inside the bedroom', () => {
     const beds = (TIFERET_5_1.furniture ?? []).filter(
       (item) => item.roomId === 'bedroom' && item.kind === 'single-bed',

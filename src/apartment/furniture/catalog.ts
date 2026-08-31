@@ -1,4 +1,4 @@
-import type { FurnitureKind, FurniturePalette, FurniturePlacement } from '../types';
+import type { FurnitureKind, FurnitureMaterial, FurniturePalette, FurniturePlacement, FurnitureStyle } from '../types';
 import type { Apartment, CabinetPlacement, Room } from '../types';
 import { validateFurnitureMove } from '../geometry/scene-collision';
 
@@ -117,6 +117,23 @@ export function getFurnitureAppearance(placement: FurniturePlacement, palette: F
   };
 }
 
+function defaultMaterial(kind: FurnitureKind): FurnitureMaterial {
+  if (kind === 'single-bed' || kind === 'double-bed' || kind === 'sofa' || kind === 'dining-chair' || kind === 'rug') {
+    return 'fabric';
+  }
+  if (kind === 'refrigerator' || kind === 'oven' || kind === 'washer' || kind === 'dryer' || kind === 'sink') {
+    return 'metal';
+  }
+  if (kind === 'toilet' || kind === 'shower' || kind === 'bathtub' || kind === 'vanity') return 'ceramic';
+  return 'wood';
+}
+
+function defaultStyle(kind: FurnitureKind): FurnitureStyle {
+  if (kind === 'single-bed' || kind === 'double-bed' || kind === 'sofa' || kind === 'dining-chair') return 'soft';
+  if (kind === 'toilet' || kind === 'shower' || kind === 'bathtub' || kind === 'vanity') return 'architectural';
+  return 'minimal';
+}
+
 export function createFurniturePlacement(
   id: string,
   roomId: string,
@@ -138,6 +155,8 @@ export function createFurniturePlacement(
     height: definition.height,
     elevation: definition.elevation ?? 0,
     rotation: 0,
+    material: defaultMaterial(kind),
+    style: defaultStyle(kind),
     ...overrides,
   };
 }
@@ -197,6 +216,8 @@ export function placeFurnitureInRoom({
         elevation: template.elevation,
         color: template.color,
         accentColor: template.accentColor,
+        material: template.material,
+        style: template.style,
       }
     : {};
   for (const rotation of rotations) {

@@ -21,16 +21,32 @@ const ITEM: FurniturePlacement = {
 function renderEditor(overrides: Partial<FurniturePlacement> = {}) {
   const onPositionChange = vi.fn();
   const onRotationChange = vi.fn();
+  const onDimensionsChange = vi.fn();
+  const onAppearanceChange = vi.fn();
+  const onSnapToGrid = vi.fn();
+  const onSnapToWall = vi.fn();
   const onHide = vi.fn();
   render(
     <FurnitureEditor
       item={{ ...ITEM, ...overrides }}
       onPositionChange={onPositionChange}
       onRotationChange={onRotationChange}
+      onDimensionsChange={onDimensionsChange}
+      onAppearanceChange={onAppearanceChange}
+      onSnapToGrid={onSnapToGrid}
+      onSnapToWall={onSnapToWall}
       onHide={onHide}
     />,
   );
-  return { onPositionChange, onRotationChange, onHide };
+  return {
+    onPositionChange,
+    onRotationChange,
+    onDimensionsChange,
+    onAppearanceChange,
+    onSnapToGrid,
+    onSnapToWall,
+    onHide,
+  };
 }
 
 describe('FurnitureEditor', () => {
@@ -42,8 +58,44 @@ describe('FurnitureEditor', () => {
     expect(screen.getByRole('spinbutton', { name: 'מיקום X בס״מ' })).toHaveValue(370);
     expect(screen.getByRole('spinbutton', { name: 'מיקום Y בס״מ' })).toHaveValue(112);
     expect(screen.getByRole('spinbutton', { name: 'סיבוב במעלות' })).toHaveValue(90);
+    expect(screen.getByRole('spinbutton', { name: 'רוחב בס״מ' })).toHaveValue(80);
+    expect(screen.getByRole('spinbutton', { name: 'עומק בס״מ' })).toHaveValue(195);
+    expect(screen.getByRole('spinbutton', { name: 'גובה בס״מ' })).toHaveValue(90);
+    expect(screen.getByRole('combobox', { name: 'חומר' })).toBeVisible();
+    expect(screen.getByRole('combobox', { name: 'סגנון' })).toBeVisible();
+    expect(screen.getByLabelText('צבע ראשי')).toBeVisible();
     expect(screen.getByRole('button', { name: 'הזז למעלה 10 ס״מ' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'הצמד לרשת של 5 ס״מ' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'הצמד לקיר הקרוב' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'הסתר פריט' })).toBeEnabled();
+  });
+
+  it('reports dimension edits in millimetres while preserving untouched dimensions', () => {
+    const { onDimensionsChange } = renderEditor();
+
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'רוחב בס״מ' }), { target: { value: '105' } });
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'עומק בס״מ' }), { target: { value: '210' } });
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'גובה בס״מ' }), { target: { value: '98' } });
+
+    expect(onDimensionsChange).toHaveBeenNthCalledWith(1, 1_050, ITEM.depth, ITEM.height);
+    expect(onDimensionsChange).toHaveBeenNthCalledWith(2, ITEM.width, 2_100, ITEM.height);
+    expect(onDimensionsChange).toHaveBeenNthCalledWith(3, ITEM.width, ITEM.depth, 980);
+  });
+
+  it('reports appearance and snap actions', () => {
+    const { onAppearanceChange, onSnapToGrid, onSnapToWall } = renderEditor();
+
+    fireEvent.change(screen.getByLabelText('צבע ראשי'), { target: { value: '#123456' } });
+    fireEvent.change(screen.getByRole('combobox', { name: 'חומר' }), { target: { value: 'fabric' } });
+    fireEvent.change(screen.getByRole('combobox', { name: 'סגנון' }), { target: { value: 'soft' } });
+    fireEvent.click(screen.getByRole('button', { name: 'הצמד לרשת של 5 ס״מ' }));
+    fireEvent.click(screen.getByRole('button', { name: 'הצמד לקיר הקרוב' }));
+
+    expect(onAppearanceChange).toHaveBeenNthCalledWith(1, { color: '#123456' });
+    expect(onAppearanceChange).toHaveBeenNthCalledWith(2, { material: 'fabric' });
+    expect(onAppearanceChange).toHaveBeenNthCalledWith(3, { style: 'soft' });
+    expect(onSnapToGrid).toHaveBeenCalledOnce();
+    expect(onSnapToWall).toHaveBeenCalledOnce();
   });
 
   it('reports position edits in millimetres while preserving the untouched axis', () => {

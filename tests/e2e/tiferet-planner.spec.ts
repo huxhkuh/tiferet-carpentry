@@ -89,7 +89,7 @@ test('Tiferet furniture, layers and camera persist as one design', async ({ page
   const restored3D = await expectSettled3D(page);
   if (initial3D.ready) {
     await expect(restored3D.canvas).toHaveAttribute('data-camera-yaw', '2.82');
-    await expect(restored3D.canvas).toHaveAttribute('data-camera-zoom', '0.89');
+    await expect(restored3D.canvas).toHaveAttribute('data-camera-zoom', '1.12');
   }
 });
 
@@ -112,20 +112,35 @@ test('Tiferet furniture catalogue adds, edits and restores a new item in 2D and 
 
   await expect(page.getByRole('heading', { name: 'עריכת צמח' })).toBeVisible();
   await expect(page.getByText('פריט ריהוט אחד נוסף')).toBeVisible();
+  await page.getByRole('button', { name: 'הזז ימינה 10 ס״מ' }).click();
+  await page.getByLabel('רוחב בס״מ').fill('70');
+  await page.getByLabel('חומר').selectOption('metal');
+  await page.getByLabel('צבע ראשי').fill('#365d67');
   await page.getByRole('button', { name: 'סובב ימינה 90°' }).click();
   await page.getByRole('button', { name: 'שמור תכנון' }).click();
   await expect
     .poll(() => page.evaluate((storageKey) => localStorage.getItem(storageKey), STORAGE_KEY))
     .toContain('"kind":"plant"');
+  await expect
+    .poll(() => page.evaluate((storageKey) => localStorage.getItem(storageKey), STORAGE_KEY))
+    .toContain('"width":700');
+  await expect
+    .poll(() => page.evaluate((storageKey) => localStorage.getItem(storageKey), STORAGE_KEY))
+    .toContain('"color":"#365d67"');
 
   await page.getByRole('button', { name: 'הדמיית 3D' }).click();
   const { canvas } = await expectSettled3D(page);
   await expect(canvas).toHaveAttribute('data-scene-furniture', '5');
+  await page.getByRole('option', { name: /^עריכת צמח/ }).click();
+  await expect(page.getByRole('heading', { name: 'עריכת צמח' })).toBeVisible();
 
   await page.reload();
   await expect(page.getByText('פריט ריהוט אחד נוסף')).toBeVisible();
   await page.getByRole('button', { name: 'תצוגה נקייה' }).click();
-  await expect(page.getByRole('button', { name: 'בחירת ריהוט צמח' })).toBeVisible();
+  await page.getByRole('button', { name: 'בחירת ריהוט צמח' }).click();
+  await expect(page.getByLabel('רוחב בס״מ')).toHaveValue('70');
+  await expect(page.getByLabel('חומר')).toHaveValue('metal');
+  await expect(page.getByLabel('צבע ראשי')).toHaveValue('#365d67');
 });
 
 test('Tiferet picker and planner pass WCAG 2.1 AA checks', async ({ page }) => {

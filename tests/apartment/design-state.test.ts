@@ -35,6 +35,39 @@ describe('planner design state', () => {
     expect(resolved[0]).not.toBe(catalogue[0]);
   });
 
+  it('applies persisted dimensions and appearance overrides without mutating the catalogue', () => {
+    const catalogue = [BED];
+
+    const resolved = applyFurnitureOverrides(catalogue, [
+      {
+        id: BED.id,
+        x: BED.x,
+        y: BED.y,
+        rotation: BED.rotation,
+        width: 1_050,
+        depth: 2_050,
+        height: 980,
+        elevation: 40,
+        color: '#4f3528',
+        accentColor: '#d8c6b5',
+        material: 'fabric',
+        style: 'soft',
+      },
+    ]);
+
+    expect(resolved[0]).toMatchObject({
+      width: 1_050,
+      depth: 2_050,
+      height: 980,
+      elevation: 40,
+      color: '#4f3528',
+      accentColor: '#d8c6b5',
+      material: 'fabric',
+      style: 'soft',
+    });
+    expect(catalogue[0]).toEqual(BED);
+  });
+
   it('upserts one stable override and preserves the remaining edits', () => {
     const original = [
       { id: 'desk', x: 500, y: 600, rotation: 0 },

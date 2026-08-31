@@ -190,6 +190,8 @@ export type FurnitureKind =
   | 'dryer';
 
 export type FurniturePalette = 'warm' | 'light' | 'sage';
+export type FurnitureMaterial = 'wood' | 'fabric' | 'metal' | 'glass' | 'ceramic' | 'painted';
+export type FurnitureStyle = 'minimal' | 'classic' | 'soft' | 'architectural';
 
 /** A reusable furnishing placed freely on the apartment floor, measured in millimetres. */
 export interface FurniturePlacement {
@@ -208,6 +210,8 @@ export interface FurniturePlacement {
   rotation: number;
   color?: string;
   accentColor?: string;
+  material?: FurnitureMaterial;
+  style?: FurnitureStyle;
 }
 
 export interface ApartmentSource {
@@ -312,6 +316,14 @@ export interface FurnitureOverride {
   x: number;
   y: number;
   rotation: number;
+  width?: number;
+  depth?: number;
+  height?: number;
+  elevation?: number;
+  color?: string;
+  accentColor?: string;
+  material?: FurnitureMaterial;
+  style?: FurnitureStyle;
 }
 
 export type SceneObjectCategory =
@@ -354,4 +366,20 @@ export interface SavedDesignV2 {
   metadata?: SavedDesignMetadata;
 }
 
-export type SavedDesign = SavedDesignV1 | SavedDesignV2;
+export interface SavedDesignV3 {
+  schemaVersion: 3;
+  id: EntityId;
+  apartmentId: EntityId;
+  name: string;
+  updatedAt: string;
+  placements: CabinetPlacement[];
+  /** Furniture created by the customer in addition to the source apartment catalogue. */
+  addedFurniture?: FurniturePlacement[];
+  furnitureOverrides: FurnitureOverride[];
+  visibility: DesignVisibility;
+  furniturePalette: FurniturePalette;
+  cameraByRoom: Record<EntityId, RoomCameraOrbit>;
+  metadata?: SavedDesignMetadata;
+}
+
+export type SavedDesign = SavedDesignV1 | SavedDesignV2 | SavedDesignV3;

@@ -14,14 +14,10 @@ const DEFAULT_OFFSET_STEP = 10;
 const OUTSIDE_ROOM_MESSAGE = 'הריהוט יוצא מגבולות החדר';
 const FURNITURE_CABINET_MESSAGE = 'הריהוט חופף לארון קיים';
 const FURNITURE_OVERLAP_MESSAGE = 'הריהוט חופף לפריט ריהוט אחר';
-const IGNORED_FURNITURE_KINDS: readonly FurnitureKind[] = [
-  'rug',
-  'kitchen-base-run',
-  'kitchen-wall-run',
-  'refrigerator',
-  'oven',
-  'sink',
-];
+const FIXED_ELEMENT_MESSAGE = 'הריהוט חופף לאלמנט קבוע בחדר';
+const ARCHITECTURAL_FIXTURE_MESSAGE = 'הריהוט חופף לפריט אדריכלי קבוע';
+const IGNORED_FURNITURE_KINDS: readonly FurnitureKind[] = ['rug', 'kitchen-wall-run', 'sink'];
+const BLOCKING_FIXED_KINDS = ['shaft', 'column', 'utility', 'balcony-void'] as const;
 
 function dot(point: Point, axis: Point): number {
   return point.x * axis.x + point.y * axis.y;
@@ -153,6 +149,23 @@ export function validateFurnitureMove(
       );
   if (furnitureOverlap) return FURNITURE_OVERLAP_MESSAGE;
   if (!apartment) return null;
+  const fixedElementOverlap = apartment.fixedElements.some(
+    (element) =>
+      element.roomId === room.id &&
+      BLOCKING_FIXED_KINDS.includes(element.kind as (typeof BLOCKING_FIXED_KINDS)[number]) &&
+      element.polygon.length === 4 &&
+      rectangleFootprintsOverlap(footprint, element.polygon),
+  );
+  if (fixedElementOverlap) return FIXED_ELEMENT_MESSAGE;
+  const fixtureOverlap = !furniture.id.startsWith('scene-')
+    ? (apartment.fixtures ?? []).some(
+        (fixture) =>
+          fixture.roomId === room.id &&
+          fixture.polygon.length === 4 &&
+          rectangleFootprintsOverlap(footprint, fixture.polygon),
+      )
+    : false;
+  if (fixtureOverlap) return ARCHITECTURAL_FIXTURE_MESSAGE;
   const overlap = cabinets.find((cabinet) => {
     if (cabinet.roomId !== room.id) return false;
     const cabinetFootprintForRoom = cabinetVisualFootprint(apartment, room, cabinet);

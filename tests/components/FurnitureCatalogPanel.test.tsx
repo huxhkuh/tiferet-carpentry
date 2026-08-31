@@ -38,4 +38,15 @@ describe('FurnitureCatalogPanel', () => {
 
     expect(onClose).toHaveBeenCalledTimes(2);
   });
+
+  it('visually previews every item and highlights recommendations for the selected room', () => {
+    render(<FurnitureCatalogPanel roomName="מטבח" onAdd={vi.fn()} onClose={vi.fn()} />);
+    const refrigerator = screen.getByRole('button', { name: 'הוסף מקרר' });
+
+    expect(within(refrigerator).getByRole('img', { name: 'המחשת מקרר' })).toBeInTheDocument();
+    expect(within(refrigerator).getByText('מומלץ למטבח')).toBeInTheDocument();
+    expect(
+      within(screen.getByRole('button', { name: 'הוסף מיטה זוגית' })).queryByText(/מומלץ/),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -177,11 +177,46 @@ describe('apartment/project validation', () => {
 });
 
 describe('safe design restoration', () => {
+  it('migrates schema v2 furniture edits into the current schema', () => {
+    const restored = deserializeDesign(JSON.stringify(v2Design));
+
+    expect(restored).toMatchObject({
+      schemaVersion: 3,
+      id: v2Design.id,
+      furnitureOverrides: v2Design.furnitureOverrides,
+    });
+  });
+
+  it('round trips current furniture dimension and appearance overrides', () => {
+    const currentDesign = {
+      ...v2Design,
+      schemaVersion: 3 as const,
+      furnitureOverrides: [
+        {
+          id: 'bedroom-bed-a',
+          x: 3_650,
+          y: 1_100,
+          rotation: Math.PI / 2,
+          width: 1_050,
+          depth: 2_050,
+          height: 980,
+          elevation: 40,
+          color: '#4f3528',
+          accentColor: '#d8c6b5',
+          material: 'fabric',
+          style: 'soft',
+        },
+      ],
+    };
+
+    expect(deserializeDesign(JSON.stringify(currentDesign))).toEqual(currentDesign);
+  });
+
   it('saves and restores a complete versioned design', () => {
     const storage = createMemoryStorage();
     saveDesign(storage, 'design', v2Design);
 
-    expect(restoreDesign(storage, 'design', TIFERET_5_1.id)).toEqual(v2Design);
+    expect(restoreDesign(storage, 'design', TIFERET_5_1.id)).toEqual({ ...v2Design, schemaVersion: 3 });
     expect(restoreDesign(storage, 'design', 'another-apartment')).toBeNull();
   });
 
@@ -231,12 +266,12 @@ describe('safe design restoration', () => {
     expect(() => serializeDesign(inconsistent)).toThrow(/סכימת השמירה/);
   });
 
-  it('migrates a legacy schema v1 design into schema v2 defaults', () => {
+  it('migrates a legacy schema v1 design into current defaults', () => {
     const restored = deserializeDesign(JSON.stringify(legacyDesign));
 
     expect(restored).toEqual({
       ...legacyDesign,
-      schemaVersion: 2,
+      schemaVersion: 3,
       furnitureOverrides: [],
       visibility: {
         hiddenObjectIds: [],
@@ -247,8 +282,8 @@ describe('safe design restoration', () => {
     });
   });
 
-  it('round trips a schema v2 design with furniture, visibility and per-room camera state', () => {
-    expect(deserializeDesign(serializeDesign(v2Design))).toEqual(v2Design);
+  it('migrates a schema v2 design with furniture, visibility and per-room camera state', () => {
+    expect(deserializeDesign(serializeDesign(v2Design))).toEqual({ ...v2Design, schemaVersion: 3 });
   });
 
   it('rejects duplicate furniture overrides', () => {

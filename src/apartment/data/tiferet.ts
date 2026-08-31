@@ -619,7 +619,7 @@ export const TIFERET_5_1: Apartment = {
     fixture('bath-bathtub', 'bath', 'bathtub', 'אמבט', 946.56, 695.76, 986.28, 791.64, 'high'),
   ],
   furniture: [
-    createFurniturePlacement('safe-room-guest-bed', 'safe-room', 'single-bed', 650, 1_450, {
+    createFurniturePlacement('safe-room-guest-bed', 'safe-room', 'single-bed', 1_000, 1_450, {
       rotation: Math.PI / 2,
     }),
     createFurniturePlacement('safe-room-desk', 'safe-room', 'desk', 2_480, 700, {
@@ -638,7 +638,7 @@ export const TIFERET_5_1: Apartment = {
     createFurniturePlacement('living-rug', 'living', 'rug', 7_850, 2_600),
     createFurniturePlacement('living-sofa', 'living', 'sofa', 7_850, 1_500),
     createFurniturePlacement('living-coffee-table', 'living', 'coffee-table', 7_850, 2_850),
-    createFurniturePlacement('living-media-console', 'living', 'media-console', 9_350, 2_800, {
+    createFurniturePlacement('living-media-console', 'living', 'media-console', 9_300, 2_800, {
       rotation: Math.PI / 2,
     }),
     createFurniturePlacement('living-dining-table', 'living', 'dining-table', 7_750, 5_850, {
@@ -650,9 +650,11 @@ export const TIFERET_5_1: Apartment = {
     createFurniturePlacement('living-chair-b', 'living', 'dining-chair', 8_550, 5_850, {
       rotation: -Math.PI / 2,
     }),
-    createFurniturePlacement('living-chair-c', 'living', 'dining-chair', 7_750, 4_750),
-    createFurniturePlacement('living-chair-d', 'living', 'dining-chair', 7_750, 6_950, {
+    createFurniturePlacement('living-chair-c', 'living', 'dining-chair', 7_750, 4_700, {
       rotation: Math.PI,
+    }),
+    createFurniturePlacement('living-chair-d', 'living', 'dining-chair', 7_750, 7_000, {
+      rotation: 0,
     }),
     createFurniturePlacement('living-plant', 'living', 'plant', 9_050, 700),
     createFurniturePlacement('scene-shower-tray', 'shower', 'shower', 550, 3_840),
@@ -667,7 +669,7 @@ export const TIFERET_5_1: Apartment = {
       depth: 560,
       rotation: Math.PI / 2,
     }),
-    createFurniturePlacement('scene-guest-wc-vanity', 'guest-wc', 'vanity', 6_050, 3_550, {
+    createFurniturePlacement('scene-guest-wc-vanity', 'guest-wc', 'vanity', 6_000, 3_550, {
       width: 520,
       depth: 360,
     }),
@@ -681,7 +683,7 @@ export const TIFERET_5_1: Apartment = {
     createFurniturePlacement('scene-bath-bathtub', 'bath', 'bathtub', 5_880, 5_970, {
       rotation: Math.PI / 2,
     }),
-    createFurniturePlacement('scene-bath-vanity', 'bath', 'vanity', 4_350, 5_540),
+    createFurniturePlacement('scene-bath-vanity', 'bath', 'vanity', 4_420, 5_540),
     createFurniturePlacement('scene-bath-toilet', 'bath', 'toilet', 4_350, 6_350, {
       rotation: Math.PI / 2,
     }),
@@ -691,7 +693,7 @@ export const TIFERET_5_1: Apartment = {
     createFurniturePlacement('kitchen-wall-run', 'kitchen', 'kitchen-wall-run', 6_950, 9_560),
     createFurniturePlacement('kitchen-sink', 'kitchen', 'sink', 6_750, 9_250),
     createFurniturePlacement('kitchen-oven', 'kitchen', 'oven', 8_350, 9_420),
-    createFurniturePlacement('kitchen-fridge', 'kitchen', 'refrigerator', 9_180, 9_400),
+    createFurniturePlacement('kitchen-fridge', 'kitchen', 'refrigerator', 9_120, 9_400),
   ],
   fixedElements: [
     {

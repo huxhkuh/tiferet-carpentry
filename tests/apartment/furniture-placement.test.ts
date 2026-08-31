@@ -32,6 +32,16 @@ function placementFactory(): PlaceFurnitureInRoom {
 }
 
 describe('free furniture placement', () => {
+  it('creates catalogue furniture with meaningful material and style defaults', () => {
+    expect(furnitureCatalog.createFurniturePlacement('sofa', LARGE_ROOM.id, 'sofa', 0, 0)).toMatchObject({
+      material: 'fabric',
+      style: 'soft',
+    });
+    expect(
+      furnitureCatalog.createFurniturePlacement('refrigerator', LARGE_ROOM.id, 'refrigerator', 0, 0),
+    ).toMatchObject({ material: 'metal', style: 'minimal' });
+  });
+
   it('places a catalogue item completely inside the selected room', () => {
     const placeFurnitureInRoom = placementFactory();
 
@@ -90,6 +100,8 @@ describe('free furniture placement', () => {
       width: 2_200,
       color: '#123456',
       accentColor: '#654321',
+      material: 'fabric',
+      style: 'classic',
     };
 
     const duplicate = placeFurnitureInRoom({
@@ -107,6 +119,8 @@ describe('free furniture placement', () => {
       height: template.height,
       color: '#123456',
       accentColor: '#654321',
+      material: 'fabric',
+      style: 'classic',
     });
   });
 });
