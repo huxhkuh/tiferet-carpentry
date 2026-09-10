@@ -6,9 +6,15 @@ export function BrandMark({ compact = false, decorative = false }: { compact?: b
       aria-label={decorative ? undefined : 'נגרות — תפארת'}
       aria-hidden={decorative || undefined}
     >
-      <span>נג</span>
-      <span>ר</span>
-      <span>ות</span>
+      {compact ? (
+        <span>נגרות</span>
+      ) : (
+        <>
+          <span>נג</span>
+          <span>ר</span>
+          <span>ות</span>
+        </>
+      )}
     </span>
   );
 }

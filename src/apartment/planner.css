@@ -1,0 +1,218 @@
+.planner-workspace {
+  font-family: 'Tiferet Sans', Arial, sans-serif;
+}
+
+.planner-panel {
+  display: contents;
+}
+
+.planner-mobile-tools,
+.planner-panel-controls,
+.planner-menu-toggle {
+  display: none;
+}
+
+@media (width < 64rem) {
+  .planner-workspace {
+    display: flex;
+    flex-direction: column;
+    height: var(--planner-viewport, 100dvh);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .planner-header {
+    flex: 0 0 auto;
+    gap: 0.35rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .planner-branding {
+    flex: 1;
+    min-width: 0;
+    gap: 0.5rem;
+  }
+
+  .planner-branding h1 {
+    font-size: 0.9rem;
+  }
+
+  .planner-branding p {
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .planner-branding .ng-brand-mark {
+    width: 2.5rem;
+    min-height: 2.5rem;
+    font-size: 0.85rem;
+  }
+
+  .planner-header-actions {
+    display: contents;
+  }
+
+  .planner-save {
+    order: 1;
+    padding: 0.65rem;
+    font-size: 0.8rem;
+  }
+
+  .planner-menu-toggle {
+    display: block;
+    order: 2;
+    min-height: 2.75rem;
+    padding: 0.5rem;
+    border: 0.0625rem solid #c9bba6;
+    border-radius: 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .planner-save-status {
+    order: 3;
+    width: 100%;
+    font-size: 0.65rem;
+  }
+
+  .planner-secondary-action {
+    display: none;
+    order: 4;
+    font-size: 0.8rem;
+  }
+
+  .planner-header[data-actions-open='true'] .planner-secondary-action {
+    display: block;
+  }
+
+  .planner-view-controls {
+    order: 5;
+    gap: 0.25rem;
+    padding-top: 0.25rem;
+  }
+
+  .planner-view-controls button {
+    min-height: 2.5rem;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .planner-mobile-tools {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-bottom: 0.0625rem solid #c9bba6;
+    background: #fffdf8;
+  }
+
+  .planner-mobile-tools button {
+    min-height: 2.5rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .planner-mobile-tools button[aria-expanded='true'] {
+    color: #fffdf8;
+    background: #76523c;
+  }
+
+  .planner-workspace-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .planner-workspace [data-testid='planner-canvas'] {
+    flex: 1;
+    order: 0;
+    height: auto;
+    min-height: 6rem;
+    padding: 0.5rem;
+    overflow: hidden;
+  }
+
+  .planner-workspace [data-testid='planner-canvas'] > :first-child {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .planner-workspace [data-testid='planner-canvas'] canvas {
+    min-height: 0;
+  }
+
+  .planner-workspace [data-testid='apartment-3d-fallback'] {
+    height: 100%;
+    min-height: 0;
+    padding-block: 3rem 0.5rem;
+  }
+
+  .planner-panel {
+    display: none;
+    flex: 0 1 45%;
+    order: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block-start: 3.5rem;
+    border-top: 0.0625rem solid #c9bba6;
+    background: white;
+  }
+
+  .planner-workspace[data-panel-expanded='true'] .planner-panel {
+    flex-basis: 62%;
+  }
+
+  .planner-workspace[data-mobile-panel='rooms'] .planner-panel--rooms,
+  .planner-workspace[data-mobile-panel='inspector'] .planner-panel--inspector {
+    display: block;
+  }
+
+  .planner-panel-controls {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-bottom: 0.0625rem solid #e7e5e4;
+    background: #fffdf8;
+    font-size: 0.75rem;
+  }
+
+  .planner-panel-controls button {
+    min-height: 2.5rem;
+    padding-inline: 0.5rem;
+  }
+
+  .planner-panel input,
+  .planner-panel select,
+  .planner-panel textarea {
+    font-size: 1rem;
+  }
+
+  .planner-workspace > footer {
+    display: none;
+  }
+
+  @media (height < 35rem) {
+    .planner-branding p,
+    .planner-branding .ng-brand-mark {
+      display: none;
+    }
+
+    .planner-header {
+      padding-block: 0.25rem;
+    }
+
+    .planner-view-controls {
+      border: 0;
+    }
+  }
+}

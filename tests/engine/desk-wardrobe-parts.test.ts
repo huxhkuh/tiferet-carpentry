@@ -67,11 +67,9 @@ describe('wardrobe parts', () => {
   const wardrobeCfg: CabinetConfig = { ...DEFAULT_CONFIG, ...WARDROBE_DEFAULTS };
   const parts = generateParts(wardrobeCfg);
 
-  it('includes a hanging rail', () => {
+  it('keeps the hanging rail out of sheet cutting stock', () => {
     const rail = parts.find((p) => p.name.en === 'Hanging Rail');
-    expect(rail).toBeDefined();
-    expect(rail!.qty).toBe(1);
-    expect(rail!.thickness).toBe(25);
+    expect(rail).toBeUndefined();
   });
 
   it('has side panels', () => {

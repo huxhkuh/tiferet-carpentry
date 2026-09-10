@@ -19,7 +19,7 @@ describe('generateParts', () => {
 
   it('side panel dimensions match config', () => {
     const sides = parts.find((p) => p.name.en === 'Side Panel')!;
-    expect(sides.length).toBe(DEFAULT_CONFIG.height); // 2000
+    expect(sides.length).toBe(DEFAULT_CONFIG.height - DEFAULT_CONFIG.kickHeight); // carcass above plinth
     expect(sides.width).toBe(DEFAULT_CONFIG.depth); // 600
     expect(sides.thickness).toBe(17); // plywood-17
   });

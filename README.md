@@ -103,7 +103,7 @@
 - ↩ **Undo / Redo** — full change history (`Ctrl+Z` / `Ctrl+Y`)
 - ⌨ **Keyboard shortcuts** — `Alt+1-5` tabs, `Ctrl+Z/Y`, `Ctrl+P`, `?` for help modal
 - 📱 **PWA / Offline** — service worker; installable as a desktop or mobile app
-- 🌐 **Multilingual** — 6 languages: EN, HE, AR, DE, ES, FR (with full RTL support)
+- 🌐 **Languages** — Hebrew and English workshop UI; Arabic, German, Spanish and French locale files with English fallbacks. The Tiferet site and apartment planner are currently Hebrew.
 - ♿ **Accessible** — ARIA landmarks, keyboard nav, skip-to-content, screen-reader labels
 - 🖨 **Print-friendly** — `@media print` hides UI chrome; optimises tables and SVGs for paper
 
@@ -250,10 +250,13 @@ npm run test:e2e        # Playwright end-to-end tests
 
 ## 🌐 Internationalization
 
-The app ships with **6 languages**: English, Hebrew (RTL), Arabic (RTL),
-German, Spanish, and French.
-All UI strings live in `src/i18n/{en,he,ar,de,es,fr}.json`.
-Run `npm run i18n:coverage` to verify all locale files are in sync.
+The workshop offers six locale choices. English and Hebrew have key parity;
+Arabic, German, Spanish and French still contain English fallbacks. The public
+Tiferet site and apartment planner are currently Hebrew. Bilingual engine labels
+fall back to English outside Hebrew. RTL layout support does not imply complete translation.
+Workshop translations live in `src/i18n/{en,he,ar,de,es,fr}.json`.
+`npm run i18n:coverage` verifies EN/HE keys and empty values; it does not certify
+translation quality or complete coverage of the public site.
 
 ---
 

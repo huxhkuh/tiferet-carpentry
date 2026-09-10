@@ -270,11 +270,13 @@ export function Plan2D({
         const appearance = getFurnitureAppearance(item, furniturePalette);
         const footprint = furnitureFootprint(item);
         const isRug = item.kind === 'rug';
+        const locked = visibility?.lockedObjectIds?.includes(item.id) ?? false;
         return (
           <g key={item.id}>
             <g
               data-testid={`furniture-${item.id}`}
               data-selected={item.id === activeFurnitureId ? 'true' : 'false'}
+              data-locked={locked}
               role={onFurniture ? 'button' : 'img'}
               tabIndex={onFurniture ? 0 : undefined}
               aria-label={onFurniture ? `בחירת ריהוט ${item.label}` : item.label}
@@ -289,7 +291,7 @@ export function Plan2D({
               }
               onKeyDown={onFurniture ? (event) => activateFromKeyboard(event, () => onFurniture(item.id)) : undefined}
               onPointerDown={
-                onFurnitureMove
+                onFurnitureMove && !locked
                   ? (event) => {
                       const point = pointerPlanPoint(event);
                       if (!point) return;
@@ -356,7 +358,7 @@ export function Plan2D({
                 </text>
               ) : null}
             </g>
-            {item.id === activeFurnitureId && onFurnitureResize ? (
+            {item.id === activeFurnitureId && onFurnitureResize && !locked ? (
               <circle
                 role="slider"
                 tabIndex={0}

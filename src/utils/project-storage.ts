@@ -1,4 +1,5 @@
 import type { CabinetEntry, ProjectSnapshot } from '../store/cabinet-store';
+import { validateProjectCabinets, validateProjectSnapshots } from './project-validation';
 import { utf8ArrayBuffer, utf8Encode } from './browser-compat';
 import { idbLoadProjects, idbSaveProjects, idbLoadSnapshots, idbSaveSnapshots } from './indexed-db-storage';
 
@@ -104,6 +105,10 @@ export function migrateProject(raw: unknown): SavedProject {
     throw new Error('Project file must be a JSON object');
   }
   const p = normaliseProjectRecord(raw);
+  if (p['schemaVersion'] !== undefined && p['schemaVersion'] !== CURRENT_SCHEMA_VERSION)
+    throw new TypeError('Unsupported project schema version');
+  if (p['savedAt'] !== undefined && (typeof p['savedAt'] !== 'string' || !Number.isFinite(Date.parse(p['savedAt']))))
+    throw new TypeError('Invalid saved date');
   if (!Array.isArray(p['cabinets'])) {
     throw new TypeError('Invalid project file: missing cabinets array');
   }
@@ -113,10 +118,10 @@ export function migrateProject(raw: unknown): SavedProject {
     name: typeof p['name'] === 'string' && p['name'].trim() ? p['name'].trim() : 'Untitled',
     savedAt: typeof p['savedAt'] === 'string' ? p['savedAt'] : new Date().toISOString(),
     schemaVersion: CURRENT_SCHEMA_VERSION,
-    cabinets: p['cabinets'] as CabinetEntry[],
+    cabinets: validateProjectCabinets(p['cabinets']),
   };
   if (typeof p['generatedAt'] === 'string') migrated.generatedAt = p['generatedAt'];
-  if (Array.isArray(p['snapshots'])) migrated.snapshots = p['snapshots'] as ProjectSnapshot[];
+  if (p['snapshots'] !== undefined) migrated.snapshots = validateProjectSnapshots(p['snapshots']);
   return migrated;
 }
 
@@ -175,6 +180,7 @@ export function exportProjectJson(project: SavedProject, snapshots?: ProjectSnap
 }
 
 export async function importProjectJson(file: File): Promise<SavedProject> {
+  if (file.size > 15 * 1024 * 1024) throw new RangeError('Project file is too large');
   const text = await file.text();
   const raw = JSON.parse(text) as unknown;
   const project = migrateProject(raw);
@@ -232,6 +238,7 @@ export async function exportProjectsBundle(projects: SavedProject[]): Promise<vo
 
 /** Import a `.cabinet-projects.json` bundle, merging all contained projects */
 export async function importProjectsBundle(file: File): Promise<SavedProject[]> {
+  if (file.size > 15 * 1024 * 1024) throw new RangeError('Project bundle is too large');
   const text = await file.text();
   const parsed = JSON.parse(text) as unknown;
   if (!isRecord(parsed)) {
@@ -242,7 +249,7 @@ export async function importProjectsBundle(file: File): Promise<SavedProject[]> 
     throw new Error(`Unsupported bundle version: ${bundleVersion}`);
   }
   const incoming = parsed.projects;
-  if (!Array.isArray(incoming)) {
+  if (!Array.isArray(incoming) || incoming.length > 100) {
     throw new TypeError('Invalid bundle: missing projects array');
   }
   const existing = await load();

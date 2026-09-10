@@ -10,6 +10,7 @@
  * cabinet-store.ts has no direct reference to the module-level vars here.
  */
 import * as Comlink from 'comlink';
+import { workerRequest } from '../utils/worker-request';
 import type { CabinetConfig, Part, HardwareItem, OptimizationResult, OffcutEntry, DefectZone } from '../engine/types';
 import { optimizeCutSheetsResult, findCoNestCandidates, applyCoNesting } from '../engine/cut-optimizer';
 import { estimateCost } from '../engine/cost-estimator';
@@ -26,6 +27,9 @@ import type { CabinetState } from './cabinet-store';
 
 // ── Worker proxies ────────────────────────────────────────────────────────────
 // Kept module-level to avoid serialisation into Zustand state.
+let _cutWorker: Worker | null = null;
+let _costWorker: Worker | null = null;
+let _assemblyWorker: Worker | null = null;
 let _cutProxy: Comlink.Remote<CutOptimizerWorkerApi> | null = null;
 let _costProxy: Comlink.Remote<CostEstimatorWorkerApi> | null = null;
 let _assemblyProxy: Comlink.Remote<AssemblyWorkerApi> | null = null;
@@ -120,19 +124,40 @@ export function setAutoCoNest(enabled: boolean): void {
 
 function getCutProxy(): Comlink.Remote<CutOptimizerWorkerApi> | null {
   if (typeof Worker === 'undefined') return null;
-  if (!_cutProxy) _cutProxy = Comlink.wrap<CutOptimizerWorkerApi>(new CutOptimizerWorker());
+  try {
+    if (!_cutProxy) {
+      _cutWorker = new CutOptimizerWorker();
+      _cutProxy = Comlink.wrap<CutOptimizerWorkerApi>(_cutWorker);
+    }
+  } catch {
+    return null;
+  }
   return _cutProxy;
 }
 
 function getCostProxy(): Comlink.Remote<CostEstimatorWorkerApi> | null {
   if (typeof Worker === 'undefined') return null;
-  if (!_costProxy) _costProxy = Comlink.wrap<CostEstimatorWorkerApi>(new CostEstimatorWorker());
+  try {
+    if (!_costProxy) {
+      _costWorker = new CostEstimatorWorker();
+      _costProxy = Comlink.wrap<CostEstimatorWorkerApi>(_costWorker);
+    }
+  } catch {
+    return null;
+  }
   return _costProxy;
 }
 
 function getAssemblyProxy(): Comlink.Remote<AssemblyWorkerApi> | null {
   if (typeof Worker === 'undefined') return null;
-  if (!_assemblyProxy) _assemblyProxy = Comlink.wrap<AssemblyWorkerApi>(new AssemblyWorker());
+  try {
+    if (!_assemblyProxy) {
+      _assemblyWorker = new AssemblyWorker();
+      _assemblyProxy = Comlink.wrap<AssemblyWorkerApi>(_assemblyWorker);
+    }
+  } catch {
+    return null;
+  }
   return _assemblyProxy;
 }
 
@@ -170,49 +195,65 @@ export function scheduleOptimization(
   // Sprint 16 — decorate with rotation locks before sending to optimizer.
   const lockedActive = applyLocks(activeParts);
   const lockedAll = applyLocks(allParts);
-  const proxy = getCutProxy();
-  if (!proxy) {
-    // Synchronous fallback (tests / browsers without Worker support).
-    if (_workerApplyFn) {
-      const activeRes = optimizeCutSheetsResult(
-        lockedActive,
-        sawKerfMm,
-        sheetSizeOverrides,
-        _cutMode,
-        _offcutCatalog,
-        _defectZones,
-      );
-      const combinedRes = optimizeCutSheetsResult(
-        lockedAll,
-        sawKerfMm,
-        sheetSizeOverrides,
-        _cutMode,
-        _offcutCatalog,
-        _defectZones,
-      );
-      if (activeRes.ok && combinedRes.ok) {
-        let activeOpt = activeRes.value;
-        let combinedOpt = combinedRes.value;
-        if (_autoCoNest) {
-          const aCands = findCoNestCandidates(activeOpt);
-          if (aCands.length > 0) activeOpt = applyCoNesting(activeOpt, new Set(aCands.map((c) => c.key)), sawKerfMm);
-          const cCands = findCoNestCandidates(combinedOpt);
-          if (cCands.length > 0)
-            combinedOpt = applyCoNesting(combinedOpt, new Set(cCands.map((c) => c.key)), sawKerfMm);
-        }
-        _workerApplyFn({
-          optimization: activeOpt,
-          combinedOptimization: combinedOpt,
-          optimizationPending: false,
-        });
-      } else {
-        _workerApplyFn({ optimizationPending: false });
-      }
-    }
-    return;
-  }
   const callId = ++_cutCallId;
   _latestCutId = callId;
+  const proxy = getCutProxy();
+  if (!proxy) {
+    queueMicrotask(() => {
+      try {
+        if (_latestCutId !== callId) return;
+        // Synchronous fallback (tests / browsers without Worker support).
+        if (_workerApplyFn) {
+          const activeRes = optimizeCutSheetsResult(
+            lockedActive,
+            sawKerfMm,
+            sheetSizeOverrides,
+            _cutMode,
+            _offcutCatalog,
+            _defectZones,
+          );
+          const combinedRes = optimizeCutSheetsResult(
+            lockedAll,
+            sawKerfMm,
+            sheetSizeOverrides,
+            _cutMode,
+            _offcutCatalog,
+            _defectZones,
+          );
+          if (activeRes.ok && combinedRes.ok) {
+            let activeOpt = activeRes.value;
+            let combinedOpt = combinedRes.value;
+            if (_autoCoNest) {
+              const aCands = findCoNestCandidates(activeOpt);
+              if (aCands.length > 0)
+                activeOpt = applyCoNesting(activeOpt, new Set(aCands.map((c) => c.key)), sawKerfMm);
+              const cCands = findCoNestCandidates(combinedOpt);
+              if (cCands.length > 0)
+                combinedOpt = applyCoNesting(combinedOpt, new Set(cCands.map((c) => c.key)), sawKerfMm);
+            }
+            _workerApplyFn({
+              optimization: activeOpt,
+              combinedOptimization: combinedOpt,
+              optimizationPending: false,
+              optimizationError: null,
+            });
+            if (_getState) scheduleCostFromState(_getState(), activeOpt);
+          } else {
+            _workerApplyFn({
+              optimizationPending: false,
+              optimizationError: !activeRes.ok ? activeRes.error : !combinedRes.ok ? combinedRes.error : null,
+            });
+          }
+        }
+      } catch (error) {
+        _workerApplyFn?.({
+          optimizationPending: false,
+          optimizationError: error instanceof Error ? error.message : 'Calculation failed',
+        });
+      }
+    });
+    return;
+  }
   const input: CutOptimizerInput = {
     activeParts: lockedActive,
     allParts: lockedAll,
@@ -223,14 +264,14 @@ export function scheduleOptimization(
     defectZones: _defectZones,
     autoCoNest: _autoCoNest,
   };
-  void proxy
-    .run(input)
+  void workerRequest(proxy.run(input), _cutWorker)
     .then((result) => {
       if (!_workerApplyFn || _latestCutId !== callId) return; // stale
       _workerApplyFn({
         optimization: result.activeResult,
         combinedOptimization: result.combinedResult,
         optimizationPending: false,
+        optimizationError: null,
         costPending: true,
       });
       // Sprint 20 — notify plugins that optimization completed.
@@ -240,29 +281,52 @@ export function scheduleOptimization(
       });
       scheduleCostFromState(_getState!(), result.activeResult);
     })
-    .catch(() => {
-      _workerApplyFn?.({ optimizationPending: false });
+    .catch((error: unknown) => {
+      if (_latestCutId !== callId) return;
+      _cutWorker?.terminate();
+      _cutWorker = null;
+      _cutProxy = null;
+      _workerApplyFn?.({
+        optimizationPending: false,
+        optimizationError: error instanceof Error ? error.message : 'Calculation failed',
+      });
     });
 }
 
 export function scheduleAssembly(config: CabinetConfig): void {
-  const proxy = getAssemblyProxy();
-  if (!proxy) {
-    if (_workerApplyFn) {
-      _workerApplyFn({ assemblySteps: generateAssemblySteps(config), assemblyPending: false });
-    }
-    return;
-  }
   const callId = ++_assemblyCallId;
   _latestAssemblyId = callId;
-  void proxy
-    .run({ config })
+  const proxy = getAssemblyProxy();
+  if (!proxy) {
+    queueMicrotask(() => {
+      try {
+        if (_latestAssemblyId !== callId) return;
+        if (_workerApplyFn) {
+          _workerApplyFn({ assemblySteps: generateAssemblySteps(config), assemblyPending: false, assemblyError: null });
+        }
+      } catch (error) {
+        _workerApplyFn?.({
+          assemblyPending: false,
+          assemblyError: error instanceof Error ? error.message : 'Calculation failed',
+        });
+      }
+    });
+    return;
+  }
+  void workerRequest(proxy.run({ config }), _assemblyWorker)
     .then((result) => {
       if (!_workerApplyFn || _latestAssemblyId !== callId) return; // stale
-      _workerApplyFn({ assemblySteps: result.steps, assemblyPending: false });
+      _workerApplyFn({ assemblySteps: result.steps, assemblyPending: false, assemblyError: null });
     })
-    .catch(() => {
-      _workerApplyFn?.({ assemblyPending: false });
+    .catch((error: unknown) => {
+      if (_latestAssemblyId !== callId) return;
+      _assemblyWorker?.terminate();
+      _assemblyWorker = null;
+      _assemblyProxy = null;
+      _workerApplyFn?.({
+        assemblyPending: false,
+        assemblyError: error instanceof Error ? error.message : 'Calculation failed',
+      });
     });
 }
 
@@ -277,28 +341,39 @@ function scheduleCost(
   labourHours: number,
   finishCost: number,
 ): void {
-  const proxy = getCostProxy();
-  if (!proxy) {
-    if (_workerApplyFn) {
-      _workerApplyFn({
-        cost: estimateCost(
-          optimization,
-          hardware,
-          edgeBandingTotal,
-          materialPriceOverrides,
-          edgeBandingRate,
-          hardwarePriceOverrides,
-          labourRate,
-          labourHours,
-          finishCost,
-        ),
-        costPending: false,
-      });
-    }
-    return;
-  }
   const callId = ++_costCallId;
   _latestCostId = callId;
+  const proxy = getCostProxy();
+  if (!proxy) {
+    queueMicrotask(() => {
+      try {
+        if (_latestCostId !== callId) return;
+        if (_workerApplyFn) {
+          _workerApplyFn({
+            cost: estimateCost(
+              optimization,
+              hardware,
+              edgeBandingTotal,
+              materialPriceOverrides,
+              edgeBandingRate,
+              hardwarePriceOverrides,
+              labourRate,
+              labourHours,
+              finishCost,
+            ),
+            costPending: false,
+            costError: null,
+          });
+        }
+      } catch (error) {
+        _workerApplyFn?.({
+          costPending: false,
+          costError: error instanceof Error ? error.message : 'Calculation failed',
+        });
+      }
+    });
+    return;
+  }
   const input: CostEstimatorInput = {
     optimization,
     hardware,
@@ -310,14 +385,20 @@ function scheduleCost(
     labourHours,
     finishCost,
   };
-  void proxy
-    .run(input)
+  void workerRequest(proxy.run(input), _costWorker)
     .then((result) => {
       if (!_workerApplyFn || _latestCostId !== callId) return; // stale
-      _workerApplyFn({ cost: result.cost, costPending: false });
+      _workerApplyFn({ cost: result.cost, costPending: false, costError: null });
     })
-    .catch(() => {
-      _workerApplyFn?.({ costPending: false });
+    .catch((error: unknown) => {
+      if (_latestCostId !== callId) return;
+      _costWorker?.terminate();
+      _costWorker = null;
+      _costProxy = null;
+      _workerApplyFn?.({
+        costPending: false,
+        costError: error instanceof Error ? error.message : 'Calculation failed',
+      });
     });
 }
 

@@ -308,32 +308,68 @@ function uniqueRectangles(rectangles: readonly PdfVectorRectangle[]): PdfVectorR
   return [...byGeometry.values()].sort((left, right) => left.top - right.top || left.x0 - right.x0);
 }
 
-export async function parsePdfVectorDocument(bytes: Uint8Array): Promise<PdfVectorDocument> {
+export async function readPdfContentStreams(bytes: Uint8Array): Promise<{
+  source: string;
+  pageCount: number;
+  contents: Uint8Array[];
+  total: number;
+  compressed: number;
+  skipped: number;
+  budgetExceeded: boolean;
+}> {
   if (bytes.byteLength > MAX_PDF_BYTES) throw new RangeError('ניתן לייבא קובצי PDF בגודל של עד 20MB');
-  if (bytes.byteLength < 8 || latin1.decode(bytes.slice(0, 8)).startsWith('%PDF-') === false) {
+  if (bytes.byteLength < 8 || !latin1.decode(bytes.slice(0, 8)).startsWith('%PDF-'))
     throw new TypeError('יש לבחור קובץ PDF תקין');
-  }
-  const source = latin1.decode(bytes);
-  const page = parsePageSize(source);
-  const pageMatches = source.match(/\/Type\s*\/Page\b/g);
-  const declaredPageCount = /\/Count\s+(?<pageCount>\d+)\b/.exec(source);
-  const pageCount = pageMatches?.length ?? Number(declaredPageCount?.groups?.pageCount ?? 1);
-  const streams = extractStreams(bytes, source);
-  const extractedRectangles: PdfVectorRectangle[] = [];
-  let skippedStreams = 0;
-  let totalDecodedBytes = 0;
-  let budgetExceeded = false;
+  let source = latin1.decode(bytes);
+  let pageCount = source.match(/\/Type\s*\/Page\b/g)?.length ?? Number(/\/Count\s+(\d+)\b/.exec(source)?.[1] ?? 1);
+  if (pageCount > 1)
+    throw new RangeError('הקובץ מכיל מספר עמודים. ייצאו את העמוד הרצוי כקובץ PDF נפרד כדי למנוע ערבוב תוכניות');
+  if (/\/Encrypt\b/.test(source)) throw new TypeError('מבנה ה-PDF אינו נתמך. ייצאו עמוד לא מוצפן עם וקטורים רגילים');
+  const streams = extractStreams(bytes, source).filter((stream) => !/\/Subtype\s*\/Image\b/.test(stream.dictionary));
+  const contents: Uint8Array[] = [];
+  let skipped = 0,
+    totalDecodedBytes = 0,
+    budgetExceeded = false;
   for (const stream of streams) {
     const content = await decodeStream(stream);
-    if (content === null) {
-      skippedStreams += 1;
+    if (!content) {
+      skipped++;
       continue;
     }
-    if (totalDecodedBytes + content.byteLength > MAX_TOTAL_DECODED_STREAM_BYTES) {
+    totalDecodedBytes += content.byteLength;
+    if (totalDecodedBytes > MAX_TOTAL_DECODED_STREAM_BYTES) {
       budgetExceeded = true;
       break;
     }
-    totalDecodedBytes += content.byteLength;
+    if (/\/ObjStm\b/.test(stream.dictionary)) source += '\n' + latin1.decode(content);
+    else contents.push(content);
+  }
+  pageCount = source.match(/\/Type\s*\/Page\b/g)?.length ?? pageCount;
+  if (/\/Subtype\s*\/Form\b/.test(source))
+    throw new TypeError(
+      'ה-PDF כולל קבוצות וקטורים מקוננות שאינן נתמכות עדיין. ייצאו עמוד עם וקטורים שטוחים כדי לשמור על מיקום הקירות',
+    );
+  if (pageCount > 1)
+    throw new RangeError('הקובץ מכיל מספר עמודים. ייצאו את העמוד הרצוי כקובץ PDF נפרד כדי למנוע ערבוב תוכניות');
+  return {
+    source,
+    pageCount,
+    contents,
+    total: streams.length,
+    compressed: streams.filter((stream) => /\/FlateDecode\b/.test(stream.dictionary)).length,
+    skipped,
+    budgetExceeded,
+  };
+}
+
+export async function parsePdfVectorDocument(bytes: Uint8Array): Promise<PdfVectorDocument> {
+  const decoded = await readPdfContentStreams(bytes);
+  const { source, pageCount, contents } = decoded;
+  const page = parsePageSize(source);
+  const extractedRectangles: PdfVectorRectangle[] = [];
+  const skippedStreams = decoded.skipped;
+  let budgetExceeded = decoded.budgetExceeded;
+  for (const content of contents) {
     extractedRectangles.push(
       ...extractRectanglesFromContent(latin1.decode(content), page.sourceHeight).map((rectangle) =>
         rotateRectangle(rectangle, page),
@@ -348,7 +384,6 @@ export async function parsePdfVectorDocument(bytes: Uint8Array): Promise<PdfVect
   const scaleMatch = /\b1\s*:\s*(?<scale>20|25|50|75|100|125|200)\b/.exec(source);
   const scale = scaleMatch?.groups?.scale === undefined ? null : `1:${scaleMatch.groups.scale}`;
   const warnings: string[] = [];
-  if (pageCount > 1) warnings.push('בשלב זה מיובא העמוד הראשון בלבד');
   if (skippedStreams > 0) warnings.push(`${skippedStreams} זרמי PDF לא נתמכו ולא נותחו`);
   if (budgetExceeded) warnings.push('ניתוח ה-PDF נעצר בגבול הזיכרון הבטוח; יש לאמת שהגאומטריה מלאה');
   if (rectangles.length === 0) warnings.push('לא נמצאה גאומטריה וקטורית; ייתכן שזהו מסמך סרוק');

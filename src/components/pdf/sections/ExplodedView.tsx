@@ -27,7 +27,7 @@ export function ExplodedView({
 
   const W = config.width * sc;
   const H = config.height * sc;
-  const t = getMaterial(config.carcassMaterial).thickness * sc;
+  const t = getMaterial(config.carcassMaterial, config.materialCatalog).thickness * sc;
   const gap = 28;
 
   const baseX = 64;

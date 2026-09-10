@@ -1,7 +1,10 @@
 import type { OptimizationResult } from './types';
-import { getMaterial } from './materials.ts';
+import { resolveMaterial } from './materials.ts';
 
 export interface CostBreakdown {
+  /** Entries excluded from the subtotal because an ILS price is unavailable. */
+  missingPrices?: string[];
+  currencyCode?: 'ILS';
   sheetCosts: SheetCost[];
   hardwareItems: HardwareCost[];
   edgeBandingCost: number;
@@ -24,6 +27,7 @@ export interface SheetCost {
   qty: number;
   pricePerSheet: number;
   subtotal: number;
+  priceMissing?: boolean;
 }
 
 export interface HardwareCost {
@@ -32,6 +36,7 @@ export interface HardwareCost {
   qty: number;
   unitPrice: number;
   subtotal: number;
+  priceMissing?: boolean;
 }
 
 /** Estimated hardware prices (₪) by semantic key OR hardware H-id */
@@ -73,7 +78,7 @@ export const DEFAULT_LABOUR_RATE = 75;
  */
 export function estimateCost(
   optimization: OptimizationResult,
-  hardware: { id: string; qty: number; name?: { en: string; he: string } }[],
+  hardware: { id: string; qty: number; unitPrice?: number; name?: { en: string; he: string } }[],
   edgeBandingTotal: number,
   priceOverrides: Record<string, number> = {},
   edgeBandingRate: number = EDGE_BANDING_PER_METER,
@@ -83,24 +88,30 @@ export function estimateCost(
   finishCost: number = 0,
 ): CostBreakdown {
   // Group sheets by material
-  const sheetMap = new Map<string, { qty: number; mat: ReturnType<typeof getMaterial> }>();
+  const sheetMap = new Map<string, { qty: number; mat: ReturnType<typeof resolveMaterial> }>();
   for (const sheet of optimization.sheets) {
     const key = `${sheet.material}-${sheet.thickness}`;
     const existing = sheetMap.get(key);
     if (existing) {
       existing.qty++;
     } else {
-      sheetMap.set(key, { qty: 1, mat: getMaterial(sheet.material) });
+      sheetMap.set(key, { qty: 1, mat: resolveMaterial(sheet) });
     }
   }
 
   const sheetCosts: SheetCost[] = [];
+  const missingPrices: string[] = [];
   let totalMaterialCost = 0;
   for (const [, { qty, mat }] of sheetMap) {
     // Sprint 139: use override price if present, otherwise mat.pricePerSheet
-    const price = priceOverrides[mat.key] ?? mat.pricePerSheet ?? 0;
+    const quotedPrice =
+      priceOverrides[mat.key] ?? (!mat.currencyCode || mat.currencyCode === 'ILS' ? mat.pricePerSheet : undefined);
+    const priceMissing = quotedPrice === undefined || !Number.isFinite(quotedPrice) || quotedPrice < 0;
+    const price = priceMissing ? 0 : quotedPrice;
+    if (priceMissing) missingPrices.push(mat.key);
     const subtotal = qty * price;
     sheetCosts.push({
+      priceMissing,
       material: mat.key,
       materialName: mat.name,
       thickness: mat.thickness,
@@ -115,17 +126,23 @@ export function estimateCost(
   const edgeBandingCost = Math.round((edgeBandingTotal / 1000) * edgeBandingRate);
 
   // Hardware — Sprint 148: per-item breakdown with price overrides
-  const hardwareItems: HardwareCost[] = hardware.map((hw) => {
-    const basePrice = HARDWARE_PRICES[hw.id] ?? 0;
-    const unitPrice = hardwarePriceOverrides[hw.id] ?? basePrice;
-    return {
-      id: hw.id,
-      name: hw.name ?? { en: hw.id, he: hw.id },
-      qty: hw.qty,
-      unitPrice,
-      subtotal: Math.round(hw.qty * unitPrice * 10) / 10,
-    };
-  });
+  // H16 is the purchasing unit for banding already costed by length above.
+  const hardwareItems: HardwareCost[] = hardware
+    .filter((hw) => hw.id !== 'H16')
+    .map((hw) => {
+      const price = hardwarePriceOverrides[hw.id] ?? hw.unitPrice ?? HARDWARE_PRICES[hw.id];
+      const priceMissing = price === undefined || !Number.isFinite(price) || price < 0;
+      const unitPrice = priceMissing ? 0 : price;
+      if (priceMissing) missingPrices.push(hw.id);
+      return {
+        priceMissing,
+        id: hw.id,
+        name: hw.name ?? { en: hw.id, he: hw.id },
+        qty: hw.qty,
+        unitPrice,
+        subtotal: Math.round(hw.qty * unitPrice * 10) / 10,
+      };
+    });
   const hardwareCost = Math.round(hardwareItems.reduce((sum, h) => sum + h.subtotal, 0) * 10) / 10;
 
   // Waste cost — proportional value of wasted material
@@ -135,6 +152,8 @@ export function estimateCost(
   const labourCost = Math.round(labourHours * labourRate);
 
   return {
+    missingPrices,
+    currencyCode: 'ILS',
     sheetCosts,
     hardwareItems,
     edgeBandingCost,

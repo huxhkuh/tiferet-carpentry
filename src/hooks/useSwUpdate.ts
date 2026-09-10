@@ -16,7 +16,8 @@ import { registerSW } from 'virtual:pwa-register';
  * `virtual:pwa-register`'s internal `window.location.reload()` path is
  * suppressed. All reloads go through the `onNeedReload` guard below.
  */
-export function useSwUpdate(): { updateAvailable: boolean; reload: () => void } {
+export function useSwUpdate(): { updateAvailable: boolean; offlineReady: boolean; reload: () => void } {
+  const [offlineReady, setOfflineReady] = useState(false);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   // updateSW is the function returned by registerSW — calling it sends
   // SKIP_WAITING to the waiting worker. We pass reloadPage=false so the
@@ -41,7 +42,7 @@ export function useSwUpdate(): { updateAvailable: boolean; reload: () => void } 
         setUpdateSW(() => update);
       },
       onOfflineReady() {
-        // App is ready for offline use — no user action needed.
+        setOfflineReady(true);
       },
     });
     return () => {
@@ -57,5 +58,5 @@ export function useSwUpdate(): { updateAvailable: boolean; reload: () => void } 
     void updateSW?.(false);
   };
 
-  return { updateAvailable, reload };
+  return { updateAvailable, offlineReady, reload };
 }

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useCabinetStore } from '../../store/cabinet-store';
 import { findSubstitutions } from '../../engine/substitution';
 import { getMaterial } from '../../engine/materials';
-import type { Lang, MaterialSubstitution } from '../../engine/types';
+import type { MaterialSubstitution } from '../../engine/types';
 
 /** Benefit category badge colour map */
 const BENEFIT_CLASSES: Record<MaterialSubstitution['benefit'], string> = {
@@ -22,7 +22,7 @@ const BENEFIT_CLASSES: Record<MaterialSubstitution['benefit'], string> = {
  */
 export function SubstitutionPanel() {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language as Lang;
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
   const { config, setConfig } = useCabinetStore();
   const [open, setOpen] = useState(true);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());

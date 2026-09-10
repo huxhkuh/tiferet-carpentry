@@ -42,18 +42,41 @@ The planner keeps four boundaries explicit:
 - `src/apartment/geometry/` — pure wall frames, cabinet footprints, room containment and SAT
   collision checks. Furniture and cabinet edits are rejected before state is changed when they
   leave a room or overlap another solid object.
-- `src/apartment/persistence/design.ts` — validated local design schema v2. It stores cabinet
-  placements, immutable furniture overrides, object/category visibility, furniture palette and a
-  camera orbit per room. Schema v1 payloads are migrated to v2 on read.
+- `src/apartment/persistence/planning-document.ts` — canonical document schema v1, containing
+  source apartment geometry, the current design draft (schema v3), and named versions. One localStorage
+  value is committed atomically; old design/library values are compatibility mirrors. Older designs
+  are migrated on read. Drafts include cabinetry, added furniture, overrides, visibility, palette,
+  camera, notes and customer metadata. A blocked write preserves the live draft in memory and exposes
+  JSON download. Portable JSON carries the apartment definition as well as the versions.
 - `src/apartment/components/` and `three/` — the same design state drives the interactive SVG plan
   and the dependency-free WebGL room renderer. The renderer reuses one program/buffer while the
   camera moves and rebuilds geometry only when the scene changes.
 
-The three planner views have distinct responsibilities: the clean SVG view is interactive and
+The planner views have distinct responsibilities: the clean SVG view is interactive and
 dimensionally normalized, the complete view presents the untouched full-resolution source sheet,
 and the WebGL view provides room-focused spatial feedback with cutaway walls, material classes,
 openings, furniture and cabinetry. Selection, movement, visibility and camera changes are all
 part of the same undoable/persisted design model.
+
+Full-sheet and source-overlay views are available only for the built-in 5-1 apartment whose
+source transform is defined. Imported apartments expose their own clean plan and 3D geometry.
+`data/apartment-registry.ts` resolves built-in and locally imported apartments. Route query parameters
+preserve apartment and named-design identity; room navigation uses the path.
+
+`engine/part-instances.ts` places the generated cut parts in a shared millimetre assembly consumed by
+cabinet SVG, room WebGL, and assembled glTF exports. Centre dividers have one shelf per clear bay.
+Overall height includes the plinth; configured depth is the carcass depth, with door/back thickness
+modelled separately. Hanging rails are linear hardware, never sheet stock. The apartment renderer
+triangulates concave floors and subtracts balcony voids, sorts translucent faces, ray-picks objects,
+and provides 2D recovery when the WebGL context is lost.
+
+PDF rendering and PDF input analysis have bounded worker lifetimes. Optimization and export controls
+reject pending/failed calculations instead of exporting a previous result. PDF import currently accepts
+a single page and rejects encrypted documents and nested Form XObjects; this prevents unsupported
+resources or multiple pages from silently becoming one plan. Reading a PDF is not architectural verification.
+
+For surface ownership, capability status, and acceptance-test entry points, read
+[CODEX-NAVIGATION-GUIDE.md](CODEX-NAVIGATION-GUIDE.md).
 
 Key invariant: apartment geometry remains independent from cabinet configuration. Integration is
 performed only by placement adapters that snap a cabinet to a wall, orient it toward the room,

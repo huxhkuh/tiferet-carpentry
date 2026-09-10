@@ -1,7 +1,8 @@
+import { useCabinetStore } from '../../store/cabinet-store';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCustomMaterialsStore } from '../../store/custom-materials-store';
-import type { Material, MaterialCategory, Lang } from '../../engine/types';
+import type { Material, MaterialCategory } from '../../engine/types';
 
 const EMPTY: Omit<Material, 'key'> = {
   name: { en: '', he: '' },
@@ -17,7 +18,7 @@ const EMPTY: Omit<Material, 'key'> = {
 
 export function CustomMaterialEditor() {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language as Lang;
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
   const { materials, addMaterial, removeMaterial, updateMaterial } = useCustomMaterialsStore();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(EMPTY);
@@ -38,7 +39,11 @@ export function CustomMaterialEditor() {
     if (!editDraft) return;
     const nameText = editDraft.name[lang].trim();
     if (!nameText) return;
-    updateMaterial(editDraft.key, editDraft);
+    updateMaterial(editDraft.key, {
+      ...editDraft,
+      name: { en: editDraft.name.en.trim() || nameText, he: editDraft.name.he.trim() || nameText },
+    });
+    useCabinetStore.getState().setConfig({});
     cancelEdit();
   };
 
@@ -46,7 +51,11 @@ export function CustomMaterialEditor() {
     const nameText = draft.name[lang].trim();
     if (!nameText) return;
     const key = `custom-${Date.now()}`;
-    addMaterial({ ...draft, key, name: { ...draft.name } });
+    addMaterial({
+      ...draft,
+      key,
+      name: { en: draft.name.en.trim() || nameText, he: draft.name.he.trim() || nameText },
+    });
     setDraft({ ...EMPTY, name: { en: '', he: '' } });
   };
 

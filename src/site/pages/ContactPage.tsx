@@ -1,3 +1,4 @@
+import { triggerDownload } from '../../utils/download';
 import { useState } from 'react';
 import { DiamondMark } from '../components/DiamondMark';
 
@@ -10,18 +11,27 @@ export function ContactPage() {
           <DiamondMark /> יצירת קשר
         </p>
         <h1>בואו נדבר על הבית שלכם</h1>
-        <p>השאירו פרטים לתיעוד מקומי של הבקשה. חיבור לשירות שליחה יתווסף רק לאחר שיוגדר ערוץ עסקי מאושר.</p>
+        <p>מלאו את הפרטים והורידו בקשה שאפשר להעביר לאיש המקצוע שלכם. הפרטים נשארים אצלכם ואינם נשלחים מהאתר.</p>
       </div>
       <section className="ng-contact-layout">
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            setNotice('הטופס הושלם במכשיר זה, אך טרם מחובר לשירות שליחה.');
+            const fields = new FormData(event.currentTarget);
+            const id = crypto.randomUUID();
+            const text = [
+              'בקשת תכנון נגרות',
+              `מספר בקשה: ${id}`,
+              `תאריך: ${new Date().toISOString()}`,
+              ...Array.from(fields.entries(), ([key, value]) => `${key}: ${String(value)}`),
+            ].join('\n');
+            triggerDownload(text, 'text/plain;charset=utf-8', `carpentry-request-${id}.txt`);
+            setNotice('הבקשה מוכנה להורדה. העבירו את הקובץ לאיש המקצוע; הבקשה לא נשלחה מהאתר.');
           }}
         >
           <label>
             שם מלא
-            <input name="name" autoComplete="name" required />
+            <input name="name" autoComplete="name" maxLength={200} required />
           </label>
           <label>
             טלפון
@@ -33,14 +43,14 @@ export function ContactPage() {
           </label>
           <label>
             דירה / דגם
-            <input name="apartment" defaultValue="תכלת • קומה 5 • דירה 5‑1" />
+            <input name="apartment" placeholder="בניין, קומה ודירה — אם ידועים" />
           </label>
           <label className="is-wide">
             איך נוכל לעזור?
-            <textarea name="message" rows={5} required />
+            <textarea name="message" rows={5} maxLength={10000} required />
           </label>
           <button type="submit" className="ng-button">
-            בדיקת פרטי הבקשה
+            הורדת בקשת תכנון
           </button>
           {notice ? (
             <p role="status" className="ng-form-notice">

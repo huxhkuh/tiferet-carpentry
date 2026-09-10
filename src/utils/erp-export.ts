@@ -11,7 +11,7 @@
  */
 
 import type { Part, HardwareItem, OptimizationResult, CabinetConfig } from '../engine/types';
-import { getMaterial } from '../engine/materials';
+import { getMaterial, resolveMaterial } from '../engine/materials';
 import { triggerDownload } from './download';
 
 // ── Schema types ─────────────────────────────────────────────────────────────
@@ -96,7 +96,7 @@ export function generateErpPayload(
   const erpParts: ErpPartLine[] = parts.map((p) => {
     let materialDisplayName = p.material;
     try {
-      const mat = getMaterial(p.material);
+      const mat = resolveMaterial(p);
       materialDisplayName = mat.name.en;
     } catch {
       // unknown custom material — keep key as fallback

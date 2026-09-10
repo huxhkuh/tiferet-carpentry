@@ -332,6 +332,8 @@ export type SceneObjectCategory =
 export interface DesignVisibility {
   hiddenObjectIds: EntityId[];
   hiddenCategories: SceneObjectCategory[];
+  /** Optional for compatibility with existing v3 documents. Locked objects stay selectable. */
+  lockedObjectIds?: EntityId[];
 }
 
 export interface RoomCameraOrbit {

@@ -21,6 +21,31 @@ afterEach(() => {
 });
 
 describe('Tiferet planner UI', () => {
+  it('locks cabinet edits and deletion, with undo and redo for the lock', () => {
+    render(<PlannerApp initialStarted initialRoomId="bedroom" />);
+    fireEvent.click(screen.getByTestId('wall-list-bed-e'));
+    fireEvent.click(screen.getByRole('button', { name: '＋ הוסף ארון', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'נעילת הפריט', exact: true }));
+    expect(screen.getByLabelText('רוחב', { exact: true })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'מחק ארון נבחר' })).toBeDisabled();
+    fireEvent.change(screen.getByLabelText('רוחב', { exact: true }), { target: { value: '200' } });
+    expect(screen.getByLabelText('רוחב', { exact: true })).toHaveValue(180);
+    fireEvent.click(screen.getByRole('button', { name: 'בטל שינוי' }));
+    expect(screen.getByLabelText('רוחב', { exact: true })).toBeEnabled();
+    fireEvent.click(screen.getByRole('button', { name: 'בצע שוב' }));
+    expect(screen.getByLabelText('רוחב', { exact: true })).toBeDisabled();
+  });
+
+  it('blocks editing of locked furniture while keeping it selectable for unlocking', () => {
+    render(<PlannerApp initialStarted initialRoomId="bedroom" />);
+    fireEvent.click(screen.getByTestId('furniture-bedroom-bed-a'));
+    fireEvent.click(screen.getByRole('button', { name: 'נעילת הפריט', exact: true }));
+    expect(screen.getByRole('button', { name: 'הזז ימינה 10 ס״מ' })).toBeDisabled();
+    expect(screen.getByTestId('furniture-bedroom-bed-a')).toHaveAttribute('data-locked', 'true');
+    fireEvent.click(screen.getByRole('button', { name: 'שחרור נעילת הפריט', exact: true }));
+    expect(screen.getByRole('button', { name: 'הזז ימינה 10 ס״מ' })).toBeEnabled();
+  });
+
   it('uses the Hebrew site brand and returns to the apartment page from an embedded design route', () => {
     const onExit = vi.fn();
     render(<PlannerApp initialStarted initialRoomId="bedroom" onExit={onExit} />);
@@ -353,7 +378,7 @@ describe('Tiferet planner UI', () => {
     fireEvent.change(await screen.findByLabelText(/רוחב/), { target: { value: '200' } });
     fireEvent.click(screen.getByRole('button', { name: 'שמור תכנון' }));
 
-    expect(screen.getByRole('status')).toHaveTextContent('נשמר');
+    expect(screen.getByText('התכנון נשמר בהצלחה במכשיר זה')).toHaveTextContent('נשמר');
     expect(window.localStorage.getItem('tiferet:design:5-1')).toContain('"width":2000');
 
     view.unmount();
@@ -363,7 +388,7 @@ describe('Tiferet planner UI', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'אפס תכנון' }));
     expect(screen.getByText('0 ארונות בתכנון')).toBeInTheDocument();
-    expect(window.localStorage.getItem('tiferet:design:5-1')).toBeNull();
+    expect(window.localStorage.getItem('tiferet:design:5-1')).not.toBeNull();
   });
 
   it('מציג שגיאה ידידותית כאשר האחסון המקומי חוסם שמירה', () => {
@@ -422,11 +447,11 @@ describe('Tiferet planner UI', () => {
 
     expect(screen.getByText('חלופה בהירה')).toBeVisible();
     expect(screen.getAllByRole('button', { name: /טען גרסה/ })).toHaveLength(2);
-    expect(screen.getByRole('button', { name: 'ייצוא גרסה פעילה ל‑JSON' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'ייצוא התכנון ל‑JSON' })).toBeEnabled();
     expect(screen.getByLabelText('ייבוא תכנון JSON')).toHaveAttribute('accept', 'application/json,.json');
   });
 
-  it('מוחק את השמירה הפעילה כאשר נמחקת הגרסה האחרונה', () => {
+  it('מוחק גרסה בלי לאבד את הטיוטה הפעילה', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     render(<PlannerApp initialStarted initialRoomId="bedroom" />);
     fireEvent.click(screen.getByRole('button', { name: 'גרסאות ושיתוף' }));
@@ -436,7 +461,7 @@ describe('Tiferet planner UI', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'מחק גרסה גרסה למחיקה' }));
 
-    expect(window.localStorage.getItem('tiferet:design:5-1')).toBeNull();
+    expect(window.localStorage.getItem('tiferet:design:5-1')).not.toBeNull();
     expect(screen.getByText('עדיין לא נשמרו חלופות. התכנון נשמר בדפדפן בלבד.')).toBeVisible();
   });
 

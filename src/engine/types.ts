@@ -158,6 +158,9 @@ export interface VendorHingeProfile {
  * This is the primary input to every engine function.
  */
 export interface CabinetConfig {
+  /** Custom definitions travel with the configuration through workers and exports. */
+  materialCatalog?: Material[];
+  partGrainConstraints?: Record<string, 'along-length' | 'along-width'>;
   // Furniture type
   furnitureType: FurnitureType;
   // External dimensions (mm)
@@ -199,6 +202,7 @@ export interface CabinetConfig {
 
   // Toe kick / plinth
   /** Plinth/toe-kick height in mm. 0 = no kick (flush-to-floor or wall-mounted). */
+  /** Plinth is included in the overall height, below the carcass. */
   kickHeight: number;
 
   // Hardware
@@ -264,6 +268,7 @@ export interface DerivedDimensions {
 
 /** A single cut part / panel in the bill of materials produced by `generateParts()`. */
 export interface Part {
+  materialDefinition?: Material;
   id: string;
   name: { en: string; he: string };
   qty: number;
@@ -281,6 +286,8 @@ export interface Part {
    * - `undefined`      : defer to material `hasGrain` flag (existing behaviour).
    */
   grainConstraint?: 'along-length' | 'along-width';
+  /** Original dimensions before the one-time grain transform. */
+  grainOriginalSize?: { length: number; width: number };
 }
 
 /** A hardware line item in the bill of materials (hinges, screws, handles, etc.). */
@@ -322,6 +329,7 @@ export interface CutRect {
 
 /** A single sheet of material after the optimizer has placed all parts onto it. */
 export interface CutSheet {
+  materialDefinition?: Material;
   sheetIndex: number;
   material: string;
   thickness: number;

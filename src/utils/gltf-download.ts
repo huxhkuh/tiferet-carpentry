@@ -9,7 +9,7 @@ import type { CabinetConfig, Part } from '../engine/types';
  * browser download.  File name: `<filename>.gltf`.
  */
 export function downloadGltfFile(config: CabinetConfig, parts: Part[], filename = 'cabinet'): void {
-  const { content } = generateGltfContent(config, parts);
+  const { content } = generateGltfContent(config, parts, 'assembled');
   const blob = new Blob([content], { type: 'model/gltf+json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

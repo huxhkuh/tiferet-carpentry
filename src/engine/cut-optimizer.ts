@@ -1,6 +1,7 @@
 import type { Part, CutSheet, OptimizationResult, Result, OffcutEntry, DefectZone } from './types';
 import { ok, err } from './types';
-import { getMaterial, SAW_KERF } from './materials.ts';
+import { applyGrainConstraints } from './grain-constraint';
+import { resolveMaterial, SAW_KERF } from './materials.ts';
 
 /**
  * 2-D Maximal Rectangles bin-packing optimizer (Best Short Side Fit).
@@ -77,7 +78,7 @@ export function optimizeCutSheets(
 ): OptimizationResult {
   // Group parts by material key (which implies thickness).
   const groups = new Map<string, { rects: Rect[]; materialKey: string }>();
-  for (const p of parts) {
+  for (const p of applyGrainConstraints(parts)) {
     const group = groups.get(p.material) ?? { rects: [], materialKey: p.material };
     for (let i = 0; i < p.qty; i++) {
       group.rects.push({
@@ -96,7 +97,9 @@ export function optimizeCutSheets(
   let sheetIdx = 0;
 
   for (const [, group] of groups) {
-    const mat = getMaterial(group.materialKey);
+    const materialPart = parts.find((part) => part.material === group.materialKey);
+    if (!materialPart) throw new Error('Missing material definition');
+    const mat = resolveMaterial(materialPart);
     const override = sheetSizeOverrides[group.materialKey];
     const sheetLength = override?.length ?? mat.sheetLength;
     const sheetWidth = override?.width ?? mat.sheetWidth;
@@ -133,6 +136,7 @@ export function optimizeCutSheets(
       allSheets.push({
         sheetIndex: sheetIdx++,
         material: group.materialKey,
+        ...(materialPart.materialDefinition ? { materialDefinition: materialPart.materialDefinition } : {}),
         thickness: mat.thickness,
         sheetLength: offcut.length,
         sheetWidth: offcut.width,
@@ -174,6 +178,7 @@ export function optimizeCutSheets(
       allSheets.push({
         sheetIndex: sheetIdx++,
         material: group.materialKey,
+        ...(materialPart.materialDefinition ? { materialDefinition: materialPart.materialDefinition } : {}),
         thickness: mat.thickness,
         sheetLength,
         sheetWidth,

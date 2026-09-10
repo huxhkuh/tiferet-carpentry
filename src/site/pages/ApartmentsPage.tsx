@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ApartmentThumbnail } from '../../apartment/components/ApartmentThumbnail';
 import { TIFERET_5_1 } from '../../apartment/data/tiferet';
+import { listAvailableApartments } from '../../apartment/data/apartment-registry';
 import {
   getImplementedApartmentSourcePlans,
   getSourceInventorySummary,
@@ -46,7 +47,12 @@ export function ApartmentsPage({ navigate }: { navigate: NavigateSite }) {
   const sourcePlans = getSourcePlans(TIFERET_SOURCE_INVENTORY, buildingId, floorNumber);
   const selectedSourcePlan =
     sourcePlans.find((plan) => plan.id === selectedSourcePlanId) ?? sourcePlans[0] ?? DEFAULT_SOURCE_PLAN;
-  const hasWorkingModel = selectedSourcePlan.modelStatus === 'partially-modeled';
+  const apartments = listAvailableApartments();
+  const workingApartment = apartments.find((apartment) => apartment.source.sourceFileId === selectedSourcePlan.fileId);
+  const importedApartments = apartments.filter(
+    (apartment) =>
+      !TIFERET_SOURCE_INVENTORY.apartmentPlans.some((plan) => plan.fileId === apartment.source.sourceFileId),
+  );
 
   const selectFirstPlan = (nextBuildingId: TiferetSourcePlan['buildingId'], nextFloor: number) => {
     const nextPlan = getSourcePlans(TIFERET_SOURCE_INVENTORY, nextBuildingId, nextFloor)[0];
@@ -120,17 +126,17 @@ export function ApartmentsPage({ navigate }: { navigate: NavigateSite }) {
             </select>
           </label>
         </div>
-        {hasWorkingModel ? (
+        {workingApartment ? (
           <article className="ng-apartment-card is-selected">
             <div className="ng-apartment-card__plan">
-              <ApartmentThumbnail apartment={TIFERET_5_1} />
+              <ApartmentThumbnail apartment={workingApartment} />
             </div>
             <div className="ng-apartment-card__details">
               <p className="ng-eyebrow">
-                <DiamondMark /> תכלת • קומה 5
+                <DiamondMark /> {workingApartment.source.building} • קומה {workingApartment.source.floor}
               </p>
-              <h2>{apartmentSourceLabel(TIFERET_5_1)}</h2>
-              <p className="ng-apartment-type">טיפוס שני • 4 חדרים</p>
+              <h2>{apartmentSourceLabel(workingApartment)}</h2>
+              <p className="ng-apartment-type">מודל עבודה • נדרש אימות מידות לפני ייצור</p>
               <dl>
                 <div>
                   <dt>מקור</dt>
@@ -138,14 +144,18 @@ export function ApartmentsPage({ navigate }: { navigate: NavigateSite }) {
                 </div>
                 <div>
                   <dt>חדרים מזוהים</dt>
-                  <dd>{TIFERET_5_1.rooms.length}</dd>
+                  <dd>{workingApartment.rooms.length}</dd>
                 </div>
                 <div>
                   <dt>תצוגות</dt>
-                  <dd>נקייה, מקור, חפיפה ו‑3D</dd>
+                  <dd>{workingApartment.id === TIFERET_5_1.id ? 'נקייה, מקור, חפיפה ו‑3D' : 'תוכנית ו‑3D'}</dd>
                 </div>
               </dl>
-              <SiteLink route={{ id: 'my-apartment' }} navigate={navigate} className="ng-button">
+              <SiteLink
+                route={{ id: 'my-apartment', apartmentId: workingApartment.id }}
+                navigate={navigate}
+                className="ng-button"
+              >
                 בחרו דירה
               </SiteLink>
             </div>
@@ -195,6 +205,32 @@ export function ApartmentsPage({ navigate }: { navigate: NavigateSite }) {
               <p className="ng-source-catalog-path">{selectedSourcePlan.sourcePath}</p>
             </div>
           </article>
+        )}
+        {importedApartments.length > 0 && (
+          <section className="mt-8 space-y-4" aria-label="הדירות המיובאות במכשיר">
+            <h2 className="text-2xl font-semibold">הדירות שייבאתם</h2>
+            {importedApartments.map((apartment) => (
+              <article key={apartment.id} className="ng-apartment-card">
+                <div className="ng-apartment-card__plan">
+                  <ApartmentThumbnail apartment={apartment} />
+                </div>
+                <div className="ng-apartment-card__details">
+                  <h3>{apartment.name}</h3>
+                  <p>
+                    {apartment.source.building} • קומה {apartment.source.floor} • {apartment.rooms.length} חללים
+                  </p>
+                  <p>טיוטה מקומית — נדרש אימות גאומטרי ומדידה בדירה.</p>
+                  <SiteLink
+                    route={{ id: 'my-apartment', apartmentId: apartment.id }}
+                    navigate={navigate}
+                    className="ng-button"
+                  >
+                    פתחו {apartment.name}
+                  </SiteLink>
+                </div>
+              </article>
+            ))}
+          </section>
         )}
         <div className="ng-data-note" role="note">
           <span>{SOURCE_INVENTORY_SUMMARY.totalSourcePdfs} קבצי PDF נסרקו</span>

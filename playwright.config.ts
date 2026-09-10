@@ -21,6 +21,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   updateSnapshots: 'missing',
+  // Project fonts are bundled. Share reviewed baselines with Linux CI; individual
+  // screenshot assertions allow a small rendering tolerance across platforms.
+  snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}',
   // Both applications mount worker-backed panels and WebGL canvases. Running
   // browsers serially keeps interaction, axe and screenshot tests deterministic
   // across Chromium, Firefox and lower-powered developer machines.

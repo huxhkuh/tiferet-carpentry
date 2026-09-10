@@ -1,5 +1,5 @@
 import type { CabinetConfig, DerivedDimensions, OptimizationResult, Lang } from '../../engine/types';
-import { getMaterial } from '../../engine/materials';
+import { resolveMaterial } from '../../engine/materials';
 import { pdfI18n } from './pdf-i18n';
 import type { PdfLang } from './pdf-i18n';
 
@@ -112,7 +112,7 @@ export interface SheetRow {
 export function sheetSummary(optimization: OptimizationResult, lang: Lang): SheetRow[] {
   const map = new Map<string, SheetRow>();
   for (const sheet of optimization.sheets) {
-    const mat = getMaterial(sheet.material);
+    const mat = resolveMaterial(sheet);
     const key = `${sheet.material}-${sheet.thickness}`;
     const existing = map.get(key);
     if (existing) {

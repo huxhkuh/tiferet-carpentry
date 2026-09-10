@@ -5,7 +5,7 @@ import type { CabinetConfig, DerivedDimensions, Part, ValidationIssue } from '..
 import { validateConfig } from '../../engine/validation';
 import { cabinetFootprint, placementTransformForRoom } from '../geometry/placement-geometry';
 import { validatePlacement } from '../geometry/intervals';
-import { findCabinetFurnitureCollision, findFirstCollisionFreeCabinetOffset } from '../geometry/scene-collision';
+import { validateCabinetInRoom, findFirstCollisionFreeCabinetOffset } from '../geometry/scene-collision';
 import type { Apartment, CabinetPlacement, FurniturePlacement, Point, Room, Wall } from '../types';
 
 export interface CabinetDerivation {
@@ -94,19 +94,27 @@ export function createCabinetPlacement({
   );
   const resolvedDistance =
     distanceFromWallStart ??
-    findFirstCollisionFreeCabinetOffset(apartment, room, wall, config.width, config.depth, furniture, scopedPlacements);
+    findFirstCollisionFreeCabinetOffset(
+      apartment,
+      room,
+      wall,
+      config.width,
+      config.depth,
+      furniture,
+      scopedPlacements,
+      10,
+      { elevation, height: config.height },
+    );
   if (resolvedDistance === null) throw new RangeError('לא נמצא בקיר מקטע פנוי המתאים לרוחב הארון');
-  const placementError = validatePlacement(wall, config.width, resolvedDistance, scopedPlacements);
-  if (placementError) throw new RangeError(placementError);
-  const furnitureCollision = findCabinetFurnitureCollision(
+  const placementError = validateCabinetInRoom(
+    apartment,
     room,
     wall,
-    resolvedDistance,
-    config.width,
-    config.depth,
+    { id, ...config, elevation, distanceFromWallStart: resolvedDistance },
+    scopedPlacements,
     furniture,
   );
-  if (furnitureCollision) throw new RangeError('הארון חופף לריהוט בחדר. הזיזו את הריהוט או בחרו קיר אחר');
+  if (placementError) throw new RangeError(placementError);
   const transform = placementTransformForRoom(wall, room, resolvedDistance);
   return {
     id,
@@ -138,6 +146,8 @@ export function updateCabinetPlacement(
   wall: Wall,
   room: Room,
   existingPlacements: readonly CabinetPlacement[] = [],
+  apartment?: Apartment,
+  furniture?: readonly FurniturePlacement[],
 ): CabinetPlacement {
   const config = { ...placement.cabinetConfig, ...patch };
   const derivation = deriveCabinet(config);
@@ -151,8 +161,20 @@ export function updateCabinetPlacement(
     placement.distanceFromWallStart,
     scopedPlacements,
     placement.id,
+    { elevation: placement.elevation, height: config.height },
   );
   if (placementError) throw new RangeError(placementError);
+  if (apartment) {
+    const error = validateCabinetInRoom(
+      apartment,
+      room,
+      wall,
+      { ...placement, ...config },
+      scopedPlacements,
+      furniture,
+    );
+    if (error) throw new RangeError(error);
+  }
   const transform = placementTransformForRoom(wall, room, placement.distanceFromWallStart);
   return {
     ...placement,

@@ -10,6 +10,24 @@ export interface WallAvailabilityOptions {
   placements?: readonly CabinetPlacement[];
   clearance?: number;
   excludePlacementId?: string;
+  elevation?: number;
+  height?: number;
+}
+
+export function verticalBoundsOverlap(
+  elevation: number,
+  height: number,
+  otherElevation: number,
+  otherHeight: number,
+): boolean {
+  return elevation < otherElevation + otherHeight && otherElevation < elevation + height;
+}
+
+function openingBlocks(opening: Wall['openings'][number], elevation?: number, height?: number): boolean {
+  if (elevation === undefined || height === undefined) return true;
+  const sill = opening.kind === 'window' ? opening.sillHeight : 0;
+  if (sill === undefined) return true;
+  return verticalBoundsOverlap(elevation, height, sill, opening.height ?? Infinity);
 }
 
 const INVALID_DIMENSIONS_MESSAGE = 'מידות הארון חייבות להיות מספרים חיוביים';
@@ -41,15 +59,24 @@ function clipInterval(interval: WallSegment, length: number): WallSegment | null
 
 export function occupiedWallIntervals(
   wall: Wall,
-  { placements = [], clearance = 0, excludePlacementId }: WallAvailabilityOptions = {},
+  { placements = [], clearance = 0, excludePlacementId, elevation, height }: WallAvailabilityOptions = {},
 ): WallSegment[] {
   const length = wallLength(wall);
-  const openingIntervals = wall.openings.map((opening) => ({
-    start: opening.offset - clearance,
-    end: opening.offset + opening.width + clearance,
-  }));
+  const openingIntervals = wall.openings
+    .filter((opening) => openingBlocks(opening, elevation, height))
+    .map((opening) => ({
+      start: opening.offset - clearance,
+      end: opening.offset + opening.width + clearance,
+    }));
   const cabinetIntervals = placements
-    .filter((placement) => placement.wallId === wall.id && placement.id !== excludePlacementId)
+    .filter(
+      (placement) =>
+        placement.wallId === wall.id &&
+        placement.id !== excludePlacementId &&
+        (elevation === undefined ||
+          height === undefined ||
+          verticalBoundsOverlap(elevation, height, placement.elevation, placement.height)),
+    )
     .map((placement) => ({
       start: placement.distanceFromWallStart - clearance,
       end: placement.distanceFromWallStart + placement.width + clearance,
@@ -91,20 +118,25 @@ export function validatePlacement(
   distanceFromWallStart = 0,
   placements: readonly CabinetPlacement[] = [],
   excludePlacementId?: string,
+  vertical?: { elevation: number; height: number },
 ): string | null {
   if (!Number.isFinite(width) || width <= 0 || !Number.isFinite(distanceFromWallStart) || distanceFromWallStart < 0) {
     return INVALID_DIMENSIONS_MESSAGE;
   }
   const candidate = { start: distanceFromWallStart, end: distanceFromWallStart + width };
   if (candidate.end > wallLength(wall)) return OUTSIDE_WALL_MESSAGE;
-  const openingOverlap = wall.openings.some((opening) =>
-    intervalsOverlap(candidate, { start: opening.offset, end: opening.offset + opening.width }),
+  const openingOverlap = wall.openings.some(
+    (opening) =>
+      openingBlocks(opening, vertical?.elevation, vertical?.height) &&
+      intervalsOverlap(candidate, { start: opening.offset, end: opening.offset + opening.width }),
   );
   if (openingOverlap) return OPENING_OVERLAP_MESSAGE;
   const cabinetOverlap = placements.some(
     (placement) =>
       placement.wallId === wall.id &&
       placement.id !== excludePlacementId &&
+      (!vertical ||
+        verticalBoundsOverlap(vertical.elevation, vertical.height, placement.elevation, placement.height)) &&
       intervalsOverlap(candidate, {
         start: placement.distanceFromWallStart,
         end: placement.distanceFromWallStart + placement.width,

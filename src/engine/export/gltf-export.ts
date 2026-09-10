@@ -1,3 +1,4 @@
+import { buildPartInstances } from '../part-instances';
 /**
  * Sprint 84 — glTF 2.0 export (GL Transmission Format).
  *
@@ -166,14 +167,18 @@ function toDataUri(buffer: ArrayBuffer, mimeType: string): string {
  * @param parts  - Engine-generated Part list
  * @returns `{ content, partCount }` where `content` is the glTF JSON string
  */
-export function generateGltfContent(config: CabinetConfig, parts: Part[]): GltfResult {
+export function generateGltfContent(
+  config: CabinetConfig,
+  parts: Part[],
+  layout: 'parts' | 'assembled' = 'parts',
+): GltfResult {
   const root: GltfRoot = {
     asset: {
       version: '2.0',
       generator: `CabinetPlanner v4.1 — Sprint 84 (${config.width}×${config.height}×${config.depth}mm)`,
     },
     scene: 0,
-    scenes: [{ name: 'Cabinet', nodes: [] }],
+    scenes: [{ name: layout === 'assembled' ? 'Assembled cabinet' : 'Unassembled parts in metres', nodes: [] }],
     nodes: [],
     meshes: [],
     accessors: [],
@@ -181,18 +186,17 @@ export function generateGltfContent(config: CabinetConfig, parts: Part[]): GltfR
     buffers: [],
   };
 
+  const instances = layout === 'assembled' ? buildPartInstances(config, parts) : [];
   const GAP_M = 0.01; // 10 mm gap between stacked instances
   let yOffset = 0;
   let partCount = 0;
 
   for (const part of parts) {
     const qty = part.qty ?? 1;
-    // Width = along sheet width, Height = thickness, Depth = part length
-    const { positions, normals, indices } = boxGeometry(
-      part.width, // mm
-      part.thickness ?? 18, // mm
-      part.length, // mm
-    );
+    const placements = instances.filter((instance) => instance.part.id === part.id);
+    const size = placements[0]?.size ?? [part.width, part.thickness ?? 18, part.length];
+    // Physical box dimensions in millimetres.
+    const { positions, normals, indices } = boxGeometry(size[0], size[1], size[2]);
 
     // Build a single glTF buffer for this part (positions + normals + indices)
     const posBytes = positions.buffer;
@@ -225,9 +229,9 @@ export function generateGltfContent(config: CabinetConfig, parts: Part[]): GltfR
     const accBase = root.accessors.length;
 
     // Compute POSITION min/max for accessor
-    const wM = part.width / 2000;
-    const hM = (part.thickness ?? 18) / 2000;
-    const dM = part.length / 2000;
+    const wM = size[0] / 2000;
+    const hM = size[1] / 2000;
+    const dM = size[2] / 2000;
 
     root.accessors.push(
       {
@@ -270,7 +274,9 @@ export function generateGltfContent(config: CabinetConfig, parts: Part[]): GltfR
       root.nodes.push({
         name: `${partLabel}_${i + 1}`,
         mesh: meshIdx,
-        translation: [0, yOffset, 0],
+        translation: placements[i]
+          ? [placements[i].center[0] / 1000, placements[i].center[1] / 1000, placements[i].center[2] / 1000]
+          : [0, yOffset, 0],
       });
       root.scenes[0].nodes.push(nodeIdx);
       yOffset += (part.thickness ?? 18) / 1000 + GAP_M;

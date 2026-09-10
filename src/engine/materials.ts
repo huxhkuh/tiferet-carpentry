@@ -1,5 +1,37 @@
 import type { Material, CabinetConfig } from './types';
 
+export function isMaterial(value: unknown): value is Material {
+  if (typeof value !== 'object' || value === null) return false;
+  const item = value as Record<string, unknown>;
+  const name = item.name as Record<string, unknown> | undefined;
+  return (
+    typeof item.key === 'string' &&
+    item.key.trim().length > 0 &&
+    item.key.length <= 120 &&
+    typeof name?.en === 'string' &&
+    name.en.trim().length > 0 &&
+    typeof name.he === 'string' &&
+    name.he.trim().length > 0 &&
+    ['thickness', 'sheetWidth', 'sheetLength', 'densityKgM3'].every(
+      (key) => typeof item[key] === 'number' && Number.isFinite(item[key]) && item[key] > 0 && item[key] <= 100_000,
+    ) &&
+    (item.pricePerSheet === undefined ||
+      (typeof item.pricePerSheet === 'number' && Number.isFinite(item.pricePerSheet) && item.pricePerSheet >= 0)) &&
+    (item.currencyCode === undefined ||
+      (typeof item.currencyCode === 'string' && /^[A-Z]{3}$/.test(item.currencyCode))) &&
+    (item.category === 'panel' || item.category === 'back' || item.category === 'door') &&
+    typeof item.hasGrain === 'boolean' &&
+    typeof item.color === 'string' &&
+    /^#[\dA-F]{6}$/i.test(item.color)
+  );
+}
+
+export function resolveMaterial(item: { material: string; materialDefinition?: Material }): Material {
+  if (item.materialDefinition?.key === item.material && isMaterial(item.materialDefinition))
+    return item.materialDefinition;
+  return getMaterial(item.material);
+}
+
 // ─── Material database ───
 
 /** The built-in material catalogue. Use `getMaterial(key)` to look up by key. */

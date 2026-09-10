@@ -100,7 +100,7 @@ import { cfg } from '../helpers'; // builds CabinetConfig from DEFAULT_CONFIG + 
 ## Docs
 
 - Architecture decisions & diagrams → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- Active roadmap → [ROADMAP.md](ROADMAP.md) (Phase 33 — active)
+- Active roadmap → [ROADMAP.md](ROADMAP.md); current remediation → [docs/audits/2026-09-09/REMEDIATION.he.md](docs/audits/2026-09-09/REMEDIATION.he.md)
 - Sprint history → [docs/SPRINT-HISTORY.md](docs/SPRINT-HISTORY.md)
 - Plugin API → [docs/PLUGIN-API.md](docs/PLUGIN-API.md)
 

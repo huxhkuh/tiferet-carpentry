@@ -117,7 +117,14 @@ export function GcodePreviewModal({ sheet, onClose, onDownload, filename }: Prop
   });
 
   // Re-generate G-code + validation whenever sheet or options change
-  const gcodeText = useMemo(() => cutSheetToGcode(sheet, options), [sheet, options]);
+  const generation = useMemo(() => {
+    try {
+      return { text: cutSheetToGcode(sheet, options), error: '' };
+    } catch (error) {
+      return { text: '', error: error instanceof Error ? error.message : 'G-code generation failed' };
+    }
+  }, [sheet, options]);
+  const gcodeText = generation.text;
   const validation = useMemo(() => validateGcode(gcodeText), [gcodeText]);
   const toolpath = useMemo(() => parseToolpath(gcodeText), [gcodeText]);
 
@@ -184,6 +191,11 @@ export function GcodePreviewModal({ sheet, onClose, onDownload, filename }: Prop
           </button>
         </div>
 
+        {generation.error && (
+          <p role="alert" className="px-4 py-3 text-sm text-red-700">
+            {generation.error}
+          </p>
+        )}
         {/* Validation banner */}
         {(errorCount > 0 || warnCount > 0) && (
           <div
@@ -409,8 +421,9 @@ export function GcodePreviewModal({ sheet, onClose, onDownload, filename }: Prop
             {t('gcodeValidator.dismiss')}
           </button>
           <button
+            disabled={Boolean(generation.error) || errorCount > 0}
             onClick={() => {
-              onDownload(gcodeText);
+              if (!generation.error && errorCount === 0) onDownload(gcodeText);
               onClose();
             }}
             className="bg-wood-700 dark:bg-wood-600 hover:bg-wood-800 dark:hover:bg-wood-500 rounded px-3 py-1.5 text-xs text-white transition-colors"

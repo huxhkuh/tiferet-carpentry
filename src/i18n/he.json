@@ -109,7 +109,12 @@
     "length": "אורך",
     "width": "רוחב",
     "thickness": "עובי",
-    "edge": "פס קצה"
+    "edge": "פס קצה",
+    "grainDirection": "כיוון סיבים",
+    "grainFor": "כיוון סיבים עבור {{id}}",
+    "grainDefault": "לפי החומר",
+    "grainLength": "לאורך החלק",
+    "grainWidth": "לרוחב החלק"
   },
   "hardware": {
     "title": "רשימת חומרה",
@@ -440,7 +445,10 @@
     "importSettings": "ייבוא הגדרות פרויקט",
     "settingsExported": "הגדרות הפרויקט יוצאו",
     "settingsImported": "הגדרות הפרויקט הוחלו",
-    "settingsImportError": "לא ניתן לייבא הגדרות — קובץ לא תקין"
+    "settingsImportError": "לא ניתן לייבא הגדרות — קובץ לא תקין",
+    "cancelExport": "ביטול ייצוא",
+    "waitForCalculation": "הייצוא ממתין לחישובים תקינים ועדכניים.",
+    "recalculate": "חשב מחדש"
   },
   "footer": {
     "darkMode": "מצב כהה",
@@ -577,7 +585,10 @@
     "finish": "גימור / צביעה",
     "editFinish": "לחץ להגדרת עלות גימור",
     "finishAriaLabel": "עלות גימור",
-    "notSet": "—"
+    "notSet": "—",
+    "estimateBasis": "אומדן בשקלים לפי מחירי קטלוג לדוגמה או מחירים שהוזנו. יש לאמת מחירים, מע״מ, הובלה והתקנה עם הספק.",
+    "missingPrices": "סכום חלקי — חסר מחיר בשקלים עבור: {{items}}",
+    "priceMissing": "חסר מחיר"
   },
   "assembly": {
     "title": "מדריך הרכבה",

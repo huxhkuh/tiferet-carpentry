@@ -6,7 +6,7 @@ export interface CameraOrbit {
   zoom: number;
 }
 
-export interface SceneRenderHandle {
+interface SceneRenderHandle {
   dispose: () => void;
 }
 
@@ -28,6 +28,7 @@ interface UniformLocations {
   pitch: WebGLUniformLocation | null;
   zoom: WebGLUniformLocation | null;
   targetHeight: WebGLUniformLocation | null;
+  millimetresPerUnit: WebGLUniformLocation | null;
 }
 
 const VERTEX_SHADER = `
@@ -81,6 +82,7 @@ const FRAGMENT_SHADER = `
   varying vec3 vPosition;
   varying float vMaterial;
 
+  uniform float uMillimetresPerUnit;
   float isMaterial(float id) {
     return 1.0 - step(0.25, abs(vMaterial - id));
   }
@@ -96,18 +98,20 @@ const FRAGMENT_SHADER = `
     float ceramic = isMaterial(6.0);
     float shadow = isMaterial(7.0);
     float floorMaterial = isMaterial(0.0);
-    float grain = sin((vPosition.x * 23.0 + vPosition.z * 37.0) * 3.14159265);
-    float floorGrid = step(0.985, max(abs(fract(vPosition.x * 7.0) - 0.5), abs(fract(vPosition.z * 7.0) - 0.5)) * 2.0);
-    float fabricWeave = sin(vPosition.x * 95.0) * sin(vPosition.z * 95.0);
+    vec3 positionMm = vPosition * uMillimetresPerUnit;
+    float grain = sin((positionMm.x + positionMm.z * 0.1) * 0.18);
+    float floorGrid = step(0.985, max(abs(fract(positionMm.x / 600.0) - 0.5), abs(fract(positionMm.z / 600.0) - 0.5)) * 2.0);
+    float fabricWeave = sin(positionMm.x * 0.35) * sin(positionMm.z * 0.35);
     vec3 materialColor = vColor;
     materialColor *= 1.0 + wood * grain * 0.035;
     materialColor *= 1.0 + fabric * fabricWeave * 0.018;
     materialColor *= 1.0 - floorMaterial * floorGrid * 0.08;
-    float specular = pow(max(dot(normalize(vNormal), normalize(vec3(-0.25, 0.68, 0.55))), 0.0), 28.0);
+    float gloss = mix(12.0, 64.0, min(1.0, metal + glass));
+    float specular = pow(max(dot(normalize(vNormal), normalize(vec3(-0.25, 0.68, 0.55))), 0.0), gloss);
     float specularStrength = metal * 0.18 + glass * 0.16 + ceramic * 0.08;
     vec3 litColor = materialColor * wrapLight + vec3(0.035, 0.03, 0.025) + specular * specularStrength;
     litColor = mix(litColor, vColor * 0.5, shadow);
-    gl_FragColor = vec4(min(litColor, vec3(1.0)), 1.0);
+    gl_FragColor = vec4(min(litColor, vec3(1.0)), mix(1.0, 0.32, glass));
   }
 `;
 
@@ -126,7 +130,11 @@ function createShader(gl: WebGLRenderingContext, type: number, source: string): 
 function createProgram(gl: WebGLRenderingContext): WebGLProgram | null {
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
   const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
-  if (!vertexShader || !fragmentShader) return null;
+  if (!vertexShader || !fragmentShader) {
+    if (vertexShader) gl.deleteShader(vertexShader);
+    if (fragmentShader) gl.deleteShader(fragmentShader);
+    return null;
+  }
   const program = gl.createProgram();
   if (!program) {
     gl.deleteShader(vertexShader);
@@ -177,15 +185,37 @@ export function createApartmentRoomRenderer(gl: WebGLRenderingContext): Apartmen
     pitch: gl.getUniformLocation(program, 'uPitch'),
     zoom: gl.getUniformLocation(program, 'uZoom'),
     targetHeight: gl.getUniformLocation(program, 'uTargetHeight'),
+    millimetresPerUnit: gl.getUniformLocation(program, 'uMillimetresPerUnit'),
   };
   let scene: ApartmentRoomScene | null = null;
   let vertexCount = 0;
+  let opaqueRanges: { start: number; count: number }[] = [];
+  let transparentTriangles: { start: number; x: number; y: number; z: number }[] = [];
 
   return {
     setScene: (nextScene: ApartmentRoomScene) => {
       if (scene === nextScene) return;
       scene = nextScene;
       vertexCount = nextScene.vertices.length / nextScene.vertexStride;
+      opaqueRanges = [];
+      transparentTriangles = [];
+      for (let vertex = 0; vertex < vertexCount; vertex += 3) {
+        const offset = vertex * nextScene.vertexStride;
+        if (Math.abs(nextScene.vertices[offset + 9] - 4) < 0.25) {
+          const center = [0, 1, 2].map(
+            (axis) =>
+              [0, 1, 2].reduce(
+                (sum, point) => sum + nextScene.vertices[offset + point * nextScene.vertexStride + axis],
+                0,
+              ) / 3,
+          );
+          transparentTriangles.push({ start: vertex, x: center[0], y: center[1], z: center[2] });
+        } else {
+          const previous = opaqueRanges.at(-1);
+          if (previous && previous.start + previous.count === vertex) previous.count += 3;
+          else opaqueRanges.push({ start: vertex, count: 3 });
+        }
+      }
       const stride = nextScene.vertexStride * Float32Array.BYTES_PER_ELEMENT;
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
       gl.bufferData(gl.ARRAY_BUFFER, nextScene.vertices, gl.STATIC_DRAW);
@@ -203,29 +233,31 @@ export function createApartmentRoomRenderer(gl: WebGLRenderingContext): Apartmen
       gl.uniform1f(uniforms.pitch, camera.pitch);
       gl.uniform1f(uniforms.zoom, camera.zoom);
       gl.uniform1f(uniforms.targetHeight, scene.targetHeight);
+      gl.uniform1f(uniforms.millimetresPerUnit, scene.millimetresPerUnit ?? 1000);
       gl.viewport(0, 0, width, height);
       gl.enable(gl.DEPTH_TEST);
+      gl.disable(gl.BLEND);
+      gl.depthMask(true);
       gl.clearColor(0.91, 0.9, 0.87, 1);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, vertexCount);
+      for (const range of opaqueRanges) gl.drawArrays(gl.TRIANGLES, range.start, range.count);
+      if (transparentTriangles.length) {
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.depthMask(false);
+        const targetHeight = scene.targetHeight;
+        const depth = (triangle: (typeof transparentTriangles)[number]) =>
+          (triangle.y - targetHeight) * Math.sin(camera.pitch) +
+          (triangle.x * Math.sin(camera.yaw) + triangle.z * Math.cos(camera.yaw)) * Math.cos(camera.pitch);
+        const ordered = [...transparentTriangles].sort((a, b) => depth(b) - depth(a));
+        for (const triangle of ordered) gl.drawArrays(gl.TRIANGLES, triangle.start, 3);
+        gl.depthMask(true);
+        gl.disable(gl.BLEND);
+      }
     },
     dispose: () => {
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
     },
   };
-}
-
-export function renderApartmentRoomScene(
-  gl: WebGLRenderingContext,
-  scene: ApartmentRoomScene,
-  camera: CameraOrbit,
-  width: number,
-  height: number,
-): SceneRenderHandle | null {
-  const renderer = createApartmentRoomRenderer(gl);
-  if (!renderer) return null;
-  renderer.setScene(scene);
-  renderer.draw(camera, width, height);
-  return renderer;
 }

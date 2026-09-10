@@ -2,11 +2,10 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCabinetStore } from '../../store/cabinet-store';
 import { buildCutChecklist } from '../../engine/cut-checklist';
-import type { Lang } from '../../engine/types';
 
 export function CutChecklistPanel() {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language as Lang;
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
   const { allParts, checkedPartIds, toggleCutPart, clearCutChecklist } = useCabinetStore();
   const [open, setOpen] = useState(false);
 

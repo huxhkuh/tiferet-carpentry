@@ -127,7 +127,9 @@ function main() {
     return;
   }
 
-  const files = collectTsxFiles(componentsRoot);
+  const files = ['components', 'apartment', 'site'].flatMap((surface) =>
+    collectTsxFiles(path.join(repoRoot, 'src', surface)),
+  );
   const violations = [];
   const expiredExceptions = [];
   const usedExceptions = new Set();

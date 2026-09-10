@@ -1,0 +1,154 @@
+{
+  "perpendicularCabinets": {
+    "bothAccepted": true,
+    "physicalOverlap": true
+  },
+  "cabinetOutsideRoom": {
+    "accepted": true,
+    "contained": false
+  },
+  "concaveRoom": {
+    "rectangleCrossesNotch": true,
+    "accepted": true
+  },
+  "centreSupport": {
+    "dimensions": {
+      "internalWidth": 1766,
+      "internalHeight": 2366,
+      "shelfDepth": 580,
+      "shelfWidth": 1764,
+      "doorHeight": 2394,
+      "doorWidth": 896,
+      "backPanelHeight": 2380,
+      "backPanelWidth": 1780,
+      "hingesPerDoor": 6,
+      "hingePositions": [100, 539, 978, 1416, 1855, 2294],
+      "shelfDeflections": [
+        {
+          "deflectionMm": 0.26,
+          "limitMm": 2.45,
+          "overLimit": false,
+          "deflectionRating": "safe",
+          "maxLoadKg": 43
+        },
+        {
+          "deflectionMm": 0.26,
+          "limitMm": 2.45,
+          "overLimit": false,
+          "deflectionRating": "safe",
+          "maxLoadKg": 43
+        },
+        {
+          "deflectionMm": 0.26,
+          "limitMm": 2.45,
+          "overLimit": false,
+          "deflectionRating": "safe",
+          "maxLoadKg": 43
+        }
+      ]
+    },
+    "parts": [
+      {
+        "name": "Fixed Shelf",
+        "length": 1766,
+        "width": 580,
+        "qty": 1
+      },
+      {
+        "name": "Adjustable Shelf",
+        "length": 1764,
+        "width": 580,
+        "qty": 3
+      },
+      {
+        "name": "Centre Support",
+        "length": 2366,
+        "width": 580,
+        "qty": 1
+      }
+    ]
+  },
+  "multiPagePdf": {
+    "pageCount": 2,
+    "width": 500,
+    "height": 500,
+    "rectangles": [
+      {
+        "x0": 300,
+        "x1": 340,
+        "top": 50,
+        "bottom": 200,
+        "fillGray": 0,
+        "strokeWidth": 1,
+        "source": "vector"
+      },
+      {
+        "x0": 10,
+        "x1": 30,
+        "top": 390,
+        "bottom": 490,
+        "fillGray": 0,
+        "strokeWidth": 1,
+        "source": "vector"
+      }
+    ],
+    "detectedScale": null,
+    "warnings": ["בשלב זה מיובא העמוד הראשון בלבד"]
+  },
+  "malformedRoute": "URIError: URI malformed",
+  "unsavedSummary": {
+    "editedWidthCm": "200",
+    "summaryText": "מפרט תכנוני\n\nסיכום התכנון\n\nדירה 23-א · גיליון 5-1 • תכלת • קומה 5\n\nממ״ד\nחדר שינה\nסלון\nחדר רחצה\nשירותי אורחים\nחדר שינה הורים\nאמבטיה\nמסתור כביסה\nמטבח\nTIF–5‑1\n\nתכנון דירה 5-1\n\n1 פריטי נגרות בתכנון\n\nערכת ריהוט חמה\n\n01\nארון בגדים\n\nחדר שינה\n\n180 × 240 × 60 ס״מ\n\nחומר\nפנלפלק 17 מ\"מ\nחזית\nדלת חלקה · ידית קווית\nחלוקה\n2 דלתות · 1 מדפים · 0 מגירות\nמחיר משוער\nיתווסף לאחר מדידה ומפרט מאושר\nחזרה לתכנון\nהדפסת הסיכום\nבקשת ייעוץ\n\nלפני ייצור או הזמנה יש לבצע מדידה מקצועית בדירה בפועל. הסיכום אינו הצעת מחיר מחייבת."
+  },
+  "furnitureSummary": {
+    "savedAdded": 1,
+    "summaryContainsPlant": false
+  },
+  "homeGeometry": {
+    "height": 9737,
+    "cards": [
+      {
+        "text": "01\n\nמטבחים\n\nמערכי אחסון ועבודה המתוכננים לפי חלל המטבח.\n\nלפרויקטים\n←",
+        "bounds": {
+          "width": 1214,
+          "height": 809
+        }
+      },
+      {
+        "text": "02\n\nחדרי ארונות\n\nחלוקה פנימית מדויקת לבגדים, מגירות ותלייה.\n\nלפרויקטים\n←",
+        "bounds": {
+          "width": 598,
+          "height": 494
+        }
+      },
+      {
+        "text": "03\n\nארונות חדרי שינה\n\nפתרונות שקטים בגובה מלא, בהתאמה לקיר ולפתחים.\n\nלפרויקטים\n←",
+        "bounds": {
+          "width": 598,
+          "height": 494
+        }
+      },
+      {
+        "text": "04\n\nחדרי ילדים\n\nאחסון, שולחן וספרייה בתוך מערכת אחת גמישה.\n\nלפרויקטים\n←",
+        "bounds": {
+          "width": 1214,
+          "height": 1818
+        }
+      },
+      {
+        "text": "05\n\nיחידות מדיה\n\nחזית נקייה, מעבר תשתיות ואחסון נגיש.\n\nלפרויקטים\n←",
+        "bounds": {
+          "width": 598,
+          "height": 494
+        }
+      },
+      {
+        "text": "06\n\nאחסון ונישות\n\nניצול מקומות מורכבים באמצעות נגרות מותאמת.\n\nלפרויקטים\n←",
+        "bounds": {
+          "width": 598,
+          "height": 494
+        }
+      }
+    ]
+  }
+}

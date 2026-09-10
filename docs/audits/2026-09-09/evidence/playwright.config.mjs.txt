@@ -1,0 +1,2 @@
+import path from 'node:path';
+export default {testDir:path.join(process.cwd(),'tests/e2e'),outputDir:path.join(process.env.TEMP,'tiferet-audit-20260909','production-e2e-results'),timeout:45000,expect:{timeout:8000},fullyParallel:false,forbidOnly:true,retries:0,workers:1,reporter:'list',use:{baseURL:'http://127.0.0.1:4198/tiferet-carpentry/',viewport:{width:1280,height:720},screenshot:'only-on-failure'},projects:[{name:'chromium',use:{browserName:'chromium'}},{name:'firefox',use:{browserName:'firefox'}}]};

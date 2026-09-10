@@ -10,7 +10,7 @@ const VALID_PROJECT = JSON.stringify({
   name: 'My Kitchen',
   savedAt: '2025-01-01T00:00:00.000Z',
   schemaVersion: '1.0',
-  cabinets: [],
+  cabinets: [{ name: 'Cabinet', config: {} }],
 });
 
 describe('parseCabinetPlanFile — Phase 13 Sprint 7', () => {
@@ -48,13 +48,21 @@ describe('parseCabinetPlanFile — Phase 13 Sprint 7', () => {
   });
 
   it('auto-assigns an id when missing from payload', () => {
-    const noId = JSON.stringify({ name: 'NoID', savedAt: '2025-01-01T00:00:00Z', cabinets: [] });
+    const noId = JSON.stringify({
+      name: 'NoID',
+      savedAt: '2025-01-01T00:00:00Z',
+      cabinets: [{ name: 'Cabinet', config: {} }],
+    });
     const result = parseCabinetPlanFile(noId);
     expect(result?.id).toMatch(/^proj-\d+$/);
   });
 
   it('defaults name to Untitled when missing or empty', () => {
-    const noName = JSON.stringify({ id: 'x', savedAt: '2025-01-01T00:00:00Z', cabinets: [] });
+    const noName = JSON.stringify({
+      id: 'x',
+      savedAt: '2025-01-01T00:00:00Z',
+      cabinets: [{ name: 'Cabinet', config: {} }],
+    });
     const result = parseCabinetPlanFile(noName);
     expect(result?.name).toBe('Untitled');
   });

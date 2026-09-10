@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import type { CabinetConfig, OptimizationResult, OptimizationSuggestion, Lang } from '../../engine/types';
+import type { CabinetConfig, OptimizationResult, OptimizationSuggestion } from '../../engine/types';
 
 export function ComparisonView({ suggestion }: { suggestion: OptimizationSuggestion }) {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language as Lang;
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
 
   return (
     <div className="border-wood-200 dark:border-wood-700 bg-wood-50/50 dark:bg-wood-800/30 space-y-3 rounded-lg border p-4">

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDialogFocus } from '../../hooks/useDialogFocus';
+import { useMemo, useState } from 'react';
 
 import { FURNITURE_CATALOG, type FurnitureCategory, type FurnitureDefinition } from '../furniture/catalog';
 import type { FurnitureKind } from '../types';
@@ -42,7 +43,7 @@ function recommendedCategories(roomName: string): readonly FurnitureCategory[] {
 
 export function FurnitureCatalogPanel({ roomName, onAdd, onClose }: FurnitureCatalogPanelProps) {
   const [filter, setFilter] = useState<CatalogFilter>('all');
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useDialogFocus<HTMLElement>(true, onClose);
   const roomRecommendations = useMemo(() => recommendedCategories(roomName), [roomName]);
   const items = useMemo(() => {
     const filtered = Object.values(FURNITURE_CATALOG).filter((item) => filter === 'all' || item.category === filter);
@@ -52,18 +53,10 @@ export function FurnitureCatalogPanel({ roomName, onAdd, onClose }: FurnitureCat
     );
   }, [filter, roomRecommendations]);
 
-  useEffect(() => {
-    closeButtonRef.current?.focus();
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
-  }, [onClose]);
-
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-stone-950/45 p-0 backdrop-blur-sm sm:items-center sm:p-5">
       <section
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="קטלוג ריהוט"
@@ -79,7 +72,6 @@ export function FurnitureCatalogPanel({ roomName, onAdd, onClose }: FurnitureCat
             <p className="mt-1 text-sm text-stone-500">הפריט ימוקם אוטומטית במקום פנוי ויישאר ניתן לגרירה ולסיבוב.</p>
           </div>
           <button
-            ref={closeButtonRef}
             type="button"
             aria-label="סגירת קטלוג ריהוט"
             onClick={onClose}

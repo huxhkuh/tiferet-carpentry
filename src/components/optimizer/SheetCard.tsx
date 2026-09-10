@@ -1,6 +1,6 @@
 /** Sprint A3 (Phase 16.5) — extracted from OptimizerView.tsx */
 import { useState, useEffect } from 'react';
-import { getMaterial } from '../../engine/materials';
+import { resolveMaterial } from '../../engine/materials';
 import { downloadDxfForSheet } from '../../utils/dxf-export';
 import { useToastStore } from '../../store/toast-store';
 import { IconDxf, IconGcode, IconGrainVertical } from '../layout/Icons';
@@ -231,7 +231,7 @@ export function SheetCard({
   onToggleRotationLock: (partId: string) => void;
   t: (key: string, opts?: Record<string, unknown>) => string;
 }) {
-  const mat = getMaterial(sheet.material);
+  const mat = resolveMaterial(sheet);
   const sw = sheet.sheetWidth * S;
   const sl = sheet.sheetLength * S;
   /** Sprint 70 — step-by-step nesting placement animation */

@@ -17,12 +17,22 @@ const SESSION_DISMISS_KEY = 'swUpdate:dismissed';
 export function SwUpdateBanner() {
   const { t } = useTranslation();
   const { updateAvailable, reload } = useSwUpdate();
-  const [dismissed, setDismissed] = useState(() => sessionStorage.getItem(SESSION_DISMISS_KEY) === 'true');
+  const [dismissed, setDismissed] = useState(() => {
+    try {
+      return sessionStorage.getItem(SESSION_DISMISS_KEY) === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   if (!updateAvailable || dismissed) return null;
 
   const handleDismiss = () => {
-    sessionStorage.setItem(SESSION_DISMISS_KEY, 'true');
+    try {
+      sessionStorage.setItem(SESSION_DISMISS_KEY, 'true');
+    } catch {
+      /* Dismissal remains available in memory. */
+    }
     setDismissed(true);
   };
 

@@ -1,3 +1,4 @@
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 import type { ChangeEvent } from 'react';
 import type { ArchitecturalPdfImportDraft } from '../import/pdf-import';
 import type { SavedDesignLibrary } from '../persistence/design-library';
@@ -6,6 +7,9 @@ interface DesignLibraryPanelProps {
   library: SavedDesignLibrary;
   designName: string;
   onNameChange: (name: string) => void;
+  notes?: string;
+  onNotesChange?: (notes: string) => void;
+  errorMessage?: string;
   onSaveAsNew: () => void;
   onLoad: (designId: string) => void;
   onDelete: (designId: string) => void;
@@ -21,6 +25,9 @@ export function DesignLibraryPanel({
   library,
   designName,
   onNameChange,
+  notes = '',
+  onNotesChange,
+  errorMessage,
   onSaveAsNew,
   onLoad,
   onDelete,
@@ -31,6 +38,7 @@ export function DesignLibraryPanel({
   pdfImportState,
   onClose,
 }: DesignLibraryPanelProps) {
+  const dialogRef = useDialogFocus<HTMLElement>(true, onClose);
   const handleImport = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) onImport(file);
@@ -57,6 +65,7 @@ export function DesignLibraryPanel({
         onClick={onClose}
       />
       <aside
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="design-library-title"
@@ -74,6 +83,11 @@ export function DesignLibraryPanel({
           </button>
         </div>
 
+        {errorMessage && (
+          <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+            {errorMessage}
+          </p>
+        )}
         <div className="mt-6 rounded-2xl border border-stone-200 bg-white p-4">
           <label htmlFor="design-version-name" className="text-sm font-bold text-stone-700">
             שם הגרסה
@@ -86,6 +100,18 @@ export function DesignLibraryPanel({
             className="mt-2 w-full rounded-xl border border-stone-300 px-3 py-3"
             placeholder="למשל: חלופה בהירה"
           />
+          {onNotesChange && (
+            <label className="mt-3 block text-sm font-bold text-stone-700">
+              הערות לתכנון
+              <textarea
+                value={notes}
+                maxLength={5000}
+                onChange={(event) => onNotesChange(event.target.value)}
+                rows={3}
+                className="mt-2 w-full rounded-xl border border-stone-300 px-3 py-3"
+              />
+            </label>
+          )}
           <button
             type="button"
             onClick={onSaveAsNew}
@@ -152,10 +178,9 @@ export function DesignLibraryPanel({
           <button
             type="button"
             onClick={onExport}
-            disabled={library.activeDesignId === null}
             className="rounded-xl border border-[#6d4630] px-3 py-3 text-sm font-bold text-[#6d4630] disabled:border-stone-300 disabled:text-stone-400"
           >
-            ייצוא גרסה פעילה ל‑JSON
+            ייצוא התכנון ל‑JSON
           </button>
           <label className="cursor-pointer rounded-xl border border-stone-300 px-3 py-3 text-center text-sm font-bold text-stone-700">
             ייבוא תכנון JSON

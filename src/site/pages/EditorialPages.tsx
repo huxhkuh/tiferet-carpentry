@@ -1,3 +1,4 @@
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 import { useState, type CSSProperties } from 'react';
 import { FULL_PROCESS_STEPS, MATERIAL_LIBRARY, SPACE_CATEGORIES } from '../content';
 import type { NavigateSite } from '../types';
@@ -10,6 +11,14 @@ export function InspirationPage({ navigate }: { navigate: NavigateSite }) {
   const [filter, setFilter] = useState('הכול');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const filters = ['הכול', 'מטבחים', 'ארונות', 'חדרי ילדים', 'יחידות מדיה'];
+  const dialogRef = useDialogFocus<HTMLDivElement>(selectedId !== null, () => setSelectedId(null));
+  const categoryIds: Record<string, readonly string[]> = {
+    מטבחים: ['kitchen'],
+    ארונות: ['wardrobe', 'bedroom', 'niches'],
+    'חדרי ילדים': ['children'],
+    'יחידות מדיה': ['media'],
+  };
+  const visibleSpaces = SPACE_CATEGORIES.filter((item) => filter === 'הכול' || categoryIds[filter]?.includes(item.id));
   const selected = SPACE_CATEGORIES.find((item) => item.id === selectedId);
 
   return (
@@ -29,8 +38,9 @@ export function InspirationPage({ navigate }: { navigate: NavigateSite }) {
             </button>
           ))}
         </div>
+        <p role="status">{visibleSpaces.length} תוצאות</p>
         <div className="ng-editorial-gallery">
-          {SPACE_CATEGORIES.map((space, index) => (
+          {visibleSpaces.map((space, index) => (
             <button
               key={space.id}
               type="button"
@@ -48,7 +58,7 @@ export function InspirationPage({ navigate }: { navigate: NavigateSite }) {
         </div>
       </section>
       {selected ? (
-        <div className="ng-gallery-dialog" role="dialog" aria-modal="true" aria-label={selected.title}>
+        <div ref={dialogRef} className="ng-gallery-dialog" role="dialog" aria-modal="true" aria-label={selected.title}>
           <button type="button" aria-label="סגירת הפרויקט" onClick={() => setSelectedId(null)}>
             ×
           </button>

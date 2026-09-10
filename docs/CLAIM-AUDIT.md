@@ -1,5 +1,9 @@
 # Claim Audit Baseline — Phase 52, Sprint 245
 
+The original tables below are historical code-presence checks, not evidence that every workflow is
+production-qualified. For the 2026-09-10 implemented behavior, acceptance tests and outstanding limits,
+read [the remediation record](audits/2026-09-09/REMEDIATION.he.md).
+
 > Audit date: 2026-05-31 · Auditor: Phase 52 Production Hardening
 > Governance rules: [.github/GOVERNANCE-POLICY.md](../.github/GOVERNANCE-POLICY.md)
 > Status key: ✅ VERIFIED · ⚠️ PARTIAL · ❌ UNVERIFIED · ✧ SUBJECTIVE
@@ -24,30 +28,30 @@
 
 ### Feature Claims (Rule 2)
 
-| Claim                                                     | Verification Method                                   | Status      | Notes                                                  |
-| --------------------------------------------------------- | ----------------------------------------------------- | ----------- | ------------------------------------------------------ |
-| 6 one-click preset templates                              | `src/components/configurator/`                        | ✅ VERIFIED | Presets exist in configurator components               |
-| Furniture types: Cabinet/Bookshelf/Desk/Wardrobe          | `src/engine/parts.ts`                                 | ✅ VERIFIED | Type-specific part generation in engine                |
-| Width/height/depth sliders + numeric entry                | `src/components/configurator/`                        | ✅ VERIFIED | UI components present                                  |
-| Grain direction (grain-sensitive cut)                     | `src/engine/cut-optimizer.ts`                         | ✅ VERIFIED | Grain-lock implemented in MaxRects optimizer           |
-| MaxRects bin-packing                                      | `src/engine/cut-optimizer.ts`                         | ✅ VERIFIED | MaxRects BSSF algorithm confirmed in engine            |
-| 5 smart optimizer strategies                              | `src/engine/smart-optimizer.ts`                       | ✅ VERIFIED | File exists; strategies implemented                    |
-| 6 preview views (Front/FrontOpen/Side/Top/Back/Isometric) | `src/components/preview/`                             | ✅ VERIFIED | Multiple view components confirmed                     |
-| SVG + PNG export from preview                             | `src/components/preview/preview-download-utils.ts`    | ✅ VERIFIED | Download utilities present                             |
-| PDF: Cover/specs/parts/hardware/cut/assembly/shopping     | `src/components/pdf/sections/`                        | ✅ VERIFIED | 15 PDF section components present                      |
-| DXF export (AutoCAD R12)                                  | `src/utils/dxf-export.ts`                             | ✅ VERIFIED | DXF export utility present                             |
-| G-code export                                             | `src/utils/gcode-export.ts`                           | ✅ VERIFIED | G-code export utility present                          |
-| CSV BOM export                                            | `src/utils/bom-export.ts`                             | ✅ VERIFIED | BOM export utility present                             |
-| Shareable URLs                                            | `src/utils/url-state.ts`                              | ✅ VERIFIED | URL state encoding utility present                     |
-| localStorage presets                                      | `src/utils/local-storage.ts`                          | ✅ VERIFIED | Local storage utility present                          |
-| Undo/Redo                                                 | `src/store/cabinet-store.ts`                          | ✅ VERIFIED | Undo/redo slice in Zustand store                       |
-| PWA / Offline                                             | `public/manifest.json`, service worker                | ✅ VERIFIED | manifest.json + offline.html present                   |
-| 6 languages (EN, HE, AR, DE, ES, FR)                      | `src/i18n/` directory                                 | ✅ VERIFIED | 6 .json locale files confirmed: ar, de, en, es, fr, he |
-| Full RTL support (HE, AR)                                 | `src/index.css`, i18n setup                           | ✅ VERIFIED | RTL CSS and RTL locales present                        |
-| ARIA + keyboard nav                                       | `src/hooks/useFocusTrap.ts`, components               | ✅ VERIFIED | Focus trap hook; jsx-a11y ESLint enforcement           |
-| GitHub Actions CI/CD                                      | `.github/workflows/ci.yml`                            | ✅ VERIFIED | CI workflow present and active                         |
-| GitHub Pages + Cloudflare deploy                          | `.github/workflows/pages.yml`, `cloudflare-pages.yml` | ✅ VERIFIED | Both deploy workflows present                          |
-| No backend, no account required                           | Architecture (SPA, no server deps)                    | ✅ VERIFIED | No server-side code; fully client-side                 |
+| Claim                                                     | Verification Method                                   | Status      | Notes                                                                                                                                                  |
+| --------------------------------------------------------- | ----------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 6 one-click preset templates                              | `src/components/configurator/`                        | ✅ VERIFIED | Presets exist in configurator components                                                                                                               |
+| Furniture types: Cabinet/Bookshelf/Desk/Wardrobe          | `src/engine/parts.ts`                                 | ✅ VERIFIED | Type-specific part generation in engine                                                                                                                |
+| Width/height/depth sliders + numeric entry                | `src/components/configurator/`                        | ✅ VERIFIED | UI components present                                                                                                                                  |
+| Grain direction (grain-sensitive cut)                     | `src/engine/cut-optimizer.ts`                         | ✅ VERIFIED | Grain-lock implemented in MaxRects optimizer                                                                                                           |
+| MaxRects bin-packing                                      | `src/engine/cut-optimizer.ts`                         | ✅ VERIFIED | MaxRects BSSF algorithm confirmed in engine                                                                                                            |
+| 5 smart optimizer strategies                              | `src/engine/smart-optimizer.ts`                       | ✅ VERIFIED | File exists; strategies implemented                                                                                                                    |
+| 6 preview views (Front/FrontOpen/Side/Top/Back/Isometric) | `src/components/preview/`                             | ✅ VERIFIED | Multiple view components confirmed                                                                                                                     |
+| SVG + PNG export from preview                             | `src/components/preview/preview-download-utils.ts`    | ✅ VERIFIED | Download utilities present                                                                                                                             |
+| PDF: Cover/specs/parts/hardware/cut/assembly/shopping     | `src/components/pdf/sections/`                        | ✅ VERIFIED | 15 PDF section components present                                                                                                                      |
+| DXF export (AutoCAD R12)                                  | `src/utils/dxf-export.ts`                             | ✅ VERIFIED | DXF export utility present                                                                                                                             |
+| G-code export                                             | `src/utils/gcode-export.ts`                           | ✅ VERIFIED | G-code export utility present                                                                                                                          |
+| CSV BOM export                                            | `src/utils/bom-export.ts`                             | ✅ VERIFIED | BOM export utility present                                                                                                                             |
+| Shareable URLs                                            | `src/utils/url-state.ts`                              | ✅ VERIFIED | URL state encoding utility present                                                                                                                     |
+| localStorage presets                                      | `src/utils/local-storage.ts`                          | ✅ VERIFIED | Local storage utility present                                                                                                                          |
+| Undo/Redo                                                 | `src/store/cabinet-store.ts`                          | ✅ VERIFIED | Undo/redo slice in Zustand store                                                                                                                       |
+| PWA / Offline                                             | `public/manifest.json`, service worker                | ✅ VERIFIED | manifest.json + offline.html present                                                                                                                   |
+| 6 workshop locale choices (EN, HE, AR, DE, ES, FR)        | `src/i18n/` and `scripts/check-i18n-coverage.js`      | PARTIAL     | EN/HE key parity; other locales retain English fallbacks. Public site and apartment planner are Hebrew. Files alone do not prove complete translation. |
+| Full RTL support (HE, AR)                                 | `src/index.css`, i18n setup                           | ✅ VERIFIED | RTL CSS and RTL locales present                                                                                                                        |
+| ARIA + keyboard nav                                       | `src/hooks/useFocusTrap.ts`, components               | ✅ VERIFIED | Focus trap hook; jsx-a11y ESLint enforcement                                                                                                           |
+| GitHub Actions CI/CD                                      | `.github/workflows/ci.yml`                            | ✅ VERIFIED | CI workflow present and active                                                                                                                         |
+| GitHub Pages + Cloudflare deploy                          | `.github/workflows/pages.yml`, `cloudflare-pages.yml` | ✅ VERIFIED | Both deploy workflows present                                                                                                                          |
+| No backend, no account required                           | Architecture (SPA, no server deps)                    | ✅ VERIFIED | No server-side code; fully client-side                                                                                                                 |
 
 ### Performance Claims (Rule 3)
 

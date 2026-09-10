@@ -84,7 +84,7 @@ interface TemplatePickerProps {
 
 export function TemplatePicker({ onClose }: TemplatePickerProps) {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language as 'en' | 'he';
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
   const setConfig = useCabinetStore((s) => s.setConfig);
   const dialogRef = useRef<HTMLDivElement>(null);
 

@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { isWebGLAvailable, probeWebGLTier } from '../../engine/webgl-probe';
 import type { CabinetConfig } from '../../engine/types';
+import { buildPartInstances } from '../../engine/part-instances';
+import { resolveMaterial } from '../../engine/materials';
 
 /** Phase 12 / Sprint 14 — feature flag guard. Component renders nothing when the flag is absent. */
 const WEBGL_ENABLED = import.meta.env.VITE_ENABLE_WEBGL === 'true';
@@ -209,11 +211,26 @@ export function WebGLPreviewCanvas({
 
     // Normalise cabinet dimensions to [-1, 1] range
     const maxDim = Math.max(config.width, config.height, config.depth);
-    const nw = config.width / maxDim;
-    const nh = config.height / maxDim;
-    const nd = config.depth / maxDim;
-
-    const geometry = buildBox(nw, nh, nd, materialColor ?? '#c2924a');
+    const vertices: number[] = [];
+    for (const instance of buildPartInstances(config)) {
+      const box = buildBox(
+        instance.size[0] / maxDim,
+        instance.size[1] / maxDim,
+        instance.size[2] / maxDim,
+        materialColor ?? resolveMaterial(instance.part).color,
+      );
+      for (let i = 0; i < box.length; i += 6) {
+        vertices.push(
+          box[i] + (instance.center[0] - config.width / 2) / maxDim,
+          box[i + 1] + (instance.center[1] - config.height / 2) / maxDim,
+          box[i + 2] + (instance.center[2] - config.depth / 2) / maxDim,
+          box[i + 3],
+          box[i + 4],
+          box[i + 5],
+        );
+      }
+    }
+    const geometry = new Float32Array(vertices);
 
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -271,18 +288,7 @@ export function WebGLPreviewCanvas({
       gl.deleteBuffer(buf);
       gl.deleteProgram(program);
     };
-  }, [
-    config.width,
-    config.height,
-    config.depth,
-    width,
-    height,
-    materialColor,
-    isometric,
-    orbitYawDeg,
-    orbitPitchDeg,
-    zoom,
-  ]);
+  }, [config, width, height, materialColor, isometric, orbitYawDeg, orbitPitchDeg, zoom]);
 
   // Phase 12 / Sprint 14 — feature flag post-hook guard (hooks always called above).
   if (!WEBGL_ENABLED) return null;

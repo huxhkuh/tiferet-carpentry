@@ -1,5 +1,17 @@
-import { getMaterial } from '../../engine/materials';
-import type { Apartment, CabinetPlacement, FurniturePalette, FurniturePlacement, Opening, Room, Wall } from '../types';
+import { resolveMaterial } from '../../engine/materials';
+import { buildPartInstances } from '../../engine/part-instances';
+import { placementTransformForRoom } from '../geometry/placement-geometry';
+import { triangulatePolygon, triangulatePolygonWithHoles } from '../geometry/polygon';
+import type {
+  Apartment,
+  CabinetPlacement,
+  FurniturePalette,
+  FurniturePlacement,
+  Opening,
+  Point,
+  Room,
+  Wall,
+} from '../types';
 import { buildFurniturePrimitives } from './furniture';
 
 type Color = readonly [number, number, number];
@@ -23,6 +35,7 @@ type WindowOpening = Extract<Opening, { kind: 'window' }>;
 
 export interface ApartmentRoomScene {
   vertices: Float32Array;
+  objects?: { id: string; startVertex: number; vertexCount: number }[];
   vertexStride: number;
   wallCount: number;
   cutawayWallCount: number;
@@ -34,6 +47,7 @@ export interface ApartmentRoomScene {
   roomWidth: number;
   roomDepth: number;
   targetHeight: number;
+  millimetresPerUnit?: number;
 }
 
 export interface ApartmentRoomSceneOptions {
@@ -63,7 +77,6 @@ interface BoxInput {
 
 const FLOOR_COLOR: Color = [0.82, 0.78, 0.7];
 const WALL_COLOR: Color = [0.91, 0.89, 0.84];
-const HANDLE_COLOR: Color = [0.2, 0.17, 0.14];
 const GLASS_COLOR: Color = [0.47, 0.67, 0.72];
 const FRAME_COLOR: Color = [0.72, 0.71, 0.68];
 const DOOR_COLOR: Color = [0.54, 0.36, 0.24];
@@ -172,15 +185,32 @@ function localPoint(scale: SceneScale, x: number, height: number, z: number): Po
   return [(x - scale.centerX) / scale.divisor, height / scale.divisor, (z - scale.centerZ) / scale.divisor];
 }
 
-function addFloor(target: number[], room: Room, scale: SceneScale): void {
+function addFloor(target: number[], room: Room, scale: SceneScale, holes: Point[][]): void {
   if (room.polygon.length < 3) return;
-  const first = room.polygon[0];
-  for (let index = 1; index < room.polygon.length - 1; index += 1) {
-    const second = room.polygon[index];
-    const third = room.polygon[index + 1];
-    for (const point of [first, second, third]) {
+  for (const triangle of triangulatePolygonWithHoles(room.polygon, holes)) {
+    for (const point of triangle)
       pushVertex(target, localPoint(scale, point.x, -12, point.y), [0, 1, 0], FLOOR_COLOR, ROOM_MATERIAL_IDS.floor);
-    }
+  }
+}
+
+function addArchitecturalPrism(target: number[], polygon: Point[], height: number, scale: SceneScale): void {
+  if (height <= 0) return;
+  for (const triangle of triangulatePolygon(polygon)) {
+    for (const point of triangle)
+      pushVertex(target, localPoint(scale, point.x, height, point.y), [0, 1, 0], WALL_COLOR, ROOM_MATERIAL_IDS.wall);
+  }
+  for (let i = 0; i < polygon.length; i++) {
+    const a = polygon[i],
+      b = polygon[(i + 1) % polygon.length];
+    addQuad(
+      target,
+      localPoint(scale, a.x, 0, a.y),
+      localPoint(scale, b.x, 0, b.y),
+      localPoint(scale, b.x, height, b.y),
+      localPoint(scale, a.x, height, a.y),
+      WALL_COLOR,
+      ROOM_MATERIAL_IDS.wall,
+    );
   }
 }
 
@@ -516,12 +546,12 @@ function addCabinet(
   const tangentZ = (wall.end.y - wall.start.y) / length;
   const inwardX = Math.cos(placement.orientation);
   const inwardZ = Math.sin(placement.orientation);
-  const centerX =
-    wall.start.x + tangentX * (placement.distanceFromWallStart + placement.width / 2) + inwardX * (placement.depth / 2);
-  const centerZ =
-    wall.start.y + tangentZ * (placement.distanceFromWallStart + placement.width / 2) + inwardZ * (placement.depth / 2);
+  const room = apartment.rooms.find((item) => item.id === placement.roomId);
+  if (!room) return;
+  const origin = placementTransformForRoom(wall, room, placement.distanceFromWallStart);
+  const centerX = origin.x + tangentX * (placement.width / 2) + inwardX * (placement.depth / 2);
+  const centerZ = origin.y + tangentZ * (placement.width / 2) + inwardZ * (placement.depth / 2);
   const cabinetYaw = Math.atan2(tangentZ, tangentX);
-  const cabinetColor = parseHexColor(getMaterial(placement.cabinetConfig.carcassMaterial).color);
   if (selected) {
     const highlightCenter = localPoint(scale, centerX, 8, centerZ);
     addBox(target, {
@@ -577,134 +607,32 @@ function addCabinet(
     });
   };
 
-  const panelThickness = Math.max(24, Math.min(36, placement.width * 0.018));
-  const innerWidth = Math.max(40, placement.width - panelThickness * 2);
-  const innerHeight = Math.max(40, placement.height - panelThickness * 2);
-  addLocalBox(
-    -placement.width / 2 + panelThickness / 2,
-    placement.elevation,
-    0,
-    panelThickness,
-    placement.height,
-    placement.depth,
-    tint(cabinetColor, 0.88),
-  );
-  addLocalBox(
-    placement.width / 2 - panelThickness / 2,
-    placement.elevation,
-    0,
-    panelThickness,
-    placement.height,
-    placement.depth,
-    tint(cabinetColor, 0.94),
-  );
-  addLocalBox(0, placement.elevation, 0, innerWidth, panelThickness, placement.depth, tint(cabinetColor, 0.82));
-  addLocalBox(
-    0,
-    placement.elevation + placement.height - panelThickness,
-    0,
-    innerWidth,
-    panelThickness,
-    placement.depth,
-    tint(cabinetColor, 1.08),
-  );
-  addLocalBox(
-    0,
-    placement.elevation + panelThickness,
-    -placement.depth / 2 + 10,
-    innerWidth,
-    innerHeight,
-    20,
-    tint(cabinetColor, 0.76),
-  );
-  const shelfCount = Math.max(0, placement.cabinetConfig.shelfCount);
-  for (let index = 0; index < shelfCount; index += 1) {
+  for (const instance of buildPartInstances(placement.cabinetConfig)) {
+    const material = resolveMaterial(instance.part);
+    if (placement.cabinetConfig.doorStyle === 'shaker' && instance.part.name.en === 'Door') {
+      // Visual routing in the same door blank; no added material or changed envelope.
+      const [width, height, depth] = instance.size;
+      const rail = Math.min(60, width / 4, height / 4);
+      const x = instance.center[0] - placement.width / 2;
+      const y = placement.elevation + instance.center[1] - height / 2;
+      const z = instance.center[2] - placement.depth / 2;
+      const color = parseHexColor(material.color);
+      for (const side of [-1, 1]) addLocalBox(x + (side * (width - rail)) / 2, y, z, rail, height, depth, color);
+      for (const bottom of [y, y + height - rail]) addLocalBox(x, bottom, z, width - 2 * rail, rail, depth, color);
+      const recess = Math.min(6, depth / 3);
+      addLocalBox(x, y + rail, z - recess / 2, width - 2 * rail, height - 2 * rail, depth - recess, tint(color, 0.96));
+      continue;
+    }
     addLocalBox(
-      0,
-      placement.elevation + (innerHeight / (shelfCount + 1)) * (index + 1),
-      0,
-      innerWidth,
-      24,
-      placement.depth - 35,
-      tint(cabinetColor, 0.98),
+      instance.center[0] - placement.width / 2,
+      placement.elevation + instance.center[1] - instance.size[1] / 2,
+      instance.center[2] - placement.depth / 2,
+      instance.size[0],
+      instance.size[1],
+      instance.size[2],
+      parseHexColor(material.color),
+      instance.part.name.en === 'Glass Door' ? ROOM_MATERIAL_IDS.glass : ROOM_MATERIAL_IDS.wood,
     );
-  }
-
-  const doorCount = Math.max(1, placement.cabinetConfig.doorCount);
-  const gap = 8;
-  const drawerCount = Math.max(0, placement.cabinetConfig.drawerCount);
-  const drawerZone = drawerCount > 0 ? placement.height * 0.34 : 0;
-  const doorHeight = placement.height - drawerZone - gap;
-  const doorWidth = Math.max(20, placement.width / doorCount - gap);
-  const front = placement.depth / 2 + 10;
-  if (placement.cabinetConfig.doorStyle !== 'none') {
-    for (let index = 0; index < doorCount; index += 1) {
-      const across = -placement.width / 2 + doorWidth / 2 + index * (placement.width / doorCount);
-      const bottom = placement.elevation + drawerZone + gap;
-      if (placement.cabinetConfig.doorStyle === 'flat') {
-        addLocalBox(across, bottom, front, doorWidth, doorHeight, 20, tint(cabinetColor, 1.07));
-      } else {
-        const frame = Math.min(95, doorWidth * 0.16, doorHeight * 0.12);
-        const centreColor = placement.cabinetConfig.doorStyle === 'glass' ? GLASS_COLOR : tint(cabinetColor, 0.88);
-        addLocalBox(
-          across,
-          bottom + frame,
-          front,
-          doorWidth - frame * 2,
-          doorHeight - frame * 2,
-          16,
-          centreColor,
-          placement.cabinetConfig.doorStyle === 'glass' ? ROOM_MATERIAL_IDS.glass : ROOM_MATERIAL_IDS.wood,
-        );
-        addLocalBox(across - doorWidth / 2 + frame / 2, bottom, front + 4, frame, doorHeight, 24, cabinetColor);
-        addLocalBox(across + doorWidth / 2 - frame / 2, bottom, front + 4, frame, doorHeight, 24, cabinetColor);
-        addLocalBox(across, bottom, front + 4, doorWidth - frame * 2, frame, 24, tint(cabinetColor, 1.08));
-        addLocalBox(
-          across,
-          bottom + doorHeight - frame,
-          front + 4,
-          doorWidth - frame * 2,
-          frame,
-          24,
-          tint(cabinetColor, 1.08),
-        );
-      }
-      if (placement.cabinetConfig.handleStyle !== 'none') {
-        const handleAcross = across + (index === 0 ? doorWidth * 0.3 : -doorWidth * 0.3);
-        const handleWidth =
-          placement.cabinetConfig.handleStyle === 'cup'
-            ? 110
-            : placement.cabinetConfig.handleStyle === 'knob'
-              ? 48
-              : 20;
-        const handleHeight = placement.cabinetConfig.handleStyle === 'bar' ? Math.min(190, doorHeight * 0.2) : 48;
-        addLocalBox(
-          handleAcross,
-          bottom + doorHeight * 0.5 - handleHeight / 2,
-          front + 28,
-          handleWidth,
-          handleHeight,
-          34,
-          HANDLE_COLOR,
-          ROOM_MATERIAL_IDS.metal,
-        );
-      }
-    }
-  }
-
-  if (drawerCount > 0) {
-    const drawerHeight = drawerZone / drawerCount;
-    for (let index = 0; index < drawerCount; index += 1) {
-      addLocalBox(
-        0,
-        placement.elevation + drawerHeight * index,
-        front,
-        placement.width - gap,
-        Math.max(20, drawerHeight - gap),
-        20,
-        tint(cabinetColor, 1.03),
-      );
-    }
   }
 }
 
@@ -717,7 +645,15 @@ export function buildApartmentRoomScene(
   const vertices: number[] = [];
   const scale = roomScale(room);
   const cameraYaw = options.cameraYaw ?? DEFAULT_ROOM_CAMERA_YAW;
-  addFloor(vertices, room, scale);
+  const voids = apartment.fixedElements.filter(
+    (element) => element.roomId === room.id && element.kind === 'balcony-void',
+  );
+  addFloor(
+    vertices,
+    room,
+    scale,
+    voids.map((element) => element.polygon),
+  );
   const walls = room.wallIds
     .map((id) => apartment.walls.find((wall) => wall.id === id))
     .filter((wall): wall is Wall => wall !== undefined);
@@ -732,17 +668,37 @@ export function buildApartmentRoomScene(
     addWall(vertices, wall, scale, isCutaway ? CUTAWAY_WALL_HEIGHT : undefined);
     if (!isCutaway) addOpeningDetails(vertices, room, wall, scale);
   }
+  for (const element of apartment.fixedElements.filter(
+    (item) => item.roomId === room.id && item.kind !== 'balcony-void',
+  )) {
+    addArchitecturalPrism(
+      vertices,
+      element.polygon,
+      element.height ?? room.ceilingHeight ?? DEFAULT_WALL_HEIGHT,
+      scale,
+    );
+  }
+  // Fixtures have no verified elevation: show their footprint as a low source marker.
+  for (const fixture of (apartment.fixtures ?? []).filter((item) => item.roomId === room.id)) {
+    addArchitecturalPrism(vertices, fixture.polygon, 15, scale);
+  }
+  const objects: NonNullable<ApartmentRoomScene['objects']> = [];
   const cabinets = placements.filter((placement) => placement.roomId === room.id);
   for (const cabinet of cabinets) {
+    const startVertex = vertices.length / ROOM_VERTEX_STRIDE;
     addCabinet(vertices, apartment, cabinet, scale, cabinet.id === options.selectedObjectId);
+    objects.push({ id: cabinet.id, startVertex, vertexCount: vertices.length / ROOM_VERTEX_STRIDE - startVertex });
   }
   const furniture =
     options.showFurniture === false ? [] : (apartment.furniture ?? []).filter((item) => item.roomId === room.id);
   for (const item of furniture) {
+    const startVertex = vertices.length / ROOM_VERTEX_STRIDE;
     addFurniture(vertices, item, options.furniturePalette ?? 'warm', scale, item.id === options.selectedObjectId);
+    objects.push({ id: item.id, startVertex, vertexCount: vertices.length / ROOM_VERTEX_STRIDE - startVertex });
   }
   return {
     vertices: new Float32Array(vertices),
+    objects,
     vertexStride: ROOM_VERTEX_STRIDE,
     wallCount: walls.length,
     cutawayWallCount,
@@ -754,5 +710,6 @@ export function buildApartmentRoomScene(
     roomWidth: scale.width,
     roomDepth: scale.depth,
     targetHeight: Math.min(0.72, DEFAULT_WALL_HEIGHT / scale.divisor / 2),
+    millimetresPerUnit: scale.divisor,
   };
 }

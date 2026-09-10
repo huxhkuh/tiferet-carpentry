@@ -2,6 +2,7 @@ import type { CabinetConfig, Part } from './types';
 import { getMaterial, computePartWeightKg } from './materials.ts';
 import { computeDimensions } from './dimensions';
 import { createJsonMemo } from './memo';
+import { DRAWER_FRONT_EXTRA_HEIGHT_MM } from './layout-constants';
 
 /**
  * Generate the full cut-list / parts table from a cabinet configuration.
@@ -13,8 +14,8 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
   cfg: CabinetConfig,
 ): Part[] {
   const d = computeDimensions(cfg);
-  const cm = getMaterial(cfg.carcassMaterial);
-  const bm = getMaterial(cfg.backPanelMaterial);
+  const cm = getMaterial(cfg.carcassMaterial, cfg.materialCatalog);
+  const bm = getMaterial(cfg.backPanelMaterial, cfg.materialCatalog);
   const t = cm.thickness;
   const eb = cfg.edgeBanding;
 
@@ -23,6 +24,19 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
   const id = () => `P${String(idx++).padStart(2, '0')}`;
   const isBookshelf = cfg.furnitureType === 'bookshelf';
   const isDesk = cfg.furnitureType === 'desk';
+  const centreSupports = isDesk || cfg.furnitureType === 'panel' ? 0 : Math.max(0, cfg.shelfCentreSupports ?? 0);
+  const bays = centreSupports + 1;
+  const bayWidth = (d.internalWidth - centreSupports * t) / bays;
+  const withMaterials = () =>
+    parts.map((part) => {
+      const materialDefinition = cfg.materialCatalog?.find((material) => material.key === part.material);
+      const grainConstraint = cfg.partGrainConstraints?.[part.id];
+      return {
+        ...part,
+        ...(materialDefinition ? { materialDefinition } : {}),
+        ...(grainConstraint ? { grainConstraint } : {}),
+      };
+    });
 
   // ── Panel (plain plate) ──
   if (cfg.furnitureType === 'panel') {
@@ -37,7 +51,7 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
       width: cfg.height,
       edgeBanding: edgeLabel(eb !== 'none' ? '4-edges' : 'none'),
     });
-    return parts;
+    return withMaterials();
   }
 
   // ── Desk-specific parts ──
@@ -107,10 +121,8 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
       });
     }
 
-    return parts;
+    return withMaterials();
   }
-
-  const isWardrobe = cfg.furnitureType === 'wardrobe';
 
   // ── Carcass sides (left + right) ──
   parts.push({
@@ -119,7 +131,7 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
     name: { en: 'Side Panel', he: 'דופן צד' },
     material: cfg.carcassMaterial,
     thickness: t,
-    length: cfg.height,
+    length: d.internalHeight + 2 * t,
     width: cfg.depth,
     edgeBanding: edgeLabel(eb !== 'none' ? 'front' : 'none'),
   });
@@ -151,11 +163,11 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
   if (cfg.height > 1200) {
     parts.push({
       id: id(),
-      qty: 1,
+      qty: bays,
       name: { en: 'Fixed Shelf', he: 'מדף קבוע' },
       material: cfg.carcassMaterial,
       thickness: t,
-      length: d.internalWidth,
+      length: bayWidth,
       width: d.shelfDepth,
       edgeBanding: edgeLabel(eb !== 'none' ? 'front' : 'none'),
     });
@@ -165,7 +177,7 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
   if (cfg.shelfCount > 0) {
     parts.push({
       id: id(),
-      qty: cfg.shelfCount,
+      qty: cfg.shelfCount * bays,
       name: { en: 'Adjustable Shelf', he: 'מדף מתכוונן' },
       material: cfg.carcassMaterial,
       thickness: t,
@@ -178,7 +190,6 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
   // ── Centre supports (vertical full-height dividers that break shelf span) ──
   // v3.58.0 — emitted by the "Add centre support" validation fix to cure
   // sag / wide-span / low-load-capacity warnings programmatically.
-  const centreSupports = Math.max(0, cfg.shelfCentreSupports ?? 0);
   if (centreSupports > 0 && !isDesk) {
     parts.push({
       id: id(),
@@ -209,7 +220,7 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
 
   // ── Drawers ──
   if (cfg.drawerCount > 0 && !isBookshelf && !isDesk) {
-    const drawerWidth = d.internalWidth - 26; // 13mm clearance each side for slides
+    const drawerWidth = bayWidth - 26; // One drawer box per clear bay; 13 mm slide clearance per side.
     const drawerDepth = Math.min(cfg.depth - t - 30, 500); // leave clearance for back panel + face
 
     for (let i = 0; i < cfg.drawerCount; i++) {
@@ -218,11 +229,11 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
       // Drawer front panel (decorative, same material as carcass)
       parts.push({
         id: id(),
-        qty: 1,
+        qty: bays,
         name: { en: `Drawer ${i + 1} Front`, he: `חזית מגירה ${i + 1}` },
         material: cfg.carcassMaterial,
         thickness: t,
-        length: drawerHeight + 30,
+        length: drawerHeight + DRAWER_FRONT_EXTRA_HEIGHT_MM,
         width: drawerWidth + 26, // overlay front
         edgeBanding: edgeLabel(eb !== 'none' ? '4-edges' : 'none'),
       });
@@ -230,7 +241,7 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
       // Drawer box sides (2 per drawer)
       parts.push({
         id: id(),
-        qty: 2,
+        qty: 2 * bays,
         name: { en: `Drawer ${i + 1} Box Side`, he: `דופן מגירה ${i + 1}` },
         material: cfg.carcassMaterial,
         thickness: t,
@@ -242,7 +253,7 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
       // Drawer box front+back (2 per drawer, inner structural pieces)
       parts.push({
         id: id(),
-        qty: 2,
+        qty: 2 * bays,
         name: { en: `Drawer ${i + 1} Box End`, he: `קצה מגירה ${i + 1}` },
         material: cfg.carcassMaterial,
         thickness: t,
@@ -254,7 +265,7 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
       // Drawer bottom (plywood/HDF, uses back panel material)
       parts.push({
         id: id(),
-        qty: 1,
+        qty: bays,
         name: { en: `Drawer ${i + 1} Bottom`, he: `תחתית מגירה ${i + 1}` },
         material: cfg.backPanelMaterial,
         thickness: bm.thickness,
@@ -306,21 +317,7 @@ export const generateParts: (cfg: CabinetConfig) => Part[] = createJsonMemo(func
     });
   }
 
-  // ── Wardrobe hanging rail ──
-  if (isWardrobe) {
-    parts.push({
-      id: id(),
-      qty: 1,
-      name: { en: 'Hanging Rail', he: 'מוט תלייה' },
-      material: cfg.carcassMaterial,
-      thickness: 25,
-      length: d.internalWidth,
-      width: 25,
-      edgeBanding: edgeLabel('none'),
-    });
-  }
-
-  return parts;
+  return withMaterials();
 });
 
 // ─── Helpers ───

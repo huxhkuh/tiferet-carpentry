@@ -26,7 +26,7 @@ export function MaterialSelector() {
   const bulkReplaceMaterial = useCabinetStore((s) => s.bulkReplaceMaterial);
   const addToast = useToastStore((s) => s.addToast);
   const customMaterials = useCustomMaterialsStore((s) => s.materials);
-  const lang = i18n.language as Lang;
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
   const multiCabinet = cabinets.length > 1;
 
   const panels = [...panelMaterials(), ...customMaterials.filter((m) => m.category === 'panel')] as Material[];

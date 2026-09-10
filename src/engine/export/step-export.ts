@@ -14,6 +14,11 @@ import type { CabinetConfig, Part } from '../types';
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
+function stepReal(value: number): string {
+  if (!Number.isFinite(value)) throw new TypeError('STEP coordinates must be finite');
+  return Number.isInteger(value) ? value + '.' : value.toFixed(6).replace(/0+$/, '');
+}
+
 function iso(): string {
   return new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
 }
@@ -60,7 +65,7 @@ function stepCuboid(ox: number, oy: number, oz: number, w: number, h: number, d:
 
   const ptIds: number[] = pts.map(([x, y, z]) => {
     const id = sid();
-    lines.push(L(id, `CARTESIAN_POINT('',(${x}.,${y}.,${z}.));`));
+    lines.push(L(id, `CARTESIAN_POINT('',(${stepReal(x)},${stepReal(y)},${stepReal(z)}));`));
     return id;
   });
 
@@ -226,9 +231,9 @@ export function generateStepContent(config: CabinetConfig, parts: Part[]): StepR
 
   for (const part of parts) {
     for (let i = 0; i < part.qty; i++) {
-      const w = Math.round(part.width);
-      const h = Math.round(part.thickness);
-      const d = Math.round(part.length);
+      const w = part.width;
+      const h = part.thickness;
+      const d = part.length;
 
       const { lines: cubeLines, brepId } = stepCuboid(0, 0, zOffset, w, h, d);
       lines.push(...cubeLines);

@@ -37,7 +37,7 @@ export default defineConfig({
       // Phase 11 / Sprint 6 — lcov for Codecov upload; text for terminal summary.
       reporter: ['text', 'lcov'],
       reportsDirectory: path.join(tmpDir, 'coverage'),
-      include: ['src/engine/**', 'src/utils/**', 'src/store/**', 'src/hooks/**'],
+      include: ['src/engine/**', 'src/utils/**', 'src/store/**', 'src/hooks/**', 'src/apartment/**', 'src/site/**'],
       exclude: ['src/engine/types.ts', 'src/engine/index.ts', 'src/utils/download.ts', 'src/hooks/useTouchGestures.ts'],
       thresholds: {
         statements: 85,

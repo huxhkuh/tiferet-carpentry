@@ -27,14 +27,14 @@ describe('PartsTable material filter — Sprint 65', () => {
 
   it('shows a filter select when there are multiple materials', () => {
     render(<PartsTable />);
-    const select = screen.queryByRole('combobox');
+    const select = screen.queryByRole('combobox', { name: 'Filter by material' });
     // Default config has plywood-17 + plywood-4 → 2 materials → select is shown
     expect(select).toBeInTheDocument();
   });
 
   it('filtering by a specific material reduces the displayed rows', () => {
     render(<PartsTable />);
-    const select = screen.queryByRole('combobox');
+    const select = screen.queryByRole('combobox', { name: 'Filter by material' });
     if (!select) return; // only 1 material in this config
 
     const parts = useCabinetStore.getState().parts;
@@ -52,7 +52,7 @@ describe('PartsTable material filter — Sprint 65', () => {
 
   it('selecting "All materials" restores all rows', () => {
     render(<PartsTable />);
-    const select = screen.queryByRole('combobox');
+    const select = screen.queryByRole('combobox', { name: 'Filter by material' });
     if (!select) return;
 
     const parts = useCabinetStore.getState().parts;
@@ -71,7 +71,7 @@ describe('PartsTable material filter — Sprint 65', () => {
 
   it('filter select has an accessible aria-label', () => {
     render(<PartsTable />);
-    const select = screen.queryByRole('combobox');
+    const select = screen.queryByRole('combobox', { name: 'Filter by material' });
     if (select) {
       expect(select).toHaveAttribute('aria-label');
     }

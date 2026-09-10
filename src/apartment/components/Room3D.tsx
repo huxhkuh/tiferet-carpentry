@@ -1,3 +1,4 @@
+import { pickSceneObject } from '../three/picking';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createApartmentRoomRenderer, type ApartmentRoomRenderer, type CameraOrbit } from '../three/renderer';
 import { buildApartmentRoomScene, DEFAULT_ROOM_CAMERA_YAW } from '../three/scene';
@@ -15,6 +16,7 @@ interface Room3DProps {
   initialCamera?: CameraOrbit;
   onCameraChange?: (roomId: string, camera: CameraOrbit) => void;
   onObjectSelect?: (id: string) => void;
+  onFallback2D?: () => void;
 }
 
 interface DragOrigin {
@@ -49,6 +51,7 @@ export function Room3D({
   initialCamera,
   onCameraChange,
   onObjectSelect,
+  onFallback2D,
 }: Room3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragOriginRef = useRef<DragOrigin | null>(null);
@@ -124,24 +127,9 @@ export function Room3D({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const gl = canvas.getContext('webgl', {
-      alpha: false,
-      antialias: true,
-      depth: true,
-      powerPreference: 'high-performance',
-    });
-    if (!gl) {
-      setRendererStatus('unavailable');
-      return;
-    }
-
-    const renderer = createApartmentRoomRenderer(gl);
-    if (!renderer) {
-      setRendererStatus('unavailable');
-      return;
-    }
-    rendererRef.current = renderer;
     const draw = () => {
+      const renderer = rendererRef.current;
+      if (!renderer) return;
       const pixelRatio = clamp(window.devicePixelRatio || 1, 1, 2);
       const width = Math.max(1, Math.round((canvas.clientWidth || 960) * pixelRatio));
       const height = Math.max(1, Math.round((canvas.clientHeight || 540) * pixelRatio));
@@ -149,14 +137,42 @@ export function Room3D({
       if (canvas.height !== height) canvas.height = height;
       renderer.draw(cameraRef.current, width, height);
     };
+    const initialize = () => {
+      const gl = canvas.getContext('webgl', {
+        alpha: false,
+        antialias: true,
+        depth: true,
+        powerPreference: 'high-performance',
+      });
+      const renderer = gl ? createApartmentRoomRenderer(gl) : null;
+      rendererRef.current = renderer;
+      if (!renderer) {
+        setRendererStatus('unavailable');
+        return;
+      }
+      renderer.setScene(sceneRef.current);
+      setRendererStatus('ready');
+      draw();
+    };
+    const lost = (event: Event) => {
+      event.preventDefault();
+      rendererRef.current = null;
+      dragOriginRef.current = null;
+      setRendererStatus('unavailable');
+    };
     drawRef.current = draw;
-    renderer.setScene(sceneRef.current);
-    draw();
-    setRendererStatus('ready');
+    canvas.addEventListener('webglcontextlost', lost);
+    canvas.addEventListener('webglcontextrestored', initialize);
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(draw);
+    observer?.observe(canvas);
     window.addEventListener('resize', draw);
+    initialize();
     return () => {
+      canvas.removeEventListener('webglcontextlost', lost);
+      canvas.removeEventListener('webglcontextrestored', initialize);
       window.removeEventListener('resize', draw);
-      renderer.dispose();
+      observer?.disconnect();
+      rendererRef.current?.dispose();
       rendererRef.current = null;
       drawRef.current = () => undefined;
     };
@@ -216,7 +232,18 @@ export function Room3D({
           role="img"
           aria-label={`הדמיית חדר תלת־ממדית עבור ${room.name}`}
         >
-          הדמיית התלת־ממד אינה זמינה בדפדפן הזה. אפשר להמשיך לעבוד בתצוגת 2D.
+          <div>
+            <p>הדמיית התלת־ממד אינה זמינה כעת. התכנון נשמר ואפשר להמשיך בתצוגת 2D.</p>
+            {onFallback2D && (
+              <button
+                type="button"
+                onClick={onFallback2D}
+                className="mt-4 rounded-xl border border-stone-400 px-4 py-3"
+              >
+                מעבר לתצוגת 2D
+              </button>
+            )}
+          </div>
         </div>
       ) : null}
       <canvas
@@ -260,6 +287,18 @@ export function Room3D({
           }));
         }}
         onPointerUp={(event) => {
+          const origin = dragOriginRef.current;
+          if (origin && Math.hypot(event.clientX - origin.x, event.clientY - origin.y) < 5) {
+            const bounds = event.currentTarget.getBoundingClientRect();
+            const id = pickSceneObject(
+              scene,
+              camera,
+              ((event.clientX - bounds.left) / bounds.width) * 2 - 1,
+              1 - ((event.clientY - bounds.top) / bounds.height) * 2,
+              bounds.width / bounds.height,
+            );
+            if (id) onObjectSelect?.(id);
+          }
           dragOriginRef.current = null;
           if (event.currentTarget.hasPointerCapture(event.pointerId)) {
             event.currentTarget.releasePointerCapture(event.pointerId);

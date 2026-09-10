@@ -25,20 +25,25 @@ const DEFAULT_MODULUS = 3000;
  * Compute all derived internal dimensions from the external config.
  * Formulas ported from the legacy Python generators (Plan A/B/C).
  */
-export function computeDimensions(cfg: CabinetConfig, extraMaterials?: Material[]): DerivedDimensions {
+export function computeDimensions(
+  cfg: CabinetConfig,
+  extraMaterials: Material[] | undefined = cfg.materialCatalog,
+): DerivedDimensions {
   const t = getMaterial(cfg.carcassMaterial, extraMaterials).thickness;
   const r = cfg.doorReveal;
+  const plinth = cfg.furnitureType === 'cabinet' || cfg.furnitureType === 'wardrobe' ? (cfg.kickHeight ?? 0) : 0;
+  const bodyHeight = cfg.height - plinth;
 
   const internalWidth = cfg.width - 2 * t;
-  const internalHeight = cfg.height - 2 * t;
-  const shelfDepth = cfg.depth - 20; // 20 mm front setback
-  const shelfWidth = internalWidth - 2; // 1 mm clearance per side
-  const doorHeight = cfg.height - r - r; // top + bottom reveal
+  const internalHeight = bodyHeight - 2 * t;
+  const shelfDepth = cfg.depth - 20 - (cfg.furnitureType === 'desk' ? t : 0); // Front setback plus desk modesty-panel clearance.
+  const centreSupports =
+    cfg.furnitureType === 'desk' || cfg.furnitureType === 'panel' ? 0 : Math.max(0, cfg.shelfCentreSupports ?? 0);
+  const shelfWidth = (internalWidth - centreSupports * t) / (centreSupports + 1) - 2; // One shelf per clear bay, with 1 mm clearance per side.
+  const doorHeight = bodyHeight - r - r; // top + bottom reveal
   const doorWidth =
-    cfg.doorCount === 2
-      ? (cfg.width - r - r - (r - 1)) / 2 // outer reveals + center gap
-      : cfg.width - r - r; // single door
-  const backPanelHeight = cfg.height - 20; // 10 mm inset per edge
+    (cfg.width - 2 * r - Math.max(0, cfg.doorCount - 1) * Math.max(0, r - 1)) / Math.max(1, cfg.doorCount);
+  const backPanelHeight = bodyHeight - 20; // 10 mm inset per edge
   const backPanelWidth = cfg.width - 20;
 
   const hingesPerDoor = computeHingesPerDoor(doorHeight);
@@ -48,8 +53,7 @@ export function computeDimensions(cfg: CabinetConfig, extraMaterials?: Material[
   // v3.58.0 — centre supports divide the shelf into smaller bays. The longest
   // remaining bay is what governs deflection: effectiveSpan = shelfWidth / (n+1).
   const mat = getMaterial(cfg.carcassMaterial, extraMaterials);
-  const centreSupports = Math.max(0, cfg.shelfCentreSupports ?? 0);
-  const effectiveShelfSpan = shelfWidth / (centreSupports + 1);
+  const effectiveShelfSpan = shelfWidth;
   const shelfDeflections = Array.from({ length: cfg.shelfCount }, () =>
     computeShelfDeflection(effectiveShelfSpan, mat.thickness, shelfDepth, cfg.carcassMaterial),
   );

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { CutSheet, Lang } from '../../engine/types';
-import { getMaterial } from '../../engine/materials';
+import { resolveMaterial } from '../../engine/materials';
 import { IconList, IconChevronDown, IconChevronRight } from '../layout/Icons';
 
 /** Sprint 150: Group sheets by material+thickness and show shopping list. */
@@ -27,7 +27,7 @@ export function ShoppingListPanel({
   for (const sheet of sheets) {
     const key = `${sheet.material}-${sheet.thickness}`;
     if (!groups.has(key)) {
-      const mat = getMaterial(sheet.material);
+      const mat = resolveMaterial(sheet);
       const price = materialPriceOverrides[sheet.material] ?? mat.pricePerSheet ?? 0;
       groups.set(key, {
         material: sheet.material,

@@ -18,7 +18,7 @@ import type { Part } from './types';
  */
 export function applyGrainConstraints(parts: Part[]): Part[] {
   return parts.map((p) => {
-    if (p.grainConstraint === undefined) return p;
+    if (p.grainConstraint === undefined || p.grainOriginalSize) return p;
 
     if (p.grainConstraint === 'along-length') {
       // Grain must run along the length axis → rotation is forbidden.
@@ -31,6 +31,7 @@ export function applyGrainConstraints(parts: Part[]): Part[] {
     // (Y-axis) as required by the coordinate system, then lock rotation.
     return {
       ...p,
+      grainOriginalSize: { length: p.length, width: p.width },
       length: p.width,
       width: p.length,
       rotationLocked: true,

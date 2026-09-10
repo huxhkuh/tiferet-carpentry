@@ -95,8 +95,9 @@ export function inwardNormalForRoom(wall: Wall, room: Room): UnitVector {
 export function wallFrame(wall: Wall, room?: Room): WallFrame {
   const tangent = wallTangent(wall);
   const inwardNormal = room ? inwardNormalForRoom(wall, room) : { x: -tangent.y, y: tangent.x };
+  const inset = room && wall.measurements?.length?.basis === 'centerline' ? (wall.thickness ?? 0) / 2 : 0;
   return {
-    origin: { ...wall.start },
+    origin: { x: wall.start.x + inwardNormal.x * inset, y: wall.start.y + inwardNormal.y * inset },
     tangent,
     inwardNormal,
     wallAngle: Math.atan2(tangent.y, tangent.x),

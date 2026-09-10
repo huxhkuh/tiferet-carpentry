@@ -1,59 +1,75 @@
-import { useEffect, type RefObject } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 
 const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const dialogs: HTMLElement[] = [];
+let originalOverflow = '';
 
-/**
- * Sprint 8 — useFocusTrap
- *
- * Traps keyboard focus within `containerRef` while `active` is true.
- * Handles:
- *  - Tab/Shift+Tab cycling within focusable children
- *  - Escape key calls `onEscape`
- *  - Initial focus on the first focusable child (or the container itself)
- */
+/** Initial focus, keyboard containment, scroll locking and focus restoration. */
 export function useFocusTrap(
   containerRef: RefObject<HTMLElement | null>,
   active: boolean,
   onEscape?: () => void,
 ): void {
+  const escapeRef = useRef(onEscape);
   useEffect(() => {
-    if (!active) return;
-    const el = containerRef.current;
-    if (!el) return;
-
-    // Set initial focus on the first focusable child, or the container
-    const focusable = Array.from(el.querySelectorAll<HTMLElement>(FOCUSABLE));
-    if (focusable.length > 0) {
-      focusable[0].focus();
-    } else {
-      el.focus();
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onEscape?.();
-        return;
+    escapeRef.current = onEscape;
+  }, [onEscape]);
+  useEffect(() => {
+    const dialog = containerRef.current;
+    if (!active || !dialog) return;
+    const previous = document.activeElement;
+    const tabIndex = dialog.getAttribute('tabindex');
+    dialog.tabIndex = -1;
+    if (!dialogs.length) originalOverflow = document.body.style.overflow;
+    dialogs.push(dialog);
+    document.body.style.overflow = 'hidden';
+    const isTop = () => dialogs.at(-1) === dialog;
+    const focusable = () =>
+      Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((element) => {
+        const style = getComputedStyle(element);
+        return (
+          !element.closest('[hidden], [inert], [aria-hidden="true"]') &&
+          style.display !== 'none' &&
+          style.visibility !== 'hidden'
+        );
+      });
+    (focusable()[0] ?? dialog).focus();
+    const keydown = (event: KeyboardEvent) => {
+      if (!isTop()) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        escapeRef.current?.();
       }
-      if (e.key !== 'Tab') return;
-      const items = Array.from(el.querySelectorAll<HTMLElement>(FOCUSABLE));
-      if (items.length === 0) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else {
-        if (document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
+      if (event.key !== 'Tab') return;
+      const items = focusable();
+      const first = items[0] ?? dialog,
+        last = items.at(-1) ?? dialog;
+      if (
+        !dialog.contains(document.activeElement) ||
+        (event.shiftKey && document.activeElement === first) ||
+        (!event.shiftKey && (document.activeElement === last || document.activeElement === dialog))
+      ) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
       }
     };
-
-    el.addEventListener('keydown', handleKeyDown);
-    return () => el.removeEventListener('keydown', handleKeyDown);
-  }, [active, containerRef, onEscape]);
+    const focusin = (event: FocusEvent) => {
+      if (isTop() && event.target instanceof Node && !dialog.contains(event.target)) (focusable()[0] ?? dialog).focus();
+    };
+    window.addEventListener('keydown', keydown, true);
+    document.addEventListener('focusin', focusin);
+    return () => {
+      const top = isTop();
+      const index = dialogs.lastIndexOf(dialog);
+      if (index >= 0) dialogs.splice(index, 1);
+      if (!dialogs.length) document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', keydown, true);
+      document.removeEventListener('focusin', focusin);
+      if (tabIndex === null) dialog.removeAttribute('tabindex');
+      else dialog.setAttribute('tabindex', tabIndex);
+      if (top && previous instanceof HTMLElement && previous.isConnected) previous.focus();
+    };
+  }, [active, containerRef]);
 }

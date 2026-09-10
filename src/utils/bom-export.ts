@@ -1,5 +1,5 @@
 import type { Part, HardwareItem, Lang, Material } from '../engine/types';
-import { getMaterial, computePartWeightKg } from '../engine/materials';
+import { getMaterial, computePartWeightKg, resolveMaterial } from '../engine/materials';
 import { triggerDownload } from './download';
 
 // ── Sprint 15 — Localized BOM column headers ──────────────────────────────────
@@ -183,7 +183,7 @@ export function generateBomCsv(
       areaMm2ByMat.set(p.material, (areaMm2ByMat.get(p.material) ?? 0) + area);
       // Sprint 162: accumulate weight
       try {
-        const density = getMaterial(p.material).densityKgM3;
+        const density = resolveMaterial(p).densityKgM3;
         const wKg = computePartWeightKg(p.length, p.width, p.thickness, p.qty, density);
         weightKgByMat.set(p.material, (weightKgByMat.get(p.material) ?? 0) + wKg);
       } catch {
@@ -232,7 +232,7 @@ export function generateBomCsv(
       const matName = safeGetMaterialName(p.material, lang);
       let partWeight = '';
       try {
-        const density = getMaterial(p.material).densityKgM3;
+        const density = resolveMaterial(p).densityKgM3;
         partWeight = computePartWeightKg(p.length, p.width, p.thickness, p.qty, density).toFixed(3);
       } catch {
         /* skip */
@@ -240,7 +240,7 @@ export function generateBomCsv(
       // Sprint 167 — grain direction
       let grainDir = '\u2014';
       try {
-        grainDir = getMaterial(p.material).hasGrain ? h.grainAlong : '\u2014';
+        grainDir = resolveMaterial(p).hasGrain ? h.grainAlong : '\u2014';
       } catch {
         /* skip */
       }
@@ -406,7 +406,7 @@ export function generateErpCsv(
       let unitWeightKg = '';
       let totalWeightKg = '';
       try {
-        const mat = getMaterial(p.material);
+        const mat = resolveMaterial(p);
         matNameEn = mat.name.en;
         grainDirection = mat.hasGrain ? 'along_length' : 'none';
         const uW = computePartWeightKg(p.length, p.width, p.thickness, 1, mat.densityKgM3);

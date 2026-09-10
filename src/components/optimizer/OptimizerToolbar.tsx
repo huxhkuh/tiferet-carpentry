@@ -72,7 +72,10 @@ export function OptimizerToolbar({
     autoCoNest,
     setAutoCoNest,
     cabinets,
+    optimizationPending,
+    optimizationError,
   } = useCabinetStore();
+  const exportBlocked = optimizationPending || !!optimizationError;
 
   const cutCount = sheets.reduce((acc, sh) => {
     const xs = new Set<number>();
@@ -183,7 +186,7 @@ export function OptimizerToolbar({
         <div className="flex flex-wrap gap-2">
           <button
             onClick={handleDxfExportWorker}
-            disabled={dxfExporting}
+            disabled={dxfExporting || exportBlocked}
             className="border-wood-300 dark:border-wood-600 text-wood-600 dark:text-wood-300 hover:bg-wood-100 dark:hover:bg-wood-800 flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             title={t('optimizer.exportDxf')}
             aria-busy={dxfExporting}
@@ -208,19 +211,23 @@ export function OptimizerToolbar({
 
           <button
             onClick={() => {
-              void downloadAllSheetsGcode(sheets, filePrefix);
-              useToastStore.getState().addToast(t('toast.gcodeExported'), 'success');
+              void downloadAllSheetsGcode(sheets, filePrefix)
+                .then(() => useToastStore.getState().addToast(t('toast.gcodeExported'), 'success'))
+                .catch((error: unknown) =>
+                  useToastStore.getState().addToast(error instanceof Error ? error.message : t('pdf.error'), 'error'),
+                );
             }}
             className="border-wood-300 dark:border-wood-600 text-wood-600 dark:text-wood-300 hover:bg-wood-100 dark:hover:bg-wood-800 flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs font-medium transition-colors"
             title={t('optimizer.exportGcode')}
             aria-label={t('optimizer.exportGcode')}
+            disabled={exportBlocked}
           >
             <IconGcode size={14} /> G-code
           </button>
 
           <button
             onClick={handleBomExportWorker}
-            disabled={bomExporting}
+            disabled={bomExporting || exportBlocked}
             className="border-wood-300 dark:border-wood-600 text-wood-600 dark:text-wood-300 hover:bg-wood-100 dark:hover:bg-wood-800 flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-wait disabled:opacity-50"
             title={t('optimizer.exportBom')}
             aria-label={t('optimizer.exportBom')}

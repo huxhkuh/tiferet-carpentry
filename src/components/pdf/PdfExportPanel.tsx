@@ -1,9 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { pdf } from '@react-pdf/renderer';
+import { renderPdfInWorker } from '../../utils/pdf-export';
 import { useCabinetStore } from '../../store/cabinet-store';
-import { CabinetPdfDocument } from './CabinetPdfDocument';
-import type { CabinetPdfEntry } from './CabinetPdfDocument';
+import type { CabinetPdfEntry, CabinetPdfProps } from './CabinetPdfDocument';
 import { generateErpPayload, downloadErpJson } from '../../utils/erp-export';
 import { downloadIfcFile } from '../../utils/ifc-download';
 import { downloadStepFile } from '../../utils/step-download';
@@ -11,7 +10,6 @@ import { downloadGltfFile } from '../../utils/gltf-download';
 import { exportSettingsJson, importSettingsJson } from '../../utils/project-storage';
 import type { ProjectSettings } from '../../utils/project-storage';
 import { useToastStore } from '../../store/toast-store';
-import type { Lang } from '../../engine/types';
 import { generateParts, computeEdgeBandingTotal } from '../../engine/parts';
 import { generateHardware } from '../../engine/hardware';
 import { computeDimensions } from '../../engine/dimensions';
@@ -30,29 +28,39 @@ export function PdfExportPanel() {
   const [includeCover, setIncludeCover] = useState(true); // v3.19.0
   const [pageSize, setPageSize] = useState<'A4' | 'LETTER'>('A4'); // Sprint 59
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait'); // Sprint 59
+  const exportBlocked =
+    generating ||
+    generatingAll ||
+    generatingZip ||
+    store.optimizationPending ||
+    store.costPending ||
+    store.assemblyPending ||
+    Boolean(store.optimizationError || store.costError || store.assemblyError);
+  const exportAbortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => exportAbortRef.current?.abort(), []);
   const settingsFileRef = useRef<HTMLInputElement>(null);
 
   const handleGenerate = async () => {
+    if (exportBlocked) return;
+    exportAbortRef.current = new AbortController();
     setGenerating(true);
     try {
-      const lang = i18n.language as Lang;
-      const doc = (
-        <CabinetPdfDocument
-          config={store.config}
-          dimensions={store.dimensions}
-          parts={store.parts}
-          hardware={store.hardware}
-          optimization={store.optimization}
-          edgeBandingTotal={store.edgeBandingTotal}
-          lang={lang}
-          projectName={store.projectName}
-          includeCover={includeCover}
-          cabinetCount={store.cabinets.length}
-          pageSize={pageSize}
-          orientation={orientation}
-        />
-      );
-      const blob = await pdf(doc).toBlob();
+      const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
+      const props: CabinetPdfProps = {
+        config: store.config,
+        dimensions: store.dimensions,
+        parts: store.parts,
+        hardware: store.hardware,
+        optimization: store.optimization,
+        edgeBandingTotal: store.edgeBandingTotal,
+        lang: lang,
+        projectName: store.projectName,
+        includeCover: includeCover,
+        cabinetCount: store.cabinets.length,
+        pageSize: pageSize,
+        orientation: orientation,
+      };
+      const blob = await renderPdfInWorker(props, exportAbortRef.current?.signal);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -76,9 +84,11 @@ export function PdfExportPanel() {
 
   /** v3.58.0 — Export full project: all cabinets share cut sheets by material. */
   const handleGenerateAll = async () => {
+    if (exportBlocked) return;
+    exportAbortRef.current = new AbortController();
     setGeneratingAll(true);
     try {
-      const lang = i18n.language as Lang;
+      const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
 
       // Build per-cabinet data from the store's cabinet list.
       const allCabinetsData: CabinetPdfEntry[] = store.cabinets.map((cab, ci) => {
@@ -111,26 +121,24 @@ export function PdfExportPanel() {
       const allHardware = Array.from(hwMap.values());
 
       const totalPartsCount = allCabinetsData.reduce((sum, c) => sum + c.parts.length, 0);
-      const doc = (
-        <CabinetPdfDocument
-          config={store.config}
-          dimensions={store.dimensions}
-          parts={store.parts}
-          hardware={store.hardware}
-          optimization={store.optimization}
-          edgeBandingTotal={store.edgeBandingTotal}
-          lang={lang}
-          projectName={store.projectName}
-          includeCover={includeCover}
-          cabinetCount={store.cabinets.length}
-          pageSize={pageSize}
-          orientation={orientation}
-          allCabinetsData={allCabinetsData}
-          combinedOptimization={store.combinedOptimization}
-          allHardware={allHardware}
-        />
-      );
-      const blob = await pdf(doc).toBlob();
+      const props: CabinetPdfProps = {
+        config: store.config,
+        dimensions: store.dimensions,
+        parts: store.parts,
+        hardware: store.hardware,
+        optimization: store.optimization,
+        edgeBandingTotal: store.edgeBandingTotal,
+        lang: lang,
+        projectName: store.projectName,
+        includeCover: includeCover,
+        cabinetCount: store.cabinets.length,
+        pageSize: pageSize,
+        orientation: orientation,
+        allCabinetsData: allCabinetsData,
+        combinedOptimization: store.combinedOptimization,
+        allHardware: allHardware,
+      };
+      const blob = await renderPdfInWorker(props, exportAbortRef.current?.signal);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -189,8 +197,10 @@ export function PdfExportPanel() {
 
   /** Sprint 86 — Export a ZIP bundle: PDF + DXF sheets + BOM CSV + glTF. */
   const handleExportZip = () => {
+    if (exportBlocked) return;
+    exportAbortRef.current = new AbortController();
     setGeneratingZip(true);
-    const lang = i18n.language as Lang;
+    const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
     const safeName =
       (store.projectName.trim() || 'cabinet-plan')
         .replace(/[^\w\u05D0-\u05EA.-]/g, '-')
@@ -202,23 +212,21 @@ export function PdfExportPanel() {
         const entries: import('../../utils/zip-writer').ZipEntry[] = [];
 
         // 1) PDF
-        const doc = (
-          <CabinetPdfDocument
-            config={store.config}
-            dimensions={store.dimensions}
-            parts={store.parts}
-            hardware={store.hardware}
-            optimization={store.optimization}
-            edgeBandingTotal={store.edgeBandingTotal}
-            lang={lang}
-            projectName={store.projectName}
-            includeCover={includeCover}
-            cabinetCount={store.cabinets.length}
-            pageSize={pageSize}
-            orientation={orientation}
-          />
-        );
-        const pdfBlob = await pdf(doc).toBlob();
+        const props: CabinetPdfProps = {
+          config: store.config,
+          dimensions: store.dimensions,
+          parts: store.parts,
+          hardware: store.hardware,
+          optimization: store.optimization,
+          edgeBandingTotal: store.edgeBandingTotal,
+          lang: lang,
+          projectName: store.projectName,
+          includeCover: includeCover,
+          cabinetCount: store.cabinets.length,
+          pageSize: pageSize,
+          orientation: orientation,
+        };
+        const pdfBlob = await renderPdfInWorker(props, exportAbortRef.current?.signal);
         const pdfBytes = new Uint8Array(await pdfBlob.arrayBuffer());
         entries.push({ name: `${safeName}.pdf`, data: pdfBytes });
 
@@ -241,7 +249,7 @@ export function PdfExportPanel() {
         entries.push({ name: `${safeName}-bom.csv`, data: utf8Encode(bomCsv) });
 
         // 4) glTF
-        const { content: gltfJson } = generateGltfContent(store.config, store.parts);
+        const { content: gltfJson } = generateGltfContent(store.config, store.parts, 'assembled');
         entries.push({ name: `${safeName}.gltf`, data: utf8Encode(gltfJson) });
 
         // 5) README
@@ -272,6 +280,19 @@ export function PdfExportPanel() {
 
   return (
     <div className="space-y-6">
+      {(generating || generatingAll || generatingZip) && (
+        <button type="button" onClick={() => exportAbortRef.current?.abort()}>
+          {t('pdf.cancelExport')}
+        </button>
+      )}
+      {exportBlocked && !generating && !generatingAll && !generatingZip && (
+        <p role="status">
+          {t('pdf.waitForCalculation')}{' '}
+          <button type="button" onClick={() => store.setConfig({})}>
+            {t('pdf.recalculate')}
+          </button>
+        </p>
+      )}
       <div className="space-y-4 py-8 text-center">
         <h2 className="text-wood-700 dark:text-wood-200 text-lg font-semibold">{t('pdf.title')}</h2>
         <p className="text-wood-400 dark:text-wood-500 mx-auto max-w-md text-sm">{t('pdf.description')}</p>
@@ -321,14 +342,14 @@ export function PdfExportPanel() {
           <>
             <button
               onClick={handleGenerateAll}
-              disabled={generating || generatingAll}
+              disabled={exportBlocked || generating || generatingAll}
               className="bg-wood-600 hover:bg-wood-700 rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               {generatingAll ? t('pdf.generatingAll') : t('pdf.generateAll', { count: store.cabinets.length })}
             </button>
             <button
               onClick={handleGenerate}
-              disabled={generating || generatingAll}
+              disabled={exportBlocked || generating || generatingAll}
               className="border-wood-300 dark:border-wood-600 text-wood-500 dark:text-wood-400 hover:text-wood-700 dark:hover:text-wood-200 rounded-lg border px-6 py-2 text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               {generating ? t('pdf.generating') : t('pdf.generateCurrent')}
@@ -337,7 +358,7 @@ export function PdfExportPanel() {
         ) : (
           <button
             onClick={handleGenerate}
-            disabled={generating || generatingAll}
+            disabled={exportBlocked || generating || generatingAll}
             className="bg-wood-600 hover:bg-wood-700 rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {generating ? t('pdf.generating') : t('pdf.generate')}
@@ -418,7 +439,7 @@ export function PdfExportPanel() {
         {/* Sprint 86 — ZIP bundle export */}
         <button
           onClick={handleExportZip}
-          disabled={generating || generatingAll || generatingZip}
+          disabled={exportBlocked || generating || generatingAll || generatingZip}
           className="bg-wood-100 dark:bg-wood-800 text-wood-700 dark:text-wood-200 border-wood-300 dark:border-wood-600 hover:bg-wood-200 dark:hover:bg-wood-700 rounded-lg border px-6 py-3 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           {generatingZip ? t('pdf.generatingZip') : t('pdf.exportZip')}

@@ -1,3 +1,4 @@
+import { generateParts } from './parts';
 import type { CabinetConfig } from './types';
 
 export interface AssemblyStep {
@@ -96,6 +97,14 @@ export function buildAssemblyDAG(rawSteps: readonly RawStep[]): AssemblyStep[] {
  */
 export function generateAssemblySteps(cfg: CabinetConfig): AssemblyStep[] {
   const steps: RawStep[] = [];
+  const parts = generateParts(cfg);
+  const partIds = (name: string) => parts.filter((part) => part.name.en.includes(name)).map((part) => part.id);
+  const shelfQuantity = parts
+    .filter((part) => part.name.en === 'Adjustable Shelf')
+    .reduce((sum, part) => sum + part.qty, 0);
+  const drawerQuantity = parts
+    .filter((part) => /^Drawer \d+ Front$/.test(part.name.en))
+    .reduce((sum, part) => sum + part.qty, 0);
   const hasDoors = cfg.doorStyle !== 'none' && (cfg.furnitureType === 'cabinet' || cfg.furnitureType === 'wardrobe');
   const hasFixedShelf = cfg.height > 1200 && cfg.furnitureType !== 'desk';
   const isDesk = cfg.furnitureType === 'desk';
@@ -210,7 +219,7 @@ export function generateAssemblySteps(cfg: CabinetConfig): AssemblyStep[] {
           en: `Install ${cfg.shelfCount} shelves between the side panels for storage.`,
           he: `התקן ${cfg.shelfCount} מדפים בין דפנות הצד לאחסון.`,
         },
-        parts: ['P05'],
+        parts: partIds('Under-desk Shelf'),
         icon: '📚',
       });
     }
@@ -258,11 +267,25 @@ export function generateAssemblySteps(cfg: CabinetConfig): AssemblyStep[] {
       en: 'Attach the bottom panel between the two side panels using confirmat screws. Ensure the assembly is square by measuring diagonals.',
       he: 'חבר את המשטח התחתון בין שתי הדפנות באמצעות ברגי קונפירמט. ודא שההרכבה מרובעת על ידי מדידת אלכסונים.',
     },
-    parts: ['P01', 'P03'],
+    parts: [...partIds('Side Panel'), ...partIds('Bottom Panel')],
     icon: '🪚',
     videoKeyword: 'cabinet carcass assembly confirmat screws',
   });
 
+  if ((cfg.shelfCentreSupports ?? 0) > 0 && !isDesk) {
+    steps.push({
+      stepNumber: n++,
+      riskLevel: 'medium',
+      estimatedMinutes: 20,
+      title: { en: 'Install Centre Supports', he: 'התקנת מחיצות אמצע' },
+      description: {
+        en: 'Secure the full-height dividers between the bottom and top. Each fixed and adjustable shelf occupies one clear bay. Drill shelf-pin positions on both sides of each divider and check actual hole depth against panel thickness.',
+        he: 'חברו את המחיצות בין התחתון לעליון. כל מדף קבוע או מתכוונן שייך לתא אחד. סמנו חורי מדף משני צדי המחיצה ובדקו עומק קידוח ביחס לעובי הלוח.',
+      },
+      parts: partIds('Centre Support'),
+      icon: '📏',
+    });
+  }
   if (hasFixedShelf) {
     steps.push({
       stepNumber: n++,
@@ -273,7 +296,7 @@ export function generateAssemblySteps(cfg: CabinetConfig): AssemblyStep[] {
         en: 'Attach the fixed shelf with confirmat screws. This shelf adds structural rigidity to the carcass.',
         he: 'חבר את המדף הקבוע עם ברגי קונפירמט. מדף זה מוסיף קשיחות מבנית לשלד.',
       },
-      parts: ['P04'],
+      parts: partIds('Fixed Shelf'),
       icon: '📏',
       videoKeyword: 'install fixed shelf in cabinet',
     });
@@ -303,7 +326,7 @@ export function generateAssemblySteps(cfg: CabinetConfig): AssemblyStep[] {
         en: 'Place the back panel into the rabbet and nail/screw around the perimeter every 150mm. The back panel squares the entire carcass.',
         he: 'הנח את לוח הגב בשפה וחבר עם מסמרים/ברגים כל 150 מ"מ לאורך ההיקף. לוח הגב מיישר את כל השלד.',
       },
-      parts: [hasFixedShelf ? 'P07' : 'P06'],
+      parts: partIds('Back Panel'),
       icon: '📐',
       videoKeyword: 'install cabinet back panel square',
       tip: {
@@ -345,7 +368,7 @@ export function generateAssemblySteps(cfg: CabinetConfig): AssemblyStep[] {
             en: 'Screw the mounting plates into the side panels. Clip the hinge cups into the 35mm holes on the doors. Attach doors to mounting plates and adjust alignment.',
             he: 'הברג את פלטות הצירים לדפנות. הכנס את כוסות הצירים לחורי 35 מ"מ בדלתות. חבר דלתות לפלטות וכוון יישור.',
           },
-      parts: [hasFixedShelf ? 'P06' : 'P05'],
+      parts: partIds('Door'),
       icon: '🚪',
       videoKeyword: isGlass ? 'glass door hinge installation cabinet' : 'concealed hinge installation 35mm cabinet',
     });
@@ -387,10 +410,10 @@ export function generateAssemblySteps(cfg: CabinetConfig): AssemblyStep[] {
     estimatedMinutes: 10,
     title: { en: 'Insert Shelf Pins & Shelves', he: 'הכנסת פיני מדפים ומדפים' },
     description: {
-      en: `Insert 4 shelf pins per shelf at desired heights. Place the ${cfg.shelfCount} adjustable shelves on the pins.`,
-      he: `הכנס 4 פיני מדף לכל מדף בגובה הרצוי. הנח את ${cfg.shelfCount} המדפים המתכווננים על הפינים.`,
+      en: `Insert 4 shelf pins per shelf at desired heights. Place the ${shelfQuantity} adjustable shelves on the pins.`,
+      he: `הכנס 4 פיני מדף לכל מדף בגובה הרצוי. הנח את ${shelfQuantity} המדפים המתכווננים על הפינים.`,
     },
-    parts: [hasFixedShelf ? 'P05' : 'P04'],
+    parts: partIds('Adjustable Shelf'),
     icon: '📚',
     videoKeyword: 'shelf pin installation 32mm system',
   });
@@ -402,8 +425,8 @@ export function generateAssemblySteps(cfg: CabinetConfig): AssemblyStep[] {
       estimatedMinutes: 45,
       title: { en: 'Assemble & Install Drawers', he: 'הרכבה והתקנת מגירות' },
       description: {
-        en: `Assemble ${cfg.drawerCount} drawer box(es): attach sides to front/back pieces with screws, slide in the bottom panel. Mount drawer slides on side panels, then install drawer boxes. Attach decorative drawer fronts with screws from inside.`,
-        he: `הרכב ${cfg.drawerCount} קופסת/ות מגירה: חבר דפנות לחלקים קדמיים/אחוריים עם ברגים, החלק את לוח התחתית. הרכב מסילות על הדפנות, ואז התקן את קופסאות המגירה. חבר חזיתות מגירה דקורטיביות עם ברגים מבפנים.`,
+        en: `Assemble ${drawerQuantity} drawer box(es): attach sides to front/back pieces with screws, slide in the bottom panel. Mount drawer slides on side panels, then install drawer boxes. Attach decorative drawer fronts with screws from inside.`,
+        he: `הרכב ${drawerQuantity} קופסת/ות מגירה: חבר דפנות לחלקים קדמיים/אחוריים עם ברגים, החלק את לוח התחתית. הרכב מסילות על הדפנות, ואז התקן את קופסאות המגירה. חבר חזיתות מגירה דקורטיביות עם ברגים מבפנים.`,
       },
       parts: [],
       icon: '🗄️',
@@ -452,8 +475,8 @@ export function generateAssemblySteps(cfg: CabinetConfig): AssemblyStep[] {
       estimatedMinutes: 15,
       title: { en: 'Attach Toe Kick', he: 'חיבור לוח בסיס (כיכר רגל)' },
       description: {
-        en: `Cut the front toe kick board (${cfg.kickHeight} mm tall) to the full cabinet width and the two side kick boards to depth − thickness. Clip or screw them to the underside of the bottom panel. The kick should be set back 50 mm from the front face.`,
-        he: `חתוך את לוח הבסיס הקדמי (${cfg.kickHeight} מ"מ) לרוחב מלא של הארון ואת שני לוחות הצד לעומק פחות עובי. חבר עם קליפסים או ברגים לתחתית לוח הבסיס. הכיכר צריכה להיות מוזחת 50 מ"מ מהחזית.`,
+        en: `Cut the front toe kick board (${cfg.kickHeight} mm tall) to the full cabinet width and the two side kick boards to depth − thickness. Clip or screw them to the underside of the bottom panel. The overall cabinet height includes this base.`,
+        he: `חתוך את לוח הבסיס הקדמי (${cfg.kickHeight} מ"מ) לרוחב מלא של הארון ואת שני לוחות הצד לעומק פחות עובי. חבר עם קליפסים או ברגים לתחתית לוח הבסיס. הגובה הכולל של הארון כולל בסיס זה.`,
       },
       parts: [],
       icon: '🦶',

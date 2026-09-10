@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
+
+@source '.';
 
 /* Class-based dark mode — use `.dark &` so dark: utilities gain an extra class
    of specificity (0,2,0) vs plain utilities (0,1,0), making them cascade-safe

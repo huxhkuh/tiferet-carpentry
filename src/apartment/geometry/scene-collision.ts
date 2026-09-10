@@ -1,7 +1,8 @@
 import type { Apartment, CabinetPlacement, FurnitureKind, FurniturePlacement, Point, Room, Wall } from '../types';
 import { furnitureFootprint } from '../furniture/geometry';
 import { cabinetFootprint } from './placement-geometry';
-import { getUsableWallIntervals } from './intervals';
+import { getUsableWallIntervals, validatePlacement, verticalBoundsOverlap } from './intervals';
+import { polygonContainsPolygon, polygonsOverlap } from './polygon';
 
 export interface SceneCollision {
   kind: 'cabinet-furniture' | 'furniture-cabinet' | 'outside-room';
@@ -46,38 +47,8 @@ function projectionsOverlap(
   return first.max + tolerance > second.min && second.max + tolerance > first.min;
 }
 
-function pointOnSegment(point: Point, first: Point, second: Point, tolerance: number): boolean {
-  const cross = (point.y - first.y) * (second.x - first.x) - (point.x - first.x) * (second.y - first.y);
-  if (Math.abs(cross) > tolerance) return false;
-  const dotProduct = (point.x - first.x) * (second.x - first.x) + (point.y - first.y) * (second.y - first.y);
-  if (dotProduct < -tolerance) return false;
-  const squaredLength = (second.x - first.x) ** 2 + (second.y - first.y) ** 2;
-  return dotProduct <= squaredLength + tolerance;
-}
-
-export function pointInsideOrOnPolygon(point: Point, polygon: readonly Point[], tolerance = 0): boolean {
-  if (polygon.length < 3) return false;
-  if (
-    polygon.some((candidate, index) =>
-      pointOnSegment(point, candidate, polygon[(index + 1) % polygon.length], tolerance),
-    )
-  ) {
-    return true;
-  }
-  let inside = false;
-  for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index++) {
-    const current = polygon[index];
-    const last = polygon[previous];
-    const crosses = current.y > point.y !== last.y > point.y;
-    if (!crosses) continue;
-    const x = ((last.x - current.x) * (point.y - current.y)) / (last.y - current.y) + current.x;
-    if (point.x < x) inside = !inside;
-  }
-  return inside;
-}
-
-export function polygonInsideRoom(room: Room, polygon: readonly Point[], tolerance = 0): boolean {
-  return polygon.length > 0 && polygon.every((point) => pointInsideOrOnPolygon(point, room.polygon, tolerance));
+function polygonInsideRoom(room: Room, polygon: readonly Point[], tolerance = 0): boolean {
+  return polygonContainsPolygon(room.polygon, polygon, tolerance);
 }
 
 export function rectangleFootprintsOverlap(first: readonly Point[], second: readonly Point[], tolerance = 0): boolean {
@@ -121,12 +92,89 @@ export function findCabinetFurnitureCollision(
   depth: number,
   furniture: readonly FurniturePlacement[],
   tolerance = 0,
+  elevation = 0,
+  height = Infinity,
 ): SceneCollision | null {
   const cabinet = visualCabinetFootprint(wall, room, distanceFromWallStart, width, depth);
   const collision = furniture
-    .filter((item) => item.roomId === room.id && !shouldIgnoreFurniture(item))
+    .filter(
+      (item) =>
+        item.roomId === room.id &&
+        !shouldIgnoreFurniture(item) &&
+        verticalBoundsOverlap(elevation, height, item.elevation, item.height),
+    )
     .find((item) => rectangleFootprintsOverlap(cabinet, furnitureFootprint(item), tolerance));
   return collision ? { kind: 'cabinet-furniture', furnitureId: collision.id } : null;
+}
+
+/** Shared placement boundary for edits, imports, saves and automatic placement. */
+export function validateCabinetInRoom(
+  apartment: Apartment,
+  room: Room,
+  wall: Wall,
+  cabinet: Pick<CabinetPlacement, 'id' | 'width' | 'depth' | 'height' | 'elevation' | 'distanceFromWallStart'>,
+  placements: readonly CabinetPlacement[] = [],
+  furniture: readonly FurniturePlacement[] = apartment.furniture ?? [],
+): string | null {
+  if (
+    ![cabinet.width, cabinet.height, cabinet.depth].every((value) => Number.isFinite(value) && value > 0) ||
+    !Number.isFinite(cabinet.elevation) ||
+    cabinet.elevation < 0
+  )
+    return 'מידות הארון אינן תקינות';
+  const scoped = placements.filter((item) => item.apartmentId === apartment.id && item.roomId === room.id);
+  const wallError = validatePlacement(wall, cabinet.width, cabinet.distanceFromWallStart, scoped, cabinet.id, cabinet);
+  if (wallError) return wallError;
+  const footprint = cabinetFootprint(wall, cabinet.distanceFromWallStart, cabinet.width, cabinet.depth, room);
+  if (!polygonInsideRoom(room, footprint)) return 'הארון יוצא מגבולות החדר';
+  if (room.ceilingHeight !== undefined && cabinet.elevation + cabinet.height > room.ceilingHeight)
+    return 'הארון גבוה מגובה החדר';
+  if (
+    scoped.some((item) => {
+      if (
+        item.id === cabinet.id ||
+        !verticalBoundsOverlap(cabinet.elevation, cabinet.height, item.elevation, item.height)
+      )
+        return false;
+      const otherWall = apartment.walls.find((candidate) => candidate.id === item.wallId);
+      return (
+        otherWall &&
+        polygonsOverlap(
+          footprint,
+          cabinetFootprint(otherWall, item.distanceFromWallStart, item.width, item.depth, room),
+        )
+      );
+    })
+  )
+    return 'הארון חופף לארון קיים בחדר';
+  if (
+    apartment.fixedElements.some(
+      (element) =>
+        element.roomId === room.id &&
+        verticalBoundsOverlap(cabinet.elevation, cabinet.height, 0, element.height ?? Infinity) &&
+        polygonsOverlap(footprint, element.polygon),
+    )
+  )
+    return 'הארון חופף לאלמנט קבוע בחדר';
+  if (
+    (apartment.fixtures ?? []).some(
+      (fixture) => fixture.roomId === room.id && polygonsOverlap(footprint, fixture.polygon),
+    )
+  )
+    return 'הארון חופף לפריט אדריכלי קבוע';
+  return findCabinetFurnitureCollision(
+    room,
+    wall,
+    cabinet.distanceFromWallStart,
+    cabinet.width,
+    cabinet.depth,
+    furniture,
+    0,
+    cabinet.elevation,
+    cabinet.height,
+  )
+    ? 'הארון חופף לריהוט בחדר. הזיזו את הריהוט או בחרו מיקום אחר'
+    : null;
 }
 
 export function validateFurnitureMove(
@@ -145,6 +193,7 @@ export function validateFurnitureMove(
           candidate.id !== furniture.id &&
           candidate.roomId === room.id &&
           !shouldIgnoreFurniture(candidate) &&
+          verticalBoundsOverlap(furniture.elevation, furniture.height, candidate.elevation, candidate.height) &&
           rectangleFootprintsOverlap(footprint, furnitureFootprint(candidate)),
       );
   if (furnitureOverlap) return FURNITURE_OVERLAP_MESSAGE;
@@ -153,21 +202,22 @@ export function validateFurnitureMove(
     (element) =>
       element.roomId === room.id &&
       BLOCKING_FIXED_KINDS.includes(element.kind as (typeof BLOCKING_FIXED_KINDS)[number]) &&
-      element.polygon.length === 4 &&
-      rectangleFootprintsOverlap(footprint, element.polygon),
+      verticalBoundsOverlap(furniture.elevation, furniture.height, 0, element.height ?? Infinity) &&
+      polygonsOverlap(footprint, element.polygon),
   );
   if (fixedElementOverlap) return FIXED_ELEMENT_MESSAGE;
   const fixtureOverlap = !furniture.id.startsWith('scene-')
     ? (apartment.fixtures ?? []).some(
-        (fixture) =>
-          fixture.roomId === room.id &&
-          fixture.polygon.length === 4 &&
-          rectangleFootprintsOverlap(footprint, fixture.polygon),
+        (fixture) => fixture.roomId === room.id && polygonsOverlap(footprint, fixture.polygon),
       )
     : false;
   if (fixtureOverlap) return ARCHITECTURAL_FIXTURE_MESSAGE;
   const overlap = cabinets.find((cabinet) => {
-    if (cabinet.roomId !== room.id) return false;
+    if (
+      cabinet.roomId !== room.id ||
+      !verticalBoundsOverlap(furniture.elevation, furniture.height, cabinet.elevation, cabinet.height)
+    )
+      return false;
     const cabinetFootprintForRoom = cabinetVisualFootprint(apartment, room, cabinet);
     return cabinetFootprintForRoom ? rectangleFootprintsOverlap(footprint, cabinetFootprintForRoom) : false;
   });
@@ -183,11 +233,31 @@ export function findFirstCollisionFreeCabinetOffset(
   furniture: readonly FurniturePlacement[] = apartment.furniture ?? [],
   placements: readonly CabinetPlacement[] = [],
   step = DEFAULT_OFFSET_STEP,
+  vertical: { elevation: number; height: number } = { elevation: 0, height: Infinity },
 ): number | null {
   if (!Number.isFinite(width) || width <= 0 || !Number.isFinite(depth) || depth <= 0 || step <= 0) return null;
-  for (const segment of getUsableWallIntervals(wall, { placements })) {
+  for (const segment of getUsableWallIntervals(wall, { placements, ...vertical })) {
     for (let offset = segment.start; offset + width <= segment.end; offset += step) {
-      if (findCabinetFurnitureCollision(room, wall, offset, width, depth, furniture) === null) return offset;
+      if (
+        validateCabinetInRoom(
+          apartment,
+          room,
+          wall,
+          {
+            id: '',
+            width,
+            depth,
+            height: Number.isFinite(vertical.height)
+              ? vertical.height
+              : (room.ceilingHeight ?? wall.height ?? Number.MAX_SAFE_INTEGER),
+            elevation: vertical.elevation,
+            distanceFromWallStart: offset,
+          },
+          placements,
+          furniture,
+        ) === null
+      )
+        return offset;
     }
   }
   return null;

@@ -1,9 +1,28 @@
+import { useSwUpdate } from './hooks/useSwUpdate';
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 
 import { buildAppModeUrl, readAppMode, type AppMode } from './utils/app-mode';
 
 const WorkshopMode = lazy(() => import('./WorkshopMode'));
 const TiferetSite = lazy(() => import('./site/TiferetSite').then((module) => ({ default: module.TiferetSite })));
+
+function SiteOfflineStatus() {
+  const { updateAvailable, offlineReady, reload } = useSwUpdate();
+  return (
+    <div className="ng-offline-status" role="status" data-offline-ready={offlineReady}>
+      {updateAvailable ? (
+        <>
+          <span>גרסה חדשה מוכנה</span>{' '}
+          <button type="button" onClick={reload}>
+            טעינת העדכון
+          </button>
+        </>
+      ) : offlineReady ? (
+        'ממשק התכנון זמין גם ללא חיבור. קובצי מקור ותמונות זמינים אם נטענו במכשיר.'
+      ) : null}
+    </div>
+  );
+}
 
 function SiteBootstrapFallback() {
   return (
@@ -42,6 +61,7 @@ export default function App() {
   if (mode === 'site') {
     return (
       <Suspense fallback={<SiteBootstrapFallback />}>
+        <SiteOfflineStatus />
         <TiferetSite onOpenWorkshop={() => navigate('workshop')} />
       </Suspense>
     );

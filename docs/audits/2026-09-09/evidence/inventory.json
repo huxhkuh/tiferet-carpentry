@@ -1,0 +1,1871 @@
+{
+  "totalFiles": 440,
+  "totalLines": 99163,
+  "tsFiles": 430,
+  "stats": {
+    "apartment": {
+      "files": 42,
+      "lines": 11140
+    },
+    "App.tsx": {
+      "files": 1,
+      "lines": 56
+    },
+    "catalog": {
+      "files": 2,
+      "lines": 289
+    },
+    "components": {
+      "files": 121,
+      "lines": 20618
+    },
+    "engine": {
+      "files": 177,
+      "lines": 38175
+    },
+    "env.d.ts": {
+      "files": 1,
+      "lines": 40
+    },
+    "hooks": {
+      "files": 8,
+      "lines": 567
+    },
+    "i18n": {
+      "files": 7,
+      "lines": 14013
+    },
+    "index.css": {
+      "files": 1,
+      "lines": 464
+    },
+    "main.tsx": {
+      "files": 1,
+      "lines": 31
+    },
+    "services": {
+      "files": 3,
+      "lines": 320
+    },
+    "site": {
+      "files": 23,
+      "lines": 4305
+    },
+    "store": {
+      "files": 11,
+      "lines": 2132
+    },
+    "utils": {
+      "files": 34,
+      "lines": 6186
+    },
+    "WoodworkingShopApp.tsx": {
+      "files": 1,
+      "lines": 348
+    },
+    "workers": {
+      "files": 6,
+      "lines": 438
+    },
+    "WorkshopMode.tsx": {
+      "files": 1,
+      "lines": 41
+    }
+  },
+  "tests": 293,
+  "e2eSpecs": 7,
+  "unsafe": ["src\\store\\slices\\snapshotSlice.ts"],
+  "engineBrowser": [
+    "src\\engine\\index.ts",
+    "src\\engine\\lazy-features.ts",
+    "src\\engine\\plugin.ts",
+    "src\\engine\\types.ts",
+    "src\\engine\\webgl-probe.ts",
+    "src\\engine\\webgpu-renderer.ts",
+    "src\\engine\\webserial.ts"
+  ],
+  "locales": {
+    "he": {
+      "keys": 2168,
+      "missing": 0
+    },
+    "ar": {
+      "keys": 1934,
+      "missing": 270
+    },
+    "de": {
+      "keys": 1944,
+      "missing": 251
+    },
+    "es": {
+      "keys": 1944,
+      "missing": 251
+    },
+    "fr": {
+      "keys": 1944,
+      "missing": 251
+    }
+  },
+  "index": [
+    {
+      "file": "src/apartment/cabinet/adapter.ts",
+      "lines": 166
+    },
+    {
+      "file": "src/apartment/components/ApartmentThumbnail.tsx",
+      "lines": 86
+    },
+    {
+      "file": "src/apartment/components/ArchitecturalFixture2D.tsx",
+      "lines": 128
+    },
+    {
+      "file": "src/apartment/components/ArchitecturalOpening2D.tsx",
+      "lines": 63
+    },
+    {
+      "file": "src/apartment/components/DesignLibraryPanel.tsx",
+      "lines": 230
+    },
+    {
+      "file": "src/apartment/components/FullSourcePlan.tsx",
+      "lines": 65
+    },
+    {
+      "file": "src/apartment/components/FurnitureCatalogPanel.tsx",
+      "lines": 141
+    },
+    {
+      "file": "src/apartment/components/FurnitureCatalogPreview.tsx",
+      "lines": 37
+    },
+    {
+      "file": "src/apartment/components/FurnitureEditor.tsx",
+      "lines": 341
+    },
+    {
+      "file": "src/apartment/components/FurnitureSymbol2D.tsx",
+      "lines": 227
+    },
+    {
+      "file": "src/apartment/components/Plan2D.tsx",
+      "lines": 535
+    },
+    {
+      "file": "src/apartment/components/Room3D.tsx",
+      "lines": 388
+    },
+    {
+      "file": "src/apartment/components/SceneLayersPanel.tsx",
+      "lines": 75
+    },
+    {
+      "file": "src/apartment/components/SourceComparisonPlan.tsx",
+      "lines": 150
+    },
+    {
+      "file": "src/apartment/data/tiferet-source-inventory.ts",
+      "lines": 1174
+    },
+    {
+      "file": "src/apartment/data/tiferet-source-plan.ts",
+      "lines": 151
+    },
+    {
+      "file": "src/apartment/data/tiferet.ts",
+      "lines": 768
+    },
+    {
+      "file": "src/apartment/furniture/catalog.ts",
+      "lines": 234
+    },
+    {
+      "file": "src/apartment/furniture/geometry.ts",
+      "lines": 23
+    },
+    {
+      "file": "src/apartment/furniture/transform.ts",
+      "lines": 89
+    },
+    {
+      "file": "src/apartment/geometry/intervals.ts",
+      "lines": 125
+    },
+    {
+      "file": "src/apartment/geometry/placement-geometry.ts",
+      "lines": 43
+    },
+    {
+      "file": "src/apartment/geometry/placement.ts",
+      "lines": 49
+    },
+    {
+      "file": "src/apartment/geometry/scene-collision.ts",
+      "lines": 195
+    },
+    {
+      "file": "src/apartment/geometry/wall-frame.ts",
+      "lines": 114
+    },
+    {
+      "file": "src/apartment/import/geometry.ts",
+      "lines": 471
+    },
+    {
+      "file": "src/apartment/import/model.ts",
+      "lines": 189
+    },
+    {
+      "file": "src/apartment/import/pdf-import.ts",
+      "lines": 206
+    },
+    {
+      "file": "src/apartment/import/pdf-vector-parser.ts",
+      "lines": 357
+    },
+    {
+      "file": "src/apartment/import/types.ts",
+      "lines": 106
+    },
+    {
+      "file": "src/apartment/persistence/design-library.ts",
+      "lines": 117
+    },
+    {
+      "file": "src/apartment/persistence/design.ts",
+      "lines": 336
+    },
+    {
+      "file": "src/apartment/persistence/imported-apartments.ts",
+      "lines": 70
+    },
+    {
+      "file": "src/apartment/planner/design-state.ts",
+      "lines": 104
+    },
+    {
+      "file": "src/apartment/PlannerApp.tsx",
+      "lines": 1522
+    },
+    {
+      "file": "src/apartment/source/catalog.ts",
+      "lines": 38
+    },
+    {
+      "file": "src/apartment/source/display.ts",
+      "lines": 9
+    },
+    {
+      "file": "src/apartment/three/furniture.ts",
+      "lines": 277
+    },
+    {
+      "file": "src/apartment/three/renderer.ts",
+      "lines": 232
+    },
+    {
+      "file": "src/apartment/three/scene.ts",
+      "lines": 759
+    },
+    {
+      "file": "src/apartment/types/index.ts",
+      "lines": 386
+    },
+    {
+      "file": "src/apartment/validation/apartment.ts",
+      "lines": 364
+    },
+    {
+      "file": "src/App.tsx",
+      "lines": 56
+    },
+    {
+      "file": "src/catalog/community-catalog.example.json",
+      "lines": 57
+    },
+    {
+      "file": "src/catalog/hardware.json",
+      "lines": 232
+    },
+    {
+      "file": "src/components/assembly/AssemblyGuide.tsx",
+      "lines": 500
+    },
+    {
+      "file": "src/components/assembly/BuildLogPanel.tsx",
+      "lines": 127
+    },
+    {
+      "file": "src/components/assembly/CameraCapture.tsx",
+      "lines": 80
+    },
+    {
+      "file": "src/components/assembly/MachineProfileSelector.tsx",
+      "lines": 104
+    },
+    {
+      "file": "src/components/assembly/WebSerialPanel.tsx",
+      "lines": 169
+    },
+    {
+      "file": "src/components/configurator/BoxJointPanel.tsx",
+      "lines": 102
+    },
+    {
+      "file": "src/components/configurator/CabinetDoorPanel.tsx",
+      "lines": 142
+    },
+    {
+      "file": "src/components/configurator/CabinetSelector.tsx",
+      "lines": 165
+    },
+    {
+      "file": "src/components/configurator/CalculatorsPanel.tsx",
+      "lines": 101
+    },
+    {
+      "file": "src/components/configurator/CatalogImportPanel.tsx",
+      "lines": 171
+    },
+    {
+      "file": "src/components/configurator/ConfiguratorPanel.tsx",
+      "lines": 161
+    },
+    {
+      "file": "src/components/configurator/ConstraintSuggestionsPanel.tsx",
+      "lines": 190
+    },
+    {
+      "file": "src/components/configurator/CostEstimatePanel.tsx",
+      "lines": 438
+    },
+    {
+      "file": "src/components/configurator/CostSummaryPanel.tsx",
+      "lines": 103
+    },
+    {
+      "file": "src/components/configurator/CostVariancePanel.tsx",
+      "lines": 175
+    },
+    {
+      "file": "src/components/configurator/CoveCutPanel.tsx",
+      "lines": 115
+    },
+    {
+      "file": "src/components/configurator/CrownMouldingPanel.tsx",
+      "lines": 97
+    },
+    {
+      "file": "src/components/configurator/CustomMaterialEditor.tsx",
+      "lines": 300
+    },
+    {
+      "file": "src/components/configurator/DadoRabbetPanel.tsx",
+      "lines": 130
+    },
+    {
+      "file": "src/components/configurator/DimensionSliders.tsx",
+      "lines": 253
+    },
+    {
+      "file": "src/components/configurator/DoorConfig.tsx",
+      "lines": 94
+    },
+    {
+      "file": "src/components/configurator/DrawerBoxPanel.tsx",
+      "lines": 151
+    },
+    {
+      "file": "src/components/configurator/DrawerConfig.tsx",
+      "lines": 85
+    },
+    {
+      "file": "src/components/configurator/FaceFramePanel.tsx",
+      "lines": 170
+    },
+    {
+      "file": "src/components/configurator/FinishCalculatorPanel.tsx",
+      "lines": 103
+    },
+    {
+      "file": "src/components/configurator/FinishingCoatPanel.tsx",
+      "lines": 118
+    },
+    {
+      "file": "src/components/configurator/FramePanelCalcPanel.tsx",
+      "lines": 156
+    },
+    {
+      "file": "src/components/configurator/GlueCoveragePanel.tsx",
+      "lines": 114
+    },
+    {
+      "file": "src/components/configurator/HalfLapPanel.tsx",
+      "lines": 152
+    },
+    {
+      "file": "src/components/configurator/HoningGuidePanel.tsx",
+      "lines": 104
+    },
+    {
+      "file": "src/components/configurator/KerfBendingPanel.tsx",
+      "lines": 139
+    },
+    {
+      "file": "src/components/configurator/MaterialSelector.tsx",
+      "lines": 211
+    },
+    {
+      "file": "src/components/configurator/MeasurementHintsPanel.tsx",
+      "lines": 51
+    },
+    {
+      "file": "src/components/configurator/MoistureShrinkagePanel.tsx",
+      "lines": 147
+    },
+    {
+      "file": "src/components/configurator/NamedExpressionsPanel.tsx",
+      "lines": 198
+    },
+    {
+      "file": "src/components/configurator/PlanerPassesPanel.tsx",
+      "lines": 138
+    },
+    {
+      "file": "src/components/configurator/PresetsPanel.tsx",
+      "lines": 189
+    },
+    {
+      "file": "src/components/configurator/RafterLengthPanel.tsx",
+      "lines": 145
+    },
+    {
+      "file": "src/components/configurator/RouterCirclePanel.tsx",
+      "lines": 124
+    },
+    {
+      "file": "src/components/configurator/RouterTemplatePanel.tsx",
+      "lines": 131
+    },
+    {
+      "file": "src/components/configurator/save-load-json.ts",
+      "lines": 86
+    },
+    {
+      "file": "src/components/configurator/SaveLoadPanel.tsx",
+      "lines": 331
+    },
+    {
+      "file": "src/components/configurator/ScrewPulloutPanel.tsx",
+      "lines": 129
+    },
+    {
+      "file": "src/components/configurator/ShelfConfig.tsx",
+      "lines": 209
+    },
+    {
+      "file": "src/components/configurator/ShelfSpacingPresetsPanel.tsx",
+      "lines": 155
+    },
+    {
+      "file": "src/components/configurator/SliderInput.tsx",
+      "lines": 153
+    },
+    {
+      "file": "src/components/configurator/SplineJointPanel.tsx",
+      "lines": 152
+    },
+    {
+      "file": "src/components/configurator/StairStringerPanel.tsx",
+      "lines": 119
+    },
+    {
+      "file": "src/components/configurator/SubstitutionPanel.tsx",
+      "lines": 118
+    },
+    {
+      "file": "src/components/configurator/TaperJigPanel.tsx",
+      "lines": 118
+    },
+    {
+      "file": "src/components/configurator/TemplatePicker.tsx",
+      "lines": 172
+    },
+    {
+      "file": "src/components/configurator/ValidationPanel.tsx",
+      "lines": 197
+    },
+    {
+      "file": "src/components/configurator/WoodTurningPanel.tsx",
+      "lines": 104
+    },
+    {
+      "file": "src/components/layout/ActiveCabinetSwitcher.tsx",
+      "lines": 33
+    },
+    {
+      "file": "src/components/layout/ErrorBoundary.tsx",
+      "lines": 117
+    },
+    {
+      "file": "src/components/layout/Header.tsx",
+      "lines": 366
+    },
+    {
+      "file": "src/components/layout/Icons.tsx",
+      "lines": 516
+    },
+    {
+      "file": "src/components/layout/MarketplacePanel.tsx",
+      "lines": 293
+    },
+    {
+      "file": "src/components/layout/MobileTabBar.tsx",
+      "lines": 71
+    },
+    {
+      "file": "src/components/layout/OnboardingOverlay.tsx",
+      "lines": 156
+    },
+    {
+      "file": "src/components/layout/PluginRegistryPanel.tsx",
+      "lines": 97
+    },
+    {
+      "file": "src/components/layout/ProjectManagerModal.tsx",
+      "lines": 265
+    },
+    {
+      "file": "src/components/layout/RoomLayoutView.tsx",
+      "lines": 127
+    },
+    {
+      "file": "src/components/layout/ShortcutsModal.tsx",
+      "lines": 91
+    },
+    {
+      "file": "src/components/layout/Sidebar.tsx",
+      "lines": 129
+    },
+    {
+      "file": "src/components/layout/SkeletonPane.tsx",
+      "lines": 71
+    },
+    {
+      "file": "src/components/layout/SnapshotDiffModal.tsx",
+      "lines": 145
+    },
+    {
+      "file": "src/components/layout/SnapshotPanel.tsx",
+      "lines": 135
+    },
+    {
+      "file": "src/components/layout/StorageQuotaBadge.tsx",
+      "lines": 56
+    },
+    {
+      "file": "src/components/layout/SwUpdateBanner.tsx",
+      "lines": 68
+    },
+    {
+      "file": "src/components/layout/ToastContainer.tsx",
+      "lines": 58
+    },
+    {
+      "file": "src/components/layout/TouchGestureTutorial.tsx",
+      "lines": 87
+    },
+    {
+      "file": "src/components/optimizer/BulkReplaceModal.tsx",
+      "lines": 187
+    },
+    {
+      "file": "src/components/optimizer/ComparisonView.tsx",
+      "lines": 99
+    },
+    {
+      "file": "src/components/optimizer/compute-offcuts.ts",
+      "lines": 31
+    },
+    {
+      "file": "src/components/optimizer/CutChecklistPanel.tsx",
+      "lines": 129
+    },
+    {
+      "file": "src/components/optimizer/CutPlanSummaryPanel.tsx",
+      "lines": 117
+    },
+    {
+      "file": "src/components/optimizer/GcodePreviewModal.tsx",
+      "lines": 425
+    },
+    {
+      "file": "src/components/optimizer/GrainReportPanel.tsx",
+      "lines": 128
+    },
+    {
+      "file": "src/components/optimizer/OptimizationNotesPanel.tsx",
+      "lines": 193
+    },
+    {
+      "file": "src/components/optimizer/optimizer-defect-zone-panel.tsx",
+      "lines": 116
+    },
+    {
+      "file": "src/components/optimizer/optimizer-material-summary-panel.tsx",
+      "lines": 196
+    },
+    {
+      "file": "src/components/optimizer/optimizer-offcuts-panel.tsx",
+      "lines": 128
+    },
+    {
+      "file": "src/components/optimizer/optimizer-shopping-list-panel.tsx",
+      "lines": 93
+    },
+    {
+      "file": "src/components/optimizer/OptimizerExplainerPanel.tsx",
+      "lines": 67
+    },
+    {
+      "file": "src/components/optimizer/OptimizerStats.tsx",
+      "lines": 33
+    },
+    {
+      "file": "src/components/optimizer/OptimizerToolbar.tsx",
+      "lines": 305
+    },
+    {
+      "file": "src/components/optimizer/OptimizerView.tsx",
+      "lines": 390
+    },
+    {
+      "file": "src/components/optimizer/PartLabelSheet.tsx",
+      "lines": 124
+    },
+    {
+      "file": "src/components/optimizer/ProjectSummaryPanel.tsx",
+      "lines": 77
+    },
+    {
+      "file": "src/components/optimizer/SheetCard.tsx",
+      "lines": 598
+    },
+    {
+      "file": "src/components/optimizer/SmartOptimizerPanel.tsx",
+      "lines": 164
+    },
+    {
+      "file": "src/components/optimizer/StockTrackerPanel.tsx",
+      "lines": 217
+    },
+    {
+      "file": "src/components/optimizer/Tables.tsx",
+      "lines": 218
+    },
+    {
+      "file": "src/components/optimizer/VirtualSheetWrapper.tsx",
+      "lines": 48
+    },
+    {
+      "file": "src/components/optimizer/WasteAnalyticsPanel.tsx",
+      "lines": 165
+    },
+    {
+      "file": "src/components/pdf/CabinetPdfDocument.tsx",
+      "lines": 174
+    },
+    {
+      "file": "src/components/pdf/pdf-helpers.ts",
+      "lines": 130
+    },
+    {
+      "file": "src/components/pdf/pdf-i18n.ts",
+      "lines": 317
+    },
+    {
+      "file": "src/components/pdf/pdf-tokens.ts",
+      "lines": 302
+    },
+    {
+      "file": "src/components/pdf/PdfExportPanel.tsx",
+      "lines": 484
+    },
+    {
+      "file": "src/components/pdf/sections/ExplodedView.tsx",
+      "lines": 192
+    },
+    {
+      "file": "src/components/pdf/sections/PageChrome.tsx",
+      "lines": 70
+    },
+    {
+      "file": "src/components/pdf/sections/PdfAssemblyPage.tsx",
+      "lines": 53
+    },
+    {
+      "file": "src/components/pdf/sections/PdfCoverPage.tsx",
+      "lines": 118
+    },
+    {
+      "file": "src/components/pdf/sections/PdfCutSheetPage.tsx",
+      "lines": 189
+    },
+    {
+      "file": "src/components/pdf/sections/PdfDrillingPage.tsx",
+      "lines": 81
+    },
+    {
+      "file": "src/components/pdf/sections/PdfHardwarePage.tsx",
+      "lines": 46
+    },
+    {
+      "file": "src/components/pdf/sections/PdfMultiCabSection.tsx",
+      "lines": 172
+    },
+    {
+      "file": "src/components/pdf/sections/PdfPartsPage.tsx",
+      "lines": 57
+    },
+    {
+      "file": "src/components/pdf/sections/PdfShoppingPage.tsx",
+      "lines": 71
+    },
+    {
+      "file": "src/components/pdf/sections/PdfSpecPage.tsx",
+      "lines": 128
+    },
+    {
+      "file": "src/components/pdf/sections/SpecRow.tsx",
+      "lines": 24
+    },
+    {
+      "file": "src/components/preview/CabinetPreview.tsx",
+      "lines": 619
+    },
+    {
+      "file": "src/components/preview/FrontOpenView.tsx",
+      "lines": 308
+    },
+    {
+      "file": "src/components/preview/IsometricView.tsx",
+      "lines": 578
+    },
+    {
+      "file": "src/components/preview/preview-constants.ts",
+      "lines": 3
+    },
+    {
+      "file": "src/components/preview/preview-download-utils.ts",
+      "lines": 49
+    },
+    {
+      "file": "src/components/preview/preview-svg-parts.tsx",
+      "lines": 323
+    },
+    {
+      "file": "src/components/preview/Preview3DPanel.tsx",
+      "lines": 299
+    },
+    {
+      "file": "src/components/preview/WebGLPreviewCanvas.tsx",
+      "lines": 316
+    },
+    {
+      "file": "src/engine/a11y-audit.ts",
+      "lines": 667
+    },
+    {
+      "file": "src/engine/ai-assistant.ts",
+      "lines": 473
+    },
+    {
+      "file": "src/engine/analytics.ts",
+      "lines": 230
+    },
+    {
+      "file": "src/engine/appliance-clearance.ts",
+      "lines": 248
+    },
+    {
+      "file": "src/engine/assembly/index.ts",
+      "lines": 17
+    },
+    {
+      "file": "src/engine/assembly-dag.ts",
+      "lines": 242
+    },
+    {
+      "file": "src/engine/assembly-dependency.ts",
+      "lines": 294
+    },
+    {
+      "file": "src/engine/assembly-timer.ts",
+      "lines": 127
+    },
+    {
+      "file": "src/engine/assembly.ts",
+      "lines": 466
+    },
+    {
+      "file": "src/engine/audit-trail.ts",
+      "lines": 163
+    },
+    {
+      "file": "src/engine/bandsaw-speed.ts",
+      "lines": 131
+    },
+    {
+      "file": "src/engine/batch-export.ts",
+      "lines": 416
+    },
+    {
+      "file": "src/engine/batch-replace.ts",
+      "lines": 82
+    },
+    {
+      "file": "src/engine/biscuit-joint.ts",
+      "lines": 139
+    },
+    {
+      "file": "src/engine/board-feet.ts",
+      "lines": 150
+    },
+    {
+      "file": "src/engine/bom-filter.ts",
+      "lines": 119
+    },
+    {
+      "file": "src/engine/box-joint.ts",
+      "lines": 66
+    },
+    {
+      "file": "src/engine/bundle-strategy.ts",
+      "lines": 116
+    },
+    {
+      "file": "src/engine/cabinet-door.ts",
+      "lines": 188
+    },
+    {
+      "file": "src/engine/cabinet-notes.ts",
+      "lines": 180
+    },
+    {
+      "file": "src/engine/cabinet-templates.ts",
+      "lines": 223
+    },
+    {
+      "file": "src/engine/cabinet-weight.ts",
+      "lines": 212
+    },
+    {
+      "file": "src/engine/clamp-pressure.ts",
+      "lines": 153
+    },
+    {
+      "file": "src/engine/cloud-sync.ts",
+      "lines": 329
+    },
+    {
+      "file": "src/engine/cnc-job-queue.ts",
+      "lines": 318
+    },
+    {
+      "file": "src/engine/community-catalog.ts",
+      "lines": 142
+    },
+    {
+      "file": "src/engine/constraint-solver.ts",
+      "lines": 320
+    },
+    {
+      "file": "src/engine/cost-estimator.ts",
+      "lines": 150
+    },
+    {
+      "file": "src/engine/cost-summary-export.ts",
+      "lines": 118
+    },
+    {
+      "file": "src/engine/cost-variance.ts",
+      "lines": 152
+    },
+    {
+      "file": "src/engine/cove-cut.ts",
+      "lines": 68
+    },
+    {
+      "file": "src/engine/crdt-sync.ts",
+      "lines": 271
+    },
+    {
+      "file": "src/engine/crown-moulding.ts",
+      "lines": 55
+    },
+    {
+      "file": "src/engine/cut-checklist.ts",
+      "lines": 108
+    },
+    {
+      "file": "src/engine/cut-list-grouping.ts",
+      "lines": 265
+    },
+    {
+      "file": "src/engine/cut-optimizer.ts",
+      "lines": 782
+    },
+    {
+      "file": "src/engine/cut-plan-summary.ts",
+      "lines": 138
+    },
+    {
+      "file": "src/engine/dado-rabbet.ts",
+      "lines": 81
+    },
+    {
+      "file": "src/engine/dark-mode-tokens.ts",
+      "lines": 415
+    },
+    {
+      "file": "src/engine/design-comparison.ts",
+      "lines": 312
+    },
+    {
+      "file": "src/engine/dimensions.ts",
+      "lines": 184
+    },
+    {
+      "file": "src/engine/dovetail-layout.ts",
+      "lines": 224
+    },
+    {
+      "file": "src/engine/dowel-joint.ts",
+      "lines": 200
+    },
+    {
+      "file": "src/engine/drawer-box.ts",
+      "lines": 134
+    },
+    {
+      "file": "src/engine/drawer-runner.ts",
+      "lines": 168
+    },
+    {
+      "file": "src/engine/drawer-slide.ts",
+      "lines": 163
+    },
+    {
+      "file": "src/engine/drill-speed.ts",
+      "lines": 155
+    },
+    {
+      "file": "src/engine/dust-collection.ts",
+      "lines": 282
+    },
+    {
+      "file": "src/engine/edge-banding-calc.ts",
+      "lines": 208
+    },
+    {
+      "file": "src/engine/edge-profile.ts",
+      "lines": 148
+    },
+    {
+      "file": "src/engine/erp-export.ts",
+      "lines": 367
+    },
+    {
+      "file": "src/engine/export/gltf-export.ts",
+      "lines": 286
+    },
+    {
+      "file": "src/engine/export/ifc-export.ts",
+      "lines": 307
+    },
+    {
+      "file": "src/engine/export/index.ts",
+      "lines": 24
+    },
+    {
+      "file": "src/engine/export/step-export.ts",
+      "lines": 320
+    },
+    {
+      "file": "src/engine/export-format.ts",
+      "lines": 189
+    },
+    {
+      "file": "src/engine/export-schema.ts",
+      "lines": 60
+    },
+    {
+      "file": "src/engine/face-frame.ts",
+      "lines": 118
+    },
+    {
+      "file": "src/engine/feed-rate.ts",
+      "lines": 217
+    },
+    {
+      "file": "src/engine/finger-joint.ts",
+      "lines": 127
+    },
+    {
+      "file": "src/engine/finish-calculator.ts",
+      "lines": 167
+    },
+    {
+      "file": "src/engine/finishing-coat.ts",
+      "lines": 72
+    },
+    {
+      "file": "src/engine/frame-panel.ts",
+      "lines": 83
+    },
+    {
+      "file": "src/engine/gcode-toolpath.ts",
+      "lines": 155
+    },
+    {
+      "file": "src/engine/gcode-validator.ts",
+      "lines": 237
+    },
+    {
+      "file": "src/engine/geometry/index.ts",
+      "lines": 18
+    },
+    {
+      "file": "src/engine/gltf-export.ts",
+      "lines": 397
+    },
+    {
+      "file": "src/engine/glue-coverage.ts",
+      "lines": 89
+    },
+    {
+      "file": "src/engine/glue-up-time.ts",
+      "lines": 120
+    },
+    {
+      "file": "src/engine/grain-conflict.ts",
+      "lines": 137
+    },
+    {
+      "file": "src/engine/grain-constraint.ts",
+      "lines": 56
+    },
+    {
+      "file": "src/engine/grain-report.ts",
+      "lines": 176
+    },
+    {
+      "file": "src/engine/half-lap.ts",
+      "lines": 96
+    },
+    {
+      "file": "src/engine/hardware/index.ts",
+      "lines": 13
+    },
+    {
+      "file": "src/engine/hardware-catalog.ts",
+      "lines": 173
+    },
+    {
+      "file": "src/engine/hardware-spec.ts",
+      "lines": 201
+    },
+    {
+      "file": "src/engine/hardware.ts",
+      "lines": 356
+    },
+    {
+      "file": "src/engine/hinge-bore.ts",
+      "lines": 237
+    },
+    {
+      "file": "src/engine/honing-guide.ts",
+      "lines": 47
+    },
+    {
+      "file": "src/engine/i18n-audit.ts",
+      "lines": 137
+    },
+    {
+      "file": "src/engine/index.ts",
+      "lines": 1449
+    },
+    {
+      "file": "src/engine/invariant.ts",
+      "lines": 159
+    },
+    {
+      "file": "src/engine/iso7171.ts",
+      "lines": 334
+    },
+    {
+      "file": "src/engine/joint-detail.ts",
+      "lines": 287
+    },
+    {
+      "file": "src/engine/kerf-bending.ts",
+      "lines": 92
+    },
+    {
+      "file": "src/engine/kerf.ts",
+      "lines": 141
+    },
+    {
+      "file": "src/engine/layout-optimizer.ts",
+      "lines": 189
+    },
+    {
+      "file": "src/engine/layout-suggestions.ts",
+      "lines": 242
+    },
+    {
+      "file": "src/engine/lazy-features.ts",
+      "lines": 158
+    },
+    {
+      "file": "src/engine/machine-profiles.ts",
+      "lines": 283
+    },
+    {
+      "file": "src/engine/machining-job.ts",
+      "lines": 375
+    },
+    {
+      "file": "src/engine/maintenance-scheduler.ts",
+      "lines": 240
+    },
+    {
+      "file": "src/engine/manufacturer-catalog.ts",
+      "lines": 263
+    },
+    {
+      "file": "src/engine/material-cost-tracker.ts",
+      "lines": 194
+    },
+    {
+      "file": "src/engine/material-textures.ts",
+      "lines": 279
+    },
+    {
+      "file": "src/engine/material-usage-report.ts",
+      "lines": 189
+    },
+    {
+      "file": "src/engine/material-yield.ts",
+      "lines": 383
+    },
+    {
+      "file": "src/engine/materials/index.ts",
+      "lines": 28
+    },
+    {
+      "file": "src/engine/materials.ts",
+      "lines": 438
+    },
+    {
+      "file": "src/engine/measurement-assistant.ts",
+      "lines": 220
+    },
+    {
+      "file": "src/engine/memo.ts",
+      "lines": 37
+    },
+    {
+      "file": "src/engine/mirror-cabinet.ts",
+      "lines": 55
+    },
+    {
+      "file": "src/engine/miter-angle.ts",
+      "lines": 152
+    },
+    {
+      "file": "src/engine/mobile-sync.ts",
+      "lines": 248
+    },
+    {
+      "file": "src/engine/moisture-shrinkage.ts",
+      "lines": 90
+    },
+    {
+      "file": "src/engine/mortise-tenon.ts",
+      "lines": 182
+    },
+    {
+      "file": "src/engine/multi-machine.ts",
+      "lines": 310
+    },
+    {
+      "file": "src/engine/multi-stock-optimizer.ts",
+      "lines": 151
+    },
+    {
+      "file": "src/engine/nesting-patterns.ts",
+      "lines": 373
+    },
+    {
+      "file": "src/engine/optimizer/index.ts",
+      "lines": 14
+    },
+    {
+      "file": "src/engine/panel-label.ts",
+      "lines": 169
+    },
+    {
+      "file": "src/engine/parameter-expressions.ts",
+      "lines": 175
+    },
+    {
+      "file": "src/engine/parametric-template.ts",
+      "lines": 552
+    },
+    {
+      "file": "src/engine/part-labeling.ts",
+      "lines": 117
+    },
+    {
+      "file": "src/engine/part-sort.ts",
+      "lines": 121
+    },
+    {
+      "file": "src/engine/parts.ts",
+      "lines": 377
+    },
+    {
+      "file": "src/engine/pbr-materials.ts",
+      "lines": 387
+    },
+    {
+      "file": "src/engine/pilot-hole.ts",
+      "lines": 111
+    },
+    {
+      "file": "src/engine/planer-passes.ts",
+      "lines": 68
+    },
+    {
+      "file": "src/engine/plugin-marketplace.ts",
+      "lines": 234
+    },
+    {
+      "file": "src/engine/plugin-v2.ts",
+      "lines": 318
+    },
+    {
+      "file": "src/engine/plugin.ts",
+      "lines": 468
+    },
+    {
+      "file": "src/engine/pocket-hole.ts",
+      "lines": 189
+    },
+    {
+      "file": "src/engine/production-schedule.ts",
+      "lines": 440
+    },
+    {
+      "file": "src/engine/project-comparison.ts",
+      "lines": 185
+    },
+    {
+      "file": "src/engine/project-library.ts",
+      "lines": 247
+    },
+    {
+      "file": "src/engine/project-settings.ts",
+      "lines": 97
+    },
+    {
+      "file": "src/engine/project-sharing.ts",
+      "lines": 316
+    },
+    {
+      "file": "src/engine/project-sync.ts",
+      "lines": 226
+    },
+    {
+      "file": "src/engine/rafter-length.ts",
+      "lines": 88
+    },
+    {
+      "file": "src/engine/room-planner.ts",
+      "lines": 295
+    },
+    {
+      "file": "src/engine/router-circle.ts",
+      "lines": 53
+    },
+    {
+      "file": "src/engine/router-depth.ts",
+      "lines": 207
+    },
+    {
+      "file": "src/engine/router-template.ts",
+      "lines": 89
+    },
+    {
+      "file": "src/engine/sanding-progression.ts",
+      "lines": 103
+    },
+    {
+      "file": "src/engine/screw-pullout.ts",
+      "lines": 77
+    },
+    {
+      "file": "src/engine/shelf-deflection.ts",
+      "lines": 204
+    },
+    {
+      "file": "src/engine/shelf-pin.ts",
+      "lines": 150
+    },
+    {
+      "file": "src/engine/shelf-spacing.ts",
+      "lines": 219
+    },
+    {
+      "file": "src/engine/shop-inventory.ts",
+      "lines": 159
+    },
+    {
+      "file": "src/engine/smart-optimizer.ts",
+      "lines": 354
+    },
+    {
+      "file": "src/engine/snapshot-diff.ts",
+      "lines": 108
+    },
+    {
+      "file": "src/engine/snapshot-tags.ts",
+      "lines": 145
+    },
+    {
+      "file": "src/engine/spline-joint.ts",
+      "lines": 91
+    },
+    {
+      "file": "src/engine/stair-stringer.ts",
+      "lines": 90
+    },
+    {
+      "file": "src/engine/stock-management.ts",
+      "lines": 362
+    },
+    {
+      "file": "src/engine/stock-tracker.ts",
+      "lines": 130
+    },
+    {
+      "file": "src/engine/substitution.ts",
+      "lines": 152
+    },
+    {
+      "file": "src/engine/tablesaw-blade.ts",
+      "lines": 111
+    },
+    {
+      "file": "src/engine/taper-jig.ts",
+      "lines": 67
+    },
+    {
+      "file": "src/engine/template-data.ts",
+      "lines": 430
+    },
+    {
+      "file": "src/engine/template-dsl.ts",
+      "lines": 163
+    },
+    {
+      "file": "src/engine/template-library.ts",
+      "lines": 209
+    },
+    {
+      "file": "src/engine/templates.ts",
+      "lines": 84
+    },
+    {
+      "file": "src/engine/time-estimator.ts",
+      "lines": 180
+    },
+    {
+      "file": "src/engine/tool-wear.ts",
+      "lines": 339
+    },
+    {
+      "file": "src/engine/types.ts",
+      "lines": 583
+    },
+    {
+      "file": "src/engine/validation/dimension-rules.ts",
+      "lines": 222
+    },
+    {
+      "file": "src/engine/validation/door-rules.ts",
+      "lines": 297
+    },
+    {
+      "file": "src/engine/validation/shelf-rules.ts",
+      "lines": 300
+    },
+    {
+      "file": "src/engine/validation.ts",
+      "lines": 262
+    },
+    {
+      "file": "src/engine/veneer-calc.ts",
+      "lines": 173
+    },
+    {
+      "file": "src/engine/version-history.ts",
+      "lines": 500
+    },
+    {
+      "file": "src/engine/waste-alert.ts",
+      "lines": 174
+    },
+    {
+      "file": "src/engine/waste-analytics.ts",
+      "lines": 187
+    },
+    {
+      "file": "src/engine/waste-predictor.ts",
+      "lines": 194
+    },
+    {
+      "file": "src/engine/webgl-probe.ts",
+      "lines": 74
+    },
+    {
+      "file": "src/engine/webgpu-renderer.ts",
+      "lines": 379
+    },
+    {
+      "file": "src/engine/webserial-v2.ts",
+      "lines": 374
+    },
+    {
+      "file": "src/engine/webserial.ts",
+      "lines": 131
+    },
+    {
+      "file": "src/engine/webxr-placement.ts",
+      "lines": 239
+    },
+    {
+      "file": "src/engine/wood-drying.ts",
+      "lines": 186
+    },
+    {
+      "file": "src/engine/wood-movement.ts",
+      "lines": 173
+    },
+    {
+      "file": "src/engine/wood-turning.ts",
+      "lines": 67
+    },
+    {
+      "file": "src/engine/workshop-safety.ts",
+      "lines": 294
+    },
+    {
+      "file": "src/engine/workspace.ts",
+      "lines": 242
+    },
+    {
+      "file": "src/engine/zone-validator.ts",
+      "lines": 139
+    },
+    {
+      "file": "src/env.d.ts",
+      "lines": 40
+    },
+    {
+      "file": "src/hooks/useCamera.ts",
+      "lines": 126
+    },
+    {
+      "file": "src/hooks/useFocusTrap.ts",
+      "lines": 60
+    },
+    {
+      "file": "src/hooks/useHaptics.ts",
+      "lines": 79
+    },
+    {
+      "file": "src/hooks/useIntersectionVisible.ts",
+      "lines": 59
+    },
+    {
+      "file": "src/hooks/usePwaFileHandlers.ts",
+      "lines": 73
+    },
+    {
+      "file": "src/hooks/useSwUpdate.ts",
+      "lines": 62
+    },
+    {
+      "file": "src/hooks/useSystemDarkMode.ts",
+      "lines": 30
+    },
+    {
+      "file": "src/hooks/useTouchGestures.ts",
+      "lines": 78
+    },
+    {
+      "file": "src/i18n/ar.json",
+      "lines": 2229
+    },
+    {
+      "file": "src/i18n/de.json",
+      "lines": 2241
+    },
+    {
+      "file": "src/i18n/en.json",
+      "lines": 2503
+    },
+    {
+      "file": "src/i18n/es.json",
+      "lines": 2241
+    },
+    {
+      "file": "src/i18n/fr.json",
+      "lines": 2241
+    },
+    {
+      "file": "src/i18n/he.json",
+      "lines": 2503
+    },
+    {
+      "file": "src/i18n/index.ts",
+      "lines": 55
+    },
+    {
+      "file": "src/index.css",
+      "lines": 464
+    },
+    {
+      "file": "src/main.tsx",
+      "lines": 31
+    },
+    {
+      "file": "src/services/capability-contracts.ts",
+      "lines": 95
+    },
+    {
+      "file": "src/services/error-reporter.ts",
+      "lines": 116
+    },
+    {
+      "file": "src/services/supabase.ts",
+      "lines": 109
+    },
+    {
+      "file": "src/site/components/BrandMark.tsx",
+      "lines": 15
+    },
+    {
+      "file": "src/site/components/BrandServiceIcon.tsx",
+      "lines": 49
+    },
+    {
+      "file": "src/site/components/CabinetArtwork.tsx",
+      "lines": 193
+    },
+    {
+      "file": "src/site/components/DiamondMark.tsx",
+      "lines": 4
+    },
+    {
+      "file": "src/site/components/EditorialImage.tsx",
+      "lines": 71
+    },
+    {
+      "file": "src/site/components/SectionHeading.tsx",
+      "lines": 26
+    },
+    {
+      "file": "src/site/components/SiteFooter.tsx",
+      "lines": 57
+    },
+    {
+      "file": "src/site/components/SiteHeader.tsx",
+      "lines": 126
+    },
+    {
+      "file": "src/site/components/SiteLink.tsx",
+      "lines": 29
+    },
+    {
+      "file": "src/site/content.ts",
+      "lines": 54
+    },
+    {
+      "file": "src/site/pages/ApartmentsPage.tsx",
+      "lines": 226
+    },
+    {
+      "file": "src/site/pages/ContactPage.tsx",
+      "lines": 68
+    },
+    {
+      "file": "src/site/pages/EditorialPages.tsx",
+      "lines": 190
+    },
+    {
+      "file": "src/site/pages/HomeDetails.tsx",
+      "lines": 152
+    },
+    {
+      "file": "src/site/pages/HomePage.tsx",
+      "lines": 79
+    },
+    {
+      "file": "src/site/pages/ImportApartmentPage.tsx",
+      "lines": 417
+    },
+    {
+      "file": "src/site/pages/MyApartmentPage.tsx",
+      "lines": 49
+    },
+    {
+      "file": "src/site/pages/NotFoundPage.tsx",
+      "lines": 15
+    },
+    {
+      "file": "src/site/pages/SummaryPage.tsx",
+      "lines": 135
+    },
+    {
+      "file": "src/site/router.ts",
+      "lines": 80
+    },
+    {
+      "file": "src/site/site.css",
+      "lines": 2121
+    },
+    {
+      "file": "src/site/TiferetSite.tsx",
+      "lines": 145
+    },
+    {
+      "file": "src/site/types.ts",
+      "lines": 4
+    },
+    {
+      "file": "src/store/cabinet-store.ts",
+      "lines": 783
+    },
+    {
+      "file": "src/store/cost-variance-store.ts",
+      "lines": 28
+    },
+    {
+      "file": "src/store/custom-materials-store.ts",
+      "lines": 34
+    },
+    {
+      "file": "src/store/room-store.ts",
+      "lines": 143
+    },
+    {
+      "file": "src/store/slices/namedExpressionsSlice.ts",
+      "lines": 146
+    },
+    {
+      "file": "src/store/slices/optimizerSettingsSlice.ts",
+      "lines": 205
+    },
+    {
+      "file": "src/store/slices/snapshotSlice.ts",
+      "lines": 109
+    },
+    {
+      "file": "src/store/slices/uiSlice.ts",
+      "lines": 275
+    },
+    {
+      "file": "src/store/stock-tracker-store.ts",
+      "lines": 38
+    },
+    {
+      "file": "src/store/toast-store.ts",
+      "lines": 28
+    },
+    {
+      "file": "src/store/worker-schedule.ts",
+      "lines": 343
+    },
+    {
+      "file": "src/utils/ai-assistant.ts",
+      "lines": 236
+    },
+    {
+      "file": "src/utils/app-mode.ts",
+      "lines": 14
+    },
+    {
+      "file": "src/utils/ar-placement.ts",
+      "lines": 286
+    },
+    {
+      "file": "src/utils/audit-log.ts",
+      "lines": 198
+    },
+    {
+      "file": "src/utils/batch-export.ts",
+      "lines": 173
+    },
+    {
+      "file": "src/utils/bom-export.ts",
+      "lines": 455
+    },
+    {
+      "file": "src/utils/browser-compat.ts",
+      "lines": 123
+    },
+    {
+      "file": "src/utils/catalog-import.ts",
+      "lines": 74
+    },
+    {
+      "file": "src/utils/checksum.ts",
+      "lines": 40
+    },
+    {
+      "file": "src/utils/command-palette.ts",
+      "lines": 210
+    },
+    {
+      "file": "src/utils/community-catalog.ts",
+      "lines": 205
+    },
+    {
+      "file": "src/utils/cost-comparison.ts",
+      "lines": 208
+    },
+    {
+      "file": "src/utils/crdt-sync.ts",
+      "lines": 242
+    },
+    {
+      "file": "src/utils/download.ts",
+      "lines": 11
+    },
+    {
+      "file": "src/utils/dxf-builders.ts",
+      "lines": 407
+    },
+    {
+      "file": "src/utils/dxf-export.ts",
+      "lines": 153
+    },
+    {
+      "file": "src/utils/erp-export.ts",
+      "lines": 204
+    },
+    {
+      "file": "src/utils/export-presets.ts",
+      "lines": 232
+    },
+    {
+      "file": "src/utils/gcode-export.ts",
+      "lines": 221
+    },
+    {
+      "file": "src/utils/gltf-download.ts",
+      "lines": 23
+    },
+    {
+      "file": "src/utils/ifc-download.ts",
+      "lines": 27
+    },
+    {
+      "file": "src/utils/ifc-export.ts",
+      "lines": 224
+    },
+    {
+      "file": "src/utils/indexed-db-storage.ts",
+      "lines": 225
+    },
+    {
+      "file": "src/utils/local-storage.ts",
+      "lines": 43
+    },
+    {
+      "file": "src/utils/plugin-marketplace.ts",
+      "lines": 242
+    },
+    {
+      "file": "src/utils/price-history.ts",
+      "lines": 148
+    },
+    {
+      "file": "src/utils/project-branching.ts",
+      "lines": 227
+    },
+    {
+      "file": "src/utils/project-storage.ts",
+      "lines": 332
+    },
+    {
+      "file": "src/utils/step-download.ts",
+      "lines": 26
+    },
+    {
+      "file": "src/utils/units.ts",
+      "lines": 33
+    },
+    {
+      "file": "src/utils/url-state.ts",
+      "lines": 325
+    },
+    {
+      "file": "src/utils/voice-annotation.ts",
+      "lines": 239
+    },
+    {
+      "file": "src/utils/webserial-cnc.ts",
+      "lines": 196
+    },
+    {
+      "file": "src/utils/zip-writer.ts",
+      "lines": 184
+    },
+    {
+      "file": "src/WoodworkingShopApp.tsx",
+      "lines": 348
+    },
+    {
+      "file": "src/workers/assembly.worker.ts",
+      "lines": 26
+    },
+    {
+      "file": "src/workers/bom-export.worker.ts",
+      "lines": 39
+    },
+    {
+      "file": "src/workers/cost-estimator.worker.ts",
+      "lines": 56
+    },
+    {
+      "file": "src/workers/cut-optimizer.worker.ts",
+      "lines": 92
+    },
+    {
+      "file": "src/workers/dxf-export.worker.ts",
+      "lines": 160
+    },
+    {
+      "file": "src/workers/shared-buffer.ts",
+      "lines": 65
+    },
+    {
+      "file": "src/WorkshopMode.tsx",
+      "lines": 41
+    }
+  ]
+}

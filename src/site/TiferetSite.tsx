@@ -3,7 +3,8 @@ import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 import { HomePage } from './pages/HomePage';
 import { parseSiteLocation, sitePath, type SiteRoute } from './router';
-import { restoreImportedApartments } from '../apartment/persistence/imported-apartments';
+import { resolveApartment } from '../apartment/data/apartment-registry';
+import { ErrorBoundary } from '../components/layout/ErrorBoundary';
 import './site.css';
 
 const PlannerApp = lazy(() => import('../apartment/PlannerApp').then((module) => ({ default: module.PlannerApp })));
@@ -51,6 +52,8 @@ function pageTitle(route: SiteRoute): string {
 
 export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) {
   const [route, setRoute] = useState<SiteRoute>(readRoute);
+  const [importRevision, setImportRevision] = useState(0);
+  const title = pageTitle(route);
 
   useEffect(() => {
     const parsed = parseSiteLocation(window.location.pathname, window.location.search);
@@ -63,8 +66,22 @@ export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) 
   useEffect(() => {
     document.documentElement.lang = 'he';
     document.documentElement.dir = 'rtl';
-    document.title = pageTitle(route);
-  }, [route]);
+    document.title = title;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    const focusHeading = () => {
+      const heading = document.querySelector<HTMLElement>('main h1');
+      if (!heading) return false;
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+      return true;
+    };
+    if (focusHeading()) return;
+    const observer = new MutationObserver(() => {
+      if (focusHeading()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [title]);
 
   const navigate = useCallback((nextRoute: SiteRoute) => {
     window.history.pushState({}, '', sitePath(nextRoute));
@@ -72,9 +89,7 @@ export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) 
   }, []);
 
   if (route.id === 'design') {
-    const importedApartment = route.apartmentId
-      ? restoreImportedApartments(localStorage).find((apartment) => apartment.id === route.apartmentId)
-      : undefined;
+    const importedApartment = resolveApartment(route.apartmentId);
     if (route.apartmentId && importedApartment === undefined) {
       return (
         <main className="grid min-h-screen place-items-center bg-[#f5f1e9] p-6 text-center" dir="rtl">
@@ -93,15 +108,27 @@ export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) 
       );
     }
     return (
-      <Suspense fallback={<main aria-busy="true">טוען את מתכנן הנגרות…</main>}>
-        <PlannerApp
-          initialStarted
-          initialRoomId={route.roomId}
-          initialApartment={importedApartment}
-          onExit={() => navigate({ id: importedApartment ? 'import' : 'my-apartment' })}
-          onSummary={importedApartment ? undefined : () => navigate({ id: 'summary' })}
-        />
-      </Suspense>
+      <ErrorBoundary
+        key={`${route.apartmentId ?? 'default'}:${route.designId ?? 'draft'}:${importRevision}`}
+        panelName="מתכנן הדירה"
+      >
+        <Suspense fallback={<main aria-busy="true">טוען את מתכנן הנגרות…</main>}>
+          <PlannerApp
+            initialStarted
+            initialRoomId={route.roomId}
+            initialApartment={importedApartment}
+            initialDesignId={route.designId}
+            onRoomChange={(roomId) => navigate({ ...route, roomId })}
+            onDesignChange={(designId) => navigate({ ...route, designId })}
+            onApartmentChange={(apartmentId) => {
+              setImportRevision((revision) => revision + 1);
+              navigate({ id: 'design', apartmentId, roomId: resolveApartment(apartmentId)?.rooms[0]?.id ?? 'bedroom' });
+            }}
+            onExit={() => navigate({ id: 'my-apartment', apartmentId: importedApartment?.id })}
+            onSummary={() => navigate({ id: 'summary', apartmentId: importedApartment?.id })}
+          />
+        </Suspense>
+      </ErrorBoundary>
     );
   }
 
@@ -112,9 +139,17 @@ export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) 
       case 'apartments':
         return <ApartmentsPage navigate={navigate} />;
       case 'my-apartment':
-        return <MyApartmentPage navigate={navigate} />;
+        return resolveApartment(route.apartmentId) ? (
+          <MyApartmentPage navigate={navigate} apartment={resolveApartment(route.apartmentId)} />
+        ) : (
+          <NotFoundPage navigate={navigate} />
+        );
       case 'summary':
-        return <SummaryPage navigate={navigate} />;
+        return resolveApartment(route.apartmentId) ? (
+          <SummaryPage navigate={navigate} apartment={resolveApartment(route.apartmentId)} />
+        ) : (
+          <NotFoundPage navigate={navigate} />
+        );
       case 'inspiration':
         return <InspirationPage navigate={navigate} />;
       case 'materials':
@@ -136,7 +171,9 @@ export function TiferetSite({ onOpenWorkshop }: { onOpenWorkshop: () => void }) 
     <div className="ng-site" dir="rtl">
       <SiteHeader route={route} navigate={navigate} onOpenWorkshop={onOpenWorkshop} />
       <main id="ng-main">
-        <Suspense fallback={<div aria-busy="true">טוען את העמוד…</div>}>{page}</Suspense>
+        <ErrorBoundary key={sitePath(route)} panelName="תפארת">
+          <Suspense fallback={<div aria-busy="true">טוען את העמוד…</div>}>{page}</Suspense>
+        </ErrorBoundary>
       </main>
       <SiteFooter navigate={navigate} />
     </div>

@@ -9,6 +9,8 @@ import {
 } from './validation/door-rules';
 import { checkDimensionRules } from './validation/dimension-rules';
 import { checkShelfRules, checkJoineryConstraints } from './validation/shelf-rules';
+import { buildPartInstances } from './part-instances';
+import { DRAWER_FRONT_EXTRA_HEIGHT_MM, DRAWER_FACE_GAP_MM } from './layout-constants';
 
 // ── Phase 12 / Sprint 9 — Custom rule registry ───────────────────────────────
 
@@ -63,7 +65,7 @@ const MIN_DRAWER_HEIGHT_MM = 100;
  */
 export function validateConfig(
   config: CabinetConfig,
-  extraMaterials?: Parameters<typeof getMaterial>[1],
+  extraMaterials: Parameters<typeof getMaterial>[1] = config.materialCatalog,
 ): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
 
@@ -134,9 +136,12 @@ export function validateConfig(
 
   // ── Drawer vs cabinet height checks ──
 
-  if (config.drawerCount > 0) {
-    const defaultDrawerH = 150;
-    const drawerStackH = config.drawerCount * (defaultDrawerH + 10); // 10 mm gaps
+  if (config.drawerCount > 0 && (config.furnitureType === 'cabinet' || config.furnitureType === 'wardrobe')) {
+    const heights = Array.from({ length: config.drawerCount }, (_, i) => config.drawerHeights?.[i] ?? 150);
+    const drawerStackH = heights.reduce(
+      (sum, height) => sum + height + DRAWER_FRONT_EXTRA_HEIGHT_MM + DRAWER_FACE_GAP_MM,
+      0,
+    );
     const remainingH = dims.internalHeight - drawerStackH;
 
     if (remainingH < MIN_ABOVE_DRAWERS_MM && config.shelfCount > 0) {
@@ -170,9 +175,7 @@ export function validateConfig(
 
     // ── Per-drawer height checks (Sprint 13) ──
 
-    const drawerGapMm = 10; // clearance between drawer faces
-    const heights: number[] = Array.from({ length: config.drawerCount }, (_, i) => config.drawerHeights?.[i] ?? 150);
-    const totalStackH = heights.reduce((s, h) => s + h, 0) + (config.drawerCount - 1) * drawerGapMm;
+    const totalStackH = drawerStackH;
 
     const tooShallowIdx = heights.findIndex((h) => h < MIN_DRAWER_HEIGHT_MM);
     if (tooShallowIdx >= 0) {
@@ -220,12 +223,45 @@ export function validateConfig(
 
   // ── Shelf / deflection / joinery span checks ──
   issues.push(...checkShelfRules(config, dims, mat, t));
+  const normalizedConfig =
+    extraMaterials === config.materialCatalog ? config : { ...config, materialCatalog: extraMaterials };
+  const instances = mat && config.furnitureType !== 'panel' ? buildPartInstances(normalizedConfig) : [];
+  if (mat && config.furnitureType !== 'panel') {
+    const shelves = instances.filter((instance) => instance.part.name.en.includes('Shelf'));
+    const plinth =
+      config.furnitureType === 'cabinet' || config.furnitureType === 'wardrobe' ? (config.kickHeight ?? 0) : 0;
+    const drawerTop = instances
+      .filter((instance) => /^Drawer \d+ Front$/.test(instance.part.name.en))
+      .reduce((height, instance) => Math.max(height, instance.center[1] + instance.size[1] / 2), plinth + t);
+    const overlaps = shelves.some((shelf, index) => {
+      const bottom = shelf.center[1] - shelf.size[1] / 2;
+      if (bottom < drawerTop - 0.001 || shelf.center[1] + shelf.size[1] / 2 > config.height - t + 0.001) return true;
+      return shelves
+        .slice(index + 1)
+        .some((other) =>
+          [0, 1, 2].every(
+            (axis) =>
+              Math.abs(shelf.center[axis] - other.center[axis]) < (shelf.size[axis] + other.size[axis]) / 2 - 0.001,
+          ),
+        );
+    });
+    if (overlaps)
+      issues.push({
+        code: 'SHELF_PHYSICAL_OVERLAP',
+        severity: 'error',
+        field: 'customShelfPositions',
+        message: {
+          en: 'A shelf intersects another shelf, the drawer stack, or the carcass. Adjust shelf positions or reduce the shelf count.',
+          he: 'מדף חופף למדף אחר, למגירות או לגוף הארון. שנו את מיקומי המדפים או הפחיתו את מספרם.',
+        },
+      });
+  }
 
   // ── Structural / manufacturing / dimension rules ──
   issues.push(...checkDimensionRules(config, t, extraMaterials));
 
   // ── Hinge arm / shelf clearance (Phase 5 assembly risk) ──
-  issues.push(...checkHingeShelfInterference(config, dims, t));
+  issues.push(...checkHingeShelfInterference(normalizedConfig, dims, t, instances));
 
   // ── Depth too shallow for door hinges (Sprint 75) ──
   issues.push(...checkDoorDepth(config));

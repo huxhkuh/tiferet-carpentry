@@ -13,8 +13,12 @@ export function placementTransform(wall: Wall, distanceFromWallStart: number): P
 }
 
 export function placementTransformForRoom(wall: Wall, room: Room, distanceFromWallStart: number): PlacementTransform {
-  const point = pointAlongWall(wall, distanceFromWallStart);
-  return { ...point, orientation: wallFrame(wall, room).inwardOrientation };
+  const frame = wallFrame(wall, room);
+  return {
+    x: frame.origin.x + frame.tangent.x * distanceFromWallStart,
+    y: frame.origin.y + frame.tangent.y * distanceFromWallStart,
+    orientation: frame.inwardOrientation,
+  };
 }
 
 export function cabinetFootprint(
@@ -25,7 +29,10 @@ export function cabinetFootprint(
   room?: Room,
 ): Point[] {
   const frame = wallFrame(wall, room);
-  const first = pointAlongWall(wall, distanceFromWallStart);
+  const first = {
+    x: frame.origin.x + frame.tangent.x * distanceFromWallStart,
+    y: frame.origin.y + frame.tangent.y * distanceFromWallStart,
+  };
   const second = {
     x: first.x + frame.tangent.x * width,
     y: first.y + frame.tangent.y * width,

@@ -1,6 +1,6 @@
 import { Page, Text, View } from '@react-pdf/renderer';
 import type { CutSheet } from '../../../engine/types';
-import { getMaterial } from '../../../engine/materials';
+import { resolveMaterial } from '../../../engine/materials';
 import { s, C } from '../pdf-tokens';
 import type { PdfCtx } from '../pdf-i18n';
 import { PageHeader, PageFooter } from './PageChrome';
@@ -15,7 +15,7 @@ interface PdfCutSheetPageProps {
 export function PdfCutSheetPage({ ctx, sheet, totalSheets, isMultiCabinet }: PdfCutSheetPageProps) {
   const { T, fontFamily, fontFamilyBold, isRTL, lang, date, coverTitle, pageSize } = ctx;
 
-  const mat = getMaterial(sheet.material);
+  const mat = resolveMaterial(sheet);
   // ── Coordinate system note ──────────────────────────────────────────
   // The cut-optimizer uses: x → across sheetWidth, y → along sheetLength
   // (grain direction).  Standard sheet: sheetWidth=1220 mm, sheetLength=2440 mm.

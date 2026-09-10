@@ -1,9 +1,25 @@
 # Roadmap
 
-> Last updated: 2026-06-28
+> Last updated: 2026-09-10
 > Current app version: v5.32.0
 > Next release target: v5.33.0
 > Strategy: best-in-class, local-first, production-grade woodworking planning platform
+
+---
+
+## Current implementation status
+
+The September audit and local remediation take precedence over aspirational feature claims below:
+[audit and action plan](docs/audits/2026-09-09/AUDIT-AND-ACTION-PLAN.he.md),
+[implementation and verification](docs/audits/2026-09-09/REMEDIATION.he.md), and
+[tracked backlog](docs/audits/2026-09-09/ACTION-BACKLOG.csv).
+
+The immediate product is a Hebrew apartment planning tool that produces a consistent preliminary
+specification for a carpenter. Manufacturing validation, measured architectural geometry, actual
+supplier prices and a business contact destination are separate acceptance requirements. Existing
+sample prices and generic G-code are not a verified quotation or a machine-qualified production program.
+
+Local remediation does not change the published version or imply a deployment.
 
 ---
 

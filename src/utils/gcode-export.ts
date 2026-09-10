@@ -4,6 +4,8 @@ import { validateGcode, type GcodeValidationResult } from '../engine/gcode-valid
 import { applyGcodePlugins } from '../engine/plugin';
 import { appendChecksumToGcode } from './checksum';
 import { GCODE_SCHEMA_VERSION } from '../engine/export-schema';
+import { buildZip, downloadZip } from './zip-writer';
+import { utf8Encode } from './browser-compat';
 
 /**
  * Generate basic G-code for a CNC router to cut parts from a sheet.
@@ -31,6 +33,8 @@ export interface GcodeOptions {
    * automatic tool-changer. Defaults to false.
    */
   emitToolChange: boolean;
+  tabWidth?: number;
+  tabHeight?: number;
 }
 
 const DEFAULTS: GcodeOptions = {
@@ -42,7 +46,62 @@ const DEFAULTS: GcodeOptions = {
   toolDiameter: 6,
   useArcs: false,
   emitToolChange: false,
+  tabWidth: 8,
+  tabHeight: 2,
 };
+
+function validateOptions(options: GcodeOptions): void {
+  for (const value of [
+    options.feedRate,
+    options.plungeRate,
+    options.safeZ,
+    options.cutDepth,
+    options.passDepth,
+    options.toolDiameter,
+  ]) {
+    if (!Number.isFinite(value) || value <= 0) throw new RangeError('CNC parameters must be finite positive numbers');
+  }
+  if (Math.ceil(options.cutDepth / options.passDepth) > 500) throw new RangeError('Too many cutting passes');
+  if (![options.tabWidth ?? 8, options.tabHeight ?? 2].every((value) => Number.isFinite(value) && value >= 0))
+    throw new RangeError('Invalid holding tabs');
+}
+
+function validateToolClearance(sheet: CutSheet, diameter: number): void {
+  if (
+    ![sheet.sheetWidth, sheet.sheetLength, sheet.thickness].every((value) => Number.isFinite(value) && value > 0) ||
+    !Number.isInteger(sheet.sheetIndex) ||
+    sheet.sheetIndex < 0
+  )
+    throw new RangeError('Invalid CNC sheet dimensions or index');
+  for (let i = 0; i < sheet.parts.length; i++) {
+    const a = sheet.parts[i];
+    if (
+      ![a.x, a.y, a.width, a.length].every(Number.isFinite) ||
+      a.width <= 0 ||
+      a.length <= 0 ||
+      a.x < 0 ||
+      a.y < 0 ||
+      a.x + a.width > sheet.sheetWidth ||
+      a.y + a.length > sheet.sheetLength
+    )
+      throw new RangeError('A part is outside the CNC sheet');
+    for (const b of sheet.parts.slice(i + 1)) {
+      const gapX = Math.max(a.x - b.x - b.width, b.x - a.x - a.width, 0);
+      const gapY = Math.max(a.y - b.y - b.length, b.y - a.y - a.length, 0);
+      if (Math.hypot(gapX, gapY) < diameter - 1e-6)
+        throw new RangeError(
+          `CNC tool ${diameter} mm requires more space between ${a.partId} and ${b.partId}. Re-optimize with a kerf of at least ${diameter} mm.`,
+        );
+    }
+  }
+}
+
+/** Keep user-controlled labels on one comment line, never as machine instructions. */
+function commentText(value: string): string {
+  return Array.from(value, (character) =>
+    character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127 ? ' ' : character,
+  ).join('');
+}
 
 /**
  * Generate G-code for cutting all parts from a single sheet.
@@ -50,6 +109,8 @@ const DEFAULTS: GcodeOptions = {
  */
 export function cutSheetToGcode(sheet: CutSheet, opts?: Partial<GcodeOptions>): string {
   const o = { ...DEFAULTS, ...opts, cutDepth: opts?.cutDepth ?? sheet.thickness };
+  validateOptions(o);
+  validateToolClearance(sheet, o.toolDiameter);
   const offset = o.toolDiameter / 2;
   const lines: string[] = [];
 
@@ -58,7 +119,7 @@ export function cutSheetToGcode(sheet: CutSheet, opts?: Partial<GcodeOptions>): 
   lines.push(`; Cabinet Planner G-code Export`);
   lines.push(`; Version: ${__APP_VERSION__}  Schema: ${GCODE_SCHEMA_VERSION}`);
   lines.push(`; Generated: ${generatedAt}`);
-  lines.push(`; G-code for sheet ${sheet.sheetIndex + 1} - ${sheet.material} ${sheet.thickness}mm`);
+  lines.push(`; G-code for sheet ${sheet.sheetIndex + 1} - ${commentText(sheet.material)} ${sheet.thickness}mm`);
   lines.push(`; Sheet size: ${sheet.sheetWidth} x ${sheet.sheetLength} mm`);
   lines.push(`; Tool diameter: ${o.toolDiameter} mm, Feed: ${o.feedRate} mm/min`);
   lines.push(`; Parts: ${sheet.parts.length}`);
@@ -80,7 +141,7 @@ export function cutSheetToGcode(sheet: CutSheet, opts?: Partial<GcodeOptions>): 
       lines.push('M3 S18000 ; spindle on');
       lines.push('');
     }
-    lines.push(`; --- Cut: ${part.partId} ${part.label} (${part.width}x${part.length}) ---`);
+    lines.push(`; --- Cut: ${commentText(part.partId)} ${commentText(part.label)} (${part.width}x${part.length}) ---`);
     addPartProfile(lines, part, o, offset);
     lines.push('');
   }
@@ -114,10 +175,33 @@ function addPartProfile(lines: string[], part: CutRect, opts: GcodeOptions, offs
     lines.push(`G1 Z${z.toFixed(2)} F${opts.plungeRate}`);
 
     // Cut rectangle CW: bottom→right→top→left→close
-    lines.push(`G1 X${x2.toFixed(2)} Y${y1.toFixed(2)} F${opts.feedRate}`);
-    lines.push(`G1 X${x2.toFixed(2)} Y${y2.toFixed(2)}`);
-    lines.push(`G1 X${x1.toFixed(2)} Y${y2.toFixed(2)}`);
-    lines.push(`G1 X${x1.toFixed(2)} Y${y1.toFixed(2)}`);
+    const corners = [
+      [x1, y1],
+      [x2, y1],
+      [x2, y2],
+      [x1, y2],
+      [x1, y1],
+    ];
+    for (let side = 1; side < corners.length; side++) {
+      const [ax, ay] = corners[side - 1],
+        [bx, by] = corners[side];
+      const length = Math.hypot(bx - ax, by - ay);
+      const tabWidth = Math.min(opts.tabWidth ?? 8, length / 3);
+      const tabZ = -Math.max(0, opts.cutDepth - (opts.tabHeight ?? 2));
+      if (tabWidth > 0 && (opts.tabHeight ?? 2) > 0 && z < tabZ) {
+        const first = (length - tabWidth) / (2 * length),
+          last = (length + tabWidth) / (2 * length);
+        const tx = ax + (bx - ax) * first,
+          ty = ay + (by - ay) * first;
+        const ux = ax + (bx - ax) * last,
+          uy = ay + (by - ay) * last;
+        lines.push(`G1 X${tx.toFixed(2)} Y${ty.toFixed(2)} F${opts.feedRate}`);
+        lines.push(`G1 X${tx.toFixed(2)} Y${ty.toFixed(2)} Z${tabZ.toFixed(2)} ; holding tab`);
+        lines.push(`G1 X${ux.toFixed(2)} Y${uy.toFixed(2)}`);
+        lines.push(`G1 X${ux.toFixed(2)} Y${uy.toFixed(2)} Z${z.toFixed(2)} F${opts.plungeRate}`);
+      }
+      lines.push(`G1 X${bx.toFixed(2)} Y${by.toFixed(2)} F${opts.feedRate}`);
+    }
   }
 
   // Retract after part
@@ -136,20 +220,41 @@ export function downloadGcodeForSheet(
   return validation;
 }
 
-/** Download G-code for all sheets as separate files (zipped in a single combined file) */
+/** Separate machine jobs: each sheet ends once and is identified in the manifest. */
 export async function downloadAllSheetsGcode(
   sheets: CutSheet[],
   projectName: string,
   opts?: Partial<GcodeOptions>,
 ): Promise<void> {
-  const combined: string[] = [];
-  for (const sheet of sheets) {
-    combined.push(cutSheetToGcode(sheet, opts));
-    combined.push(''); // blank line between sheets
-  }
-  const body = combined.join('\n');
-  const content = await appendChecksumToGcode(body);
-  triggerDownload(content, 'text/plain', `${projectName}-all-sheets.nc`);
+  const entries = await Promise.all(
+    sheets.map(async (sheet, index) => ({
+      name: `sheet-${index + 1}.nc`,
+      data: utf8Encode(await appendChecksumToGcode(cutSheetToGcode(sheet, opts))),
+    })),
+  );
+  entries.push({
+    name: 'manifest.json',
+    data: utf8Encode(
+      JSON.stringify(
+        {
+          projectName,
+          units: 'mm',
+          jobs: sheets.map((sheet, index) => ({
+            file: `sheet-${index + 1}.nc`,
+            material: sheet.material,
+            thickness: sheet.thickness,
+            sheetWidth: sheet.sheetWidth,
+            sheetLength: sheet.sheetLength,
+          })),
+          setup:
+            'Load and secure each sheet separately. Verify work origin, tool, clamps and controller simulation before running.',
+        },
+        null,
+        2,
+      ),
+    ),
+  });
+  downloadZip(buildZip(entries), `${projectName}-cnc-jobs.zip`);
 }
 
 /**
@@ -171,6 +276,9 @@ export async function downloadAllSheetsGcode(
  */
 export function circularPocketToGcode(cx: number, cy: number, radius: number, opts?: Partial<GcodeOptions>): string {
   const o: GcodeOptions = { ...DEFAULTS, ...opts };
+  validateOptions(o);
+  if (![cx, cy, radius].every(Number.isFinite) || radius <= 0 || o.toolDiameter > radius * 2)
+    throw new RangeError('Pocket geometry must fit the selected tool');
   const lines: string[] = [];
   const cutR = radius - o.toolDiameter / 2; // compensated cut radius
 

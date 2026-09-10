@@ -11,7 +11,9 @@ export type StaticSiteRouteId =
   | 'import'
   | 'not-found';
 
-export type SiteRoute = { id: StaticSiteRouteId } | { id: 'design'; roomId: string; apartmentId?: string };
+export type SiteRoute =
+  | { id: StaticSiteRouteId; apartmentId?: string }
+  | { id: 'design'; roomId: string; apartmentId?: string; designId?: string };
 
 export interface ParsedSiteLocation {
   route: SiteRoute;
@@ -38,14 +40,23 @@ function normalizeBasePath(basePath: string): string {
 }
 
 function routeFromRelativePath(relativePath: string, search: string): SiteRoute {
+  const apartmentId = new URLSearchParams(search).get('apartment')?.trim();
+  const designId = new URLSearchParams(search).get('design')?.trim();
   const normalized = relativePath.replace(/^\/+|\/+$/g, '');
   if (!normalized) return { id: 'home' };
   if (normalized.startsWith('design/')) {
-    const roomId = decodeURIComponent(normalized.slice('design/'.length));
-    const apartmentId = new URLSearchParams(search).get('apartment')?.trim();
-    return roomId ? { id: 'design', roomId, ...(apartmentId ? { apartmentId } : {}) } : { id: 'not-found' };
+    let roomId: string;
+    try {
+      roomId = decodeURIComponent(normalized.slice('design/'.length));
+    } catch {
+      return { id: 'not-found' };
+    }
+    return roomId
+      ? { id: 'design', roomId, ...(apartmentId ? { apartmentId } : {}), ...(designId ? { designId } : {}) }
+      : { id: 'not-found' };
   }
-  if (STATIC_ROUTES.has(normalized as StaticSiteRouteId)) return { id: normalized as StaticSiteRouteId };
+  if (STATIC_ROUTES.has(normalized as StaticSiteRouteId))
+    return { id: normalized as StaticSiteRouteId, ...(apartmentId ? { apartmentId } : {}) };
   return { id: 'not-found' };
 }
 
@@ -53,18 +64,21 @@ export function sitePath(route: SiteRoute, basePath = DEFAULT_BASE_PATH): string
   const base = normalizeBasePath(basePath);
   if (route.id === 'home') return base;
   if (route.id === 'design') {
-    const apartmentQuery = route.apartmentId ? `?apartment=${encodeURIComponent(route.apartmentId)}` : '';
+    const query = new URLSearchParams();
+    if (route.apartmentId) query.set('apartment', route.apartmentId);
+    if (route.designId) query.set('design', route.designId);
+    const apartmentQuery = query.size ? `?${query}` : '';
     return `${base}design/${encodeURIComponent(route.roomId)}${apartmentQuery}`;
   }
   if (route.id === 'not-found') return `${base}not-found`;
-  return `${base}${route.id}`;
+  return `${base}${route.id}${route.apartmentId ? `?apartment=${encodeURIComponent(route.apartmentId)}` : ''}`;
 }
 
 export function parseSiteLocation(pathname: string, search: string, basePath = DEFAULT_BASE_PATH): ParsedSiteLocation {
   const base = normalizeBasePath(basePath);
   const redirectedPath = new URLSearchParams(search).get('p');
   const relativePath = redirectedPath
-    ? decodeURIComponent(redirectedPath)
+    ? redirectedPath
     : pathname.startsWith(base)
       ? pathname.slice(base.length)
       : pathname === base.slice(0, -1) || pathname === '/'

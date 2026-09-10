@@ -34,10 +34,10 @@ test('Tiferet wardrobe happy path persists after reload', async ({ page }) => {
   await expect(page.getByRole('combobox', { name: 'קומה' })).toHaveValue('5');
   await expect(page.getByRole('combobox', { name: 'דירה' })).toHaveValue('source-techelet-5-1');
   await page.getByRole('link', { name: 'בחרו דירה' }).click();
-  await expect(page).toHaveURL(/\/tiferet-carpentry\/my-apartment$/);
+  await expect(page).toHaveURL(/\/tiferet-carpentry\/my-apartment(?:\?.*)?$/);
   await expect(page.getByRole('heading', { name: 'הדירה שלכם, במרכז התכנון' })).toBeVisible();
-  await page.locator('a[href$="/design/bedroom"]').click();
-  await expect(page).toHaveURL(/\/tiferet-carpentry\/design\/bedroom$/);
+  await page.locator('a[href*="/design/bedroom"]').click();
+  await expect(page).toHaveURL(/\/tiferet-carpentry\/design\/bedroom(?:\?.*)?$/);
 
   await page.getByTestId('wall-list-bed-e').click();
   await expect(page.getByText('הקיר הנבחר: 300 ס״מ')).toBeVisible();
@@ -45,7 +45,7 @@ test('Tiferet wardrobe happy path persists after reload', async ({ page }) => {
   await page.getByLabel('רוחב').fill('200');
   await expect(page.getByTestId(/cabinet-footprint-/)).toBeVisible();
   await page.getByRole('button', { name: 'שמור תכנון' }).click();
-  await expect(page.getByRole('status')).toContainText('נשמר');
+  await expect(page.getByRole('status', { name: 'מצב שמירה' })).toContainText('נשמר');
   await expect
     .poll(() => page.evaluate((storageKey) => localStorage.getItem(storageKey), STORAGE_KEY))
     .toContain('"width":2000');

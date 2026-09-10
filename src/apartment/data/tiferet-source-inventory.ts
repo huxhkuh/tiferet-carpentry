@@ -1,4 +1,4 @@
-export type SourcePlanModelStatus = 'partially-modeled' | 'unresolved';
+type SourcePlanModelStatus = 'partially-modeled' | 'unresolved';
 
 interface ApartmentSourceDocument {
   buildingId: 'techelet' | 'argaman';

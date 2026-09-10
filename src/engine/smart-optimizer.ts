@@ -138,7 +138,7 @@ function generateCandidates(cfg: CabinetConfig, strategy: SmartStrategy, toleran
  * This means depth strips pack perfectly across the sheet width.
  */
 function tryDepthVariations(cfg: CabinetConfig, tolerance: number): CabinetConfig[] {
-  const mat = getMaterial(cfg.carcassMaterial);
+  const mat = getMaterial(cfg.carcassMaterial, cfg.materialCatalog);
   const sheetW = mat.sheetWidth;
   const candidates: CabinetConfig[] = [];
 
@@ -174,7 +174,7 @@ function tryDepthVariations(cfg: CabinetConfig, tolerance: number): CabinetConfi
  */
 function tryCoNestStrips(cfg: CabinetConfig, tolerance: number): CabinetConfig[] {
   if (cfg.doorStyle === 'none') return [];
-  const mat = getMaterial(cfg.carcassMaterial);
+  const mat = getMaterial(cfg.carcassMaterial, cfg.materialCatalog);
   const sheetW = mat.sheetWidth;
   const candidates: CabinetConfig[] = [];
 
@@ -216,7 +216,7 @@ function tryCoNestStrips(cfg: CabinetConfig, tolerance: number): CabinetConfig[]
  * Try ±1..tolerance mm variations for better nesting.
  */
 function tryDimensionVariations(cfg: CabinetConfig, dim: 'width' | 'height', tolerance: number): CabinetConfig[] {
-  const mat = getMaterial(cfg.carcassMaterial);
+  const mat = getMaterial(cfg.carcassMaterial, cfg.materialCatalog);
   const sheetL = mat.sheetLength;
   const sheetW = mat.sheetWidth;
   const constraints =
@@ -255,7 +255,7 @@ function tryDimensionVariations(cfg: CabinetConfig, dim: 'width' | 'height', tol
  */
 function tryMaterialSwaps(cfg: CabinetConfig): CabinetConfig[] {
   const candidates: CabinetConfig[] = [];
-  const currentMat = getMaterial(cfg.carcassMaterial);
+  const currentMat = getMaterial(cfg.carcassMaterial, cfg.materialCatalog);
 
   for (const mat of MATERIALS) {
     if (mat.category !== 'panel') continue;
@@ -326,8 +326,8 @@ function buildExplanation(
     changesHe.push(`גובה ${original.height} → ${optimized.height} מ"מ`);
   }
   if (optimized.carcassMaterial !== original.carcassMaterial) {
-    const from = getMaterial(original.carcassMaterial);
-    const to = getMaterial(optimized.carcassMaterial);
+    const from = getMaterial(original.carcassMaterial, original.materialCatalog);
+    const to = getMaterial(optimized.carcassMaterial, optimized.materialCatalog);
     changes.push(`material ${from.name.en} → ${to.name.en}`);
     changesHe.push(`חומר ${from.name.he} → ${to.name.he}`);
   }

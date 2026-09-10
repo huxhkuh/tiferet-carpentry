@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState, type MouseEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import type { Point } from '../../apartment/types';
 import { calibrateImportDraft, createImportDraft, renameImportedRoom } from '../../apartment/import/geometry';
 import { buildApartmentFromImport } from '../../apartment/import/model';
-import { parsePdfVectorDocument } from '../../apartment/import/pdf-vector-parser';
+import { parsePdfBytes } from '../../apartment/import/pdf-import-service';
 import type { PdfImportDraft } from '../../apartment/import/types';
 import { saveImportedApartment } from '../../apartment/persistence/imported-apartments';
 import { DiamondMark } from '../components/DiamondMark';
@@ -55,6 +55,8 @@ export function ImportApartmentPage({ navigate }: { navigate: NavigateSite }) {
   const [calibrationLengthCm, setCalibrationLengthCm] = useState('300');
   const [metadata, setMetadata] = useState<ImportMetadataForm>(DEFAULT_METADATA);
   const [message, setMessage] = useState('');
+  const importRequest = useRef<AbortController | null>(null);
+  useEffect(() => () => importRequest.current?.abort(), []);
 
   useEffect(
     () => () => {
@@ -66,6 +68,9 @@ export function ImportApartmentPage({ navigate }: { navigate: NavigateSite }) {
   const wallIds = useMemo(() => new Set(draft?.walls.map((wall) => wall.id) ?? []), [draft?.walls]);
 
   const analyzeFile = async (file: File) => {
+    importRequest.current?.abort();
+    const request = new AbortController();
+    importRequest.current = request;
     setState('reading');
     setMessage('');
     setDraft(null);
@@ -74,9 +79,11 @@ export function ImportApartmentPage({ navigate }: { navigate: NavigateSite }) {
     setSourceUrl(URL.createObjectURL(file));
     setMetadata(inferMetadata(file.name));
     try {
+      if (file.size > 20 * 1024 * 1024) throw new RangeError('ניתן לייבא קובצי PDF בגודל של עד 20MB');
       const bytes = new Uint8Array(await file.arrayBuffer());
       const hash = await sourceHash(bytes);
-      const document = await parsePdfVectorDocument(bytes);
+      const document = await parsePdfBytes(bytes, request.signal);
+      if (request.signal.aborted) return;
       const nextDraft = createImportDraft(document, {
         fileName: file.name,
         fileSizeBytes: file.size,
@@ -91,6 +98,7 @@ export function ImportApartmentPage({ navigate }: { navigate: NavigateSite }) {
           : 'הקובץ נקרא, אך לא זוהו חללים סגורים. אין לאשר אותו כמודל אדריכלי.',
       );
     } catch (error) {
+      if (request.signal.aborted) return;
       setState('error');
       setMessage(error instanceof Error ? error.message : 'לא ניתן לנתח את קובץ ה‑PDF');
     }
@@ -194,6 +202,19 @@ export function ImportApartmentPage({ navigate }: { navigate: NavigateSite }) {
                 }}
               />
             </label>
+            {state === 'reading' && (
+              <button
+                type="button"
+                className="ng-button ng-button--outline"
+                onClick={() => {
+                  importRequest.current?.abort();
+                  setState('idle');
+                  setMessage('הניתוח בוטל. אפשר לבחור קובץ אחר.');
+                }}
+              >
+                ביטול ניתוח
+              </button>
+            )}
           </div>
           {message && (
             <p className="mt-5 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950" role="status">

@@ -1,5 +1,6 @@
 import type { CabinetConfig, HardwareItem, VendorHingeProfile, HardwareCatalogEntry } from './types';
 import { computeDimensions } from './dimensions';
+import { generateParts, computeEdgeBandingTotal } from './parts';
 import catalogRaw from '../catalog/hardware.json';
 
 /**
@@ -68,7 +69,24 @@ export function generateHardware(cfg: CabinetConfig): HardwareItem[] {
 
   const d = computeDimensions(cfg);
   const items: HardwareItem[] = [];
-  const hasDoors = cfg.doorStyle !== 'none' && cfg.doorCount > 0;
+  const bays = cfg.furnitureType === 'desk' ? 1 : 1 + (cfg.shelfCentreSupports ?? 0);
+  const hasDoors =
+    cfg.furnitureType !== 'desk' && cfg.furnitureType !== 'bookshelf' && cfg.doorStyle !== 'none' && cfg.doorCount > 0;
+  if (cfg.furnitureType === 'wardrobe') {
+    const width = Math.round(d.shelfWidth + 2);
+    items.push({
+      id: 'H25',
+      name: { en: `Hanging Rail ${width} mm`, he: `מוט תלייה ${width} מ״מ` },
+      qty: bays,
+      unit: { en: 'pcs', he: 'יח׳' },
+    });
+    items.push({
+      id: 'H26',
+      name: { en: 'Hanging Rail Socket', he: 'תושבת למוט תלייה' },
+      qty: bays * 2,
+      unit: { en: 'pcs', he: 'יח׳' },
+    });
+  }
 
   // Sprint 10: resolve vendor hinge profile (if any)
   const hingeProfile = cfg.hingeProfile ? (VENDOR_HINGE_PROFILES.find((p) => p.id === cfg.hingeProfile) ?? null) : null;
@@ -99,7 +117,8 @@ export function generateHardware(cfg: CabinetConfig): HardwareItem[] {
     items.push({
       id: 'H03',
       name: { en: 'Shelf Pin 5 mm', he: 'פין מדף 5 מ"מ' },
-      qty: cfg.shelfCount * 4,
+      qty: cfg.shelfCount * 4 * bays,
+      unitPrice: 0.15,
       unit: { en: 'pcs', he: "יח'" },
       supplierUrl: 'https://www.hafele.com/en/info/hafele-worldwide/hafele-companies/',
       supplierName: 'Häfele',
@@ -171,7 +190,7 @@ export function generateHardware(cfg: CabinetConfig): HardwareItem[] {
   });
 
   // ── Drawer slides (pair per drawer) ──
-  if (cfg.drawerCount > 0) {
+  if (cfg.drawerCount > 0 && cfg.furnitureType !== 'desk' && cfg.furnitureType !== 'bookshelf') {
     // Pick the next standard slide length down from the cabinet depth
     // (≈ depth − 50 mm allowance for back panel + clearance). Standard
     // ranges: 250/300/350/400/450/500/550/600 mm.
@@ -188,7 +207,7 @@ export function generateHardware(cfg: CabinetConfig): HardwareItem[] {
     items.push({
       id: 'H11',
       name: slideTypeLabel,
-      qty: cfg.drawerCount,
+      qty: cfg.drawerCount * bays,
       unit: { en: 'pairs', he: 'זוגות' },
       supplierUrl: 'https://www.blum.com/in/en/products/drawer-systems/',
       supplierName: 'Blum',
@@ -199,7 +218,7 @@ export function generateHardware(cfg: CabinetConfig): HardwareItem[] {
       items.push({
         id: 'H17',
         name: { en: 'Soft-Close Drawer Damper', he: 'בולם סגירה רכה למגירה' },
-        qty: cfg.drawerCount,
+        qty: cfg.drawerCount * bays,
         unit: { en: 'pcs', he: "יח'" },
         supplierUrl: 'https://www.blum.com/in/en/products/drawer-systems/',
         supplierName: 'Blum',
@@ -211,7 +230,7 @@ export function generateHardware(cfg: CabinetConfig): HardwareItem[] {
       items.push({
         id: 'H12',
         name: handleName(cfg.handleStyle),
-        qty: cfg.drawerCount,
+        qty: cfg.drawerCount * bays,
         unit: { en: 'pcs', he: "יח'" },
       });
     }
@@ -252,35 +271,18 @@ export function generateHardware(cfg: CabinetConfig): HardwareItem[] {
   // ── Edge banding roll (Sprint 113) — approximate metres based on the
   //    visible carcass front edges. One roll per 50 m of edge demand,
   //    minimum 1 roll. ──
-  const visibleEdgeM = ((cfg.width + cfg.height) * 2) / 1000;
-  items.push({
-    id: 'H16',
-    name: { en: 'Edge Banding Roll (50 m)', he: 'גליל סרט קצוות (50 מ׳)' },
-    qty: Math.max(1, Math.ceil(visibleEdgeM / 50)),
-    unit: { en: 'rolls', he: 'גלילים' },
-    unitPrice: 45,
-  });
-
-  // ── Cam locks (confirmats) for carcass joints — 4 per panel join ──
-  const panelJoins = 4 + cfg.shelfCount; // top+bottom+2sides + shelves
-  items.push({
-    id: 'H18',
-    name: { en: 'Cam Lock Set (bolt + cam)', he: 'סט מנעול קאם (בורג + קאם)' },
-    qty: panelJoins * 4,
-    unit: { en: 'sets', he: 'סטים' },
-    unitPrice: 0.8,
-  });
-
-  // ── Shelf pins / studs (5 per shelf, 4 holes) ──
-  if (cfg.shelfCount > 0) {
+  const visibleEdgeM = computeEdgeBandingTotal(generateParts(cfg)) / 1000;
+  if (visibleEdgeM > 0)
     items.push({
-      id: 'H19',
-      name: { en: 'Shelf Support Stud 5 mm', he: 'סיכת מדף 5 מ"מ' },
-      qty: cfg.shelfCount * 4,
-      unit: { en: 'pcs', he: "יח'" },
-      unitPrice: 0.15,
+      id: 'H16',
+      name: { en: 'Edge Banding Roll (50 m)', he: 'גליל סרט קצוות (50 מ׳)' },
+      qty: Math.max(1, Math.ceil(visibleEdgeM / 50)),
+      unit: { en: 'rolls', he: 'גלילים' },
+      unitPrice: 45,
     });
-  }
+
+  // The selected joinery has no cam-lock option; do not silently add a second system.
+  const panelJoins = 4 + cfg.shelfCount; // top+bottom+2sides + shelves
 
   // ── Corner braces for top/bottom reinforcement ──
   items.push({

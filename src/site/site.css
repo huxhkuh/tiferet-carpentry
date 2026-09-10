@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Tiferet Sans';
-  src: url('/tiferet-carpentry/fonts/NotoSansHebrew-Regular.ttf') format('truetype');
+  src: url('/fonts/NotoSansHebrew-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -15,13 +15,13 @@ body,
 
 @font-face {
   font-family: 'Tiferet Sans';
-  src: url('/tiferet-carpentry/fonts/NotoSansHebrew-Bold.ttf') format('truetype');
+  src: url('/fonts/NotoSansHebrew-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-.ng-site {
+:root {
   --ng-cream: #f1ede5;
   --ng-paper: #fffdf8;
   --ng-charcoal: #2e2b27;
@@ -34,7 +34,9 @@ body,
   --ng-muted: #716a61;
   --ng-wide: 88rem;
   --ng-content: 76rem;
+}
 
+.ng-site {
   min-width: 0;
   min-height: 100vh;
   overflow-x: clip;
@@ -162,6 +164,21 @@ body,
   width: 3.15rem;
   min-height: 4.15rem;
   font-size: 1.15rem;
+  line-height: 1.4;
+  letter-spacing: normal;
+}
+
+.ng-offline-status {
+  padding-inline: 1rem;
+  color: #4d3528;
+  background: #f1ede5;
+  font-family: 'Tiferet Sans', Arial, sans-serif;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.ng-offline-status:empty {
+  display: none;
 }
 
 .ng-desktop-nav {
@@ -676,7 +693,8 @@ body,
 .ng-plan-frame {
   position: relative;
   height: min(48rem, 70vw);
-  min-height: 35rem;
+  height: clamp(22rem, 45vw, 35rem);
+  min-height: 0;
   border: 0.0625rem solid var(--ng-line);
   padding: 4.2rem 2rem 2rem;
   background: var(--ng-paper);
@@ -764,7 +782,8 @@ body,
   position: relative;
   display: grid;
   grid-column: span 6;
-  min-height: 31rem;
+  height: clamp(20rem, 36vw, 31rem);
+  min-height: 0;
   overflow: hidden;
   border: 0.0625rem solid rgb(71 56 45 / 25%);
   border-radius: 0.48rem;

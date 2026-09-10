@@ -109,7 +109,12 @@
     "length": "Length",
     "width": "Width",
     "thickness": "Thick.",
-    "edge": "Edge Band"
+    "edge": "Edge Band",
+    "grainDirection": "Grain direction",
+    "grainFor": "Grain direction for {{id}}",
+    "grainDefault": "Material default",
+    "grainLength": "Along length",
+    "grainWidth": "Along width"
   },
   "hardware": {
     "title": "Hardware List",
@@ -440,7 +445,10 @@
     "importSettings": "Import Project Settings",
     "settingsExported": "Project settings exported",
     "settingsImported": "Project settings applied",
-    "settingsImportError": "Could not import settings — invalid file"
+    "settingsImportError": "Could not import settings — invalid file",
+    "cancelExport": "Cancel export",
+    "waitForCalculation": "Export requires successful, current calculations.",
+    "recalculate": "Recalculate"
   },
   "footer": {
     "darkMode": "Dark Mode",
@@ -577,7 +585,10 @@
     "finish": "Finish / paint",
     "editFinish": "Click to set finish/paint cost",
     "finishAriaLabel": "Finish/paint cost",
-    "notSet": "—"
+    "notSet": "—",
+    "estimateBasis": "ILS estimate using sample catalogue or entered prices. Confirm prices, tax, delivery and installation with your supplier.",
+    "missingPrices": "Partial subtotal — missing ILS prices for: {{items}}",
+    "priceMissing": "Price needed"
   },
   "assembly": {
     "title": "Assembly Guide",

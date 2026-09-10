@@ -27,7 +27,7 @@ export interface FurnitureDefinition {
   elevation?: number;
 }
 
-export const FURNITURE_PALETTES: Readonly<Record<FurniturePalette, PaletteColors>> = {
+const FURNITURE_PALETTES: Readonly<Record<FurniturePalette, PaletteColors>> = {
   warm: { primary: '#9A7457', accent: '#5F4636', soft: '#E7D8C5' },
   light: { primary: '#D5CFC3', accent: '#7C756A', soft: '#F4EFE6' },
   sage: { primary: '#8A9A83', accent: '#4F6254', soft: '#DCE2D5' },

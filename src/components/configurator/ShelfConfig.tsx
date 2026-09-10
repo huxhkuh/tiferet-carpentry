@@ -47,7 +47,7 @@ export function ShelfConfig() {
     config.shelfCount > 0
       ? computeShelfDeflection(
           effectiveShelfSpan,
-          getMaterial(config.carcassMaterial).thickness,
+          getMaterial(config.carcassMaterial, config.materialCatalog).thickness,
           dimensions.shelfDepth,
           config.carcassMaterial,
         )

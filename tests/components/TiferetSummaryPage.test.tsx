@@ -60,7 +60,7 @@ describe('Tiferet design summary', () => {
     expect(screen.getByText('ארון בגדים')).toBeVisible();
     expect(screen.getByText('פנלפלק 17 מ"מ')).toBeVisible();
     expect(screen.getByText('דלת חלקה · ידית קווית')).toBeVisible();
-    expect(screen.getByText('2 דלתות · 4 מדפים · 0 מגירות')).toBeVisible();
+    expect(screen.getByText('2 דלתות · 5 מדפים · 0 מגירות')).toBeVisible();
     expect(screen.getByText('ערכת ריהוט בהירה')).toBeVisible();
     expect(screen.getByRole('button', { name: 'הדפסת הסיכום' })).toBeEnabled();
   });

@@ -1,4 +1,5 @@
 import type { CabinetConfig } from '../../engine/types';
+import { getMaterial, isMaterial, MATERIALS } from '../../engine/materials';
 import type {
   CabinetPlacement,
   DesignVisibility,
@@ -98,6 +99,38 @@ function isHardwareOverrides(value: unknown): boolean {
 
 export function isCabinetConfig(value: unknown): value is CabinetConfig {
   if (!isRecord(value)) return false;
+  if (
+    value.materialCatalog !== undefined &&
+    (!Array.isArray(value.materialCatalog) ||
+      value.materialCatalog.length > 100 ||
+      !value.materialCatalog.every(isMaterial) ||
+      new Set(value.materialCatalog.map((item) => item.key)).size !== value.materialCatalog.length ||
+      value.materialCatalog.some((item) => MATERIALS.some((builtIn) => builtIn.key === item.key)))
+  )
+    return false;
+  if (
+    value.partGrainConstraints !== undefined &&
+    (!isRecord(value.partGrainConstraints) ||
+      Object.entries(value.partGrainConstraints).some(
+        ([id, grain]) => !/^P\d+$/.test(id) || (grain !== 'along-length' && grain !== 'along-width'),
+      ))
+  )
+    return false;
+  try {
+    if (typeof value.carcassMaterial !== 'string' || typeof value.backPanelMaterial !== 'string') return false;
+    const catalog = value.materialCatalog as import('../../engine/types').Material[] | undefined;
+    getMaterial(value.carcassMaterial, catalog);
+    getMaterial(value.backPanelMaterial, catalog);
+  } catch {
+    return false;
+  }
+  if (
+    ['width', 'height', 'depth'].some((key) => !isPositiveNumber(value[key]) || value[key] > 20_000) ||
+    ['shelfCount', 'drawerCount', 'shelfCentreSupports'].some(
+      (key) => value[key] !== undefined && (!isNonNegativeInteger(value[key]) || value[key] > 100),
+    )
+  )
+    return false;
   return (
     isOneOf(value.furnitureType, FURNITURE_TYPES) &&
     isPositiveNumber(value.width) &&
@@ -204,6 +237,10 @@ function isDesignVisibility(value: unknown): value is DesignVisibility {
   return (
     value.hiddenObjectIds.every(isNonEmptyString) &&
     hasUniqueStrings(value.hiddenObjectIds) &&
+    (value.lockedObjectIds === undefined ||
+      (Array.isArray(value.lockedObjectIds) &&
+        value.lockedObjectIds.every(isNonEmptyString) &&
+        hasUniqueStrings(value.lockedObjectIds))) &&
     value.hiddenCategories.every((category) => isOneOf(category, SCENE_OBJECT_CATEGORIES)) &&
     hasUniqueStrings(value.hiddenCategories)
   );
@@ -229,6 +266,7 @@ function hasValidPlacementEnvelope(value: Record<string, unknown>): boolean {
     !Number.isFinite(Date.parse(value.updatedAt)) ||
     (value.metadata !== undefined && !isSavedDesignMetadata(value.metadata)) ||
     !Array.isArray(value.placements) ||
+    value.placements.length > 500 ||
     !value.placements.every(isCabinetPlacement)
   ) {
     return false;
@@ -304,6 +342,7 @@ export function serializeDesign(design: SavedDesign): string {
 }
 
 export function deserializeDesign(serialized: string): SavedDesignV3 | null {
+  if (serialized.length > 15 * 1024 * 1024) return null;
   try {
     const parsed: unknown = JSON.parse(serialized);
     if (isSavedDesign(parsed)) return parsed;

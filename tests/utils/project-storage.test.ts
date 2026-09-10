@@ -197,7 +197,7 @@ describe('migrateProject', () => {
   });
 
   it('throws on missing cabinets and non-object inputs', () => {
-    expect(() => migrateProject({ id: 'x', name: 'Bad', savedAt: '' })).toThrow(/cabinets/i);
+    expect(() => migrateProject({ id: 'x', name: 'Bad', savedAt: '2026-09-10T00:00:00.000Z' })).toThrow(/cabinets/i);
     expect(() => migrateProject(null)).toThrow();
     expect(() => migrateProject('string')).toThrow();
     expect(() => migrateProject(42)).toThrow();

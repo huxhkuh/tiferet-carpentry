@@ -32,7 +32,7 @@ export interface ImportCalibrationInput {
   lengthMm: number;
 }
 
-export interface ImportCalibration extends ImportCalibrationInput {
+interface ImportCalibration extends ImportCalibrationInput {
   mmPerSourceUnit: number;
 }
 
@@ -64,42 +64,4 @@ export interface ImportedApartmentMetadata {
   floor: number;
   sheet: string;
   projectName?: string;
-}
-
-export interface ImportDraftPoint {
-  x: number;
-  y: number;
-}
-
-export interface ImportDraftCalibration {
-  sourceStart: ImportDraftPoint;
-  sourceEnd: ImportDraftPoint;
-  lengthMm: number;
-  mmPerSourceUnit: number;
-}
-
-export interface ImportDraftWall {
-  id: string;
-  sourceRect: PdfVectorRectangle;
-}
-
-export interface ImportDraftRoom {
-  id: string;
-  name: string;
-  sourcePolygon: ImportDraftPoint[];
-  wallIds: string[];
-}
-
-export interface ArchitecturalImportDraft {
-  schemaVersion: 1;
-  sourceId: string;
-  fileName: string;
-  fileSizeBytes: number;
-  pageCount: number;
-  pageWidth: number;
-  pageHeight: number;
-  calibration: ImportDraftCalibration | null;
-  walls: ImportDraftWall[];
-  rooms: ImportDraftRoom[];
-  warnings: string[];
 }

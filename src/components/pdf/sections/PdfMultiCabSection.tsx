@@ -1,6 +1,6 @@
 import { Page, Text, View } from '@react-pdf/renderer';
 import type { HardwareItem } from '../../../engine/types';
-import { getMaterial } from '../../../engine/materials';
+import { getMaterial, resolveMaterial } from '../../../engine/materials';
 import { s, C, partsColWidths, hwColWidths } from '../pdf-tokens';
 import type { PdfCtx } from '../pdf-i18n';
 import type { CabinetPdfEntry } from '../CabinetPdfDocument';
@@ -16,8 +16,8 @@ export function PdfMultiCabSection({ ctx, allCabinetsData }: PdfMultiCabSectionP
   return (
     <>
       {allCabinetsData.map((cab, ci) => {
-        const cabCMat = getMaterial(cab.config.carcassMaterial);
-        const cabBMat = getMaterial(cab.config.backPanelMaterial);
+        const cabCMat = getMaterial(cab.config.carcassMaterial, cab.config.materialCatalog);
+        const cabBMat = getMaterial(cab.config.backPanelMaterial, cab.config.materialCatalog);
         const cabLabel = `${T.cabinetOfPrefix} ${ci + 1} ${T.cabinetOfMiddle} ${allCabinetsData.length}`;
         const cabTitle = cab.name.trim() || cabLabel;
         return (
@@ -115,7 +115,7 @@ export function PdfMultiCabSection({ ctx, allCabinetsData }: PdfMultiCabSectionP
                 <Text style={[s.tdText, { width: partsColWidths[1], fontFamily }]}>{p.name[lang]}</Text>
                 <Text style={[s.tdText, { width: partsColWidths[2], textAlign: 'center' }]}>{p.qty}</Text>
                 <Text style={[s.tdText, { width: partsColWidths[3], color: C.secondary, fontFamily }]}>
-                  {getMaterial(p.material).name[lang]}
+                  {resolveMaterial(p).name[lang]}
                 </Text>
                 <Text style={[s.tdText, { width: partsColWidths[4] }]}>{p.length}</Text>
                 <Text style={[s.tdText, { width: partsColWidths[5] }]}>{p.width}</Text>

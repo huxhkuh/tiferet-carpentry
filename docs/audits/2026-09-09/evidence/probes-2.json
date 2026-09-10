@@ -1,0 +1,93 @@
+{
+  "libraryFocus": {
+    "inside": false,
+    "escapeCloses": false
+  },
+  "dialogAxe": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "nodes": 1
+    }
+  ],
+  "engine": {
+    "customMaterialError": "Error: Unknown material: audit-custom-19",
+    "legacyCompressedPdf": {
+      "schemaVersion": 1,
+      "fileName": "audit.pdf",
+      "fileSizeBytes": 116,
+      "generatedAt": "2026-09-09T20:19:31.664Z",
+      "status": "needs-vector-pdf",
+      "pageCount": 0,
+      "streams": {
+        "total": 1,
+        "decoded": 0,
+        "compressed": 1,
+        "skippedCompressed": 1
+      },
+      "vectorSummary": {
+        "lineSegments": 0,
+        "rectangles": 0,
+        "curves": 0,
+        "wallCandidates": 0,
+        "textCandidates": [],
+        "dimensionCandidates": []
+      },
+      "qualityFlags": ["לא נמצאה גאומטריה וקטורית מספקת ליצירת טיוטה", "1 stream-ים דחוסים לא נפתחו בדפדפן הזה"]
+    },
+    "grainInput": {
+      "id": "P1",
+      "qty": 1,
+      "name": {
+        "en": "audit",
+        "he": "בדיקה"
+      },
+      "material": "plywood-17",
+      "thickness": 17,
+      "length": 800,
+      "width": 300,
+      "edgeBanding": {
+        "en": "none",
+        "he": "ללא"
+      },
+      "grainConstraint": "along-width"
+    },
+    "grainOutput": {
+      "partId": "P1",
+      "label": "audit",
+      "length": 800,
+      "width": 300,
+      "x": 0,
+      "y": 0,
+      "edgeBanding": "none",
+      "grainVertical": true,
+      "rotated": false,
+      "rationale": "BSSF(normal): 920mm × 1640mm margin"
+    },
+    "sawKerf": 4,
+    "stepExports": ["generateStepContent"],
+    "decimalStep": [],
+    "gcodeStart": [
+      "G0 Z5.0 ; retract to safe height",
+      "M3 S18000 ; spindle on",
+      "",
+      "; --- Cut: P1 audit (300x800) ---",
+      "G0 X-3.00 Y-3.00",
+      "G1 Z-3.00 F600",
+      "G1 X303.00 Y-3.00 F1500",
+      "G1 X303.00 Y803.00",
+      "G1 X-3.00 Y803.00",
+      "G1 X-3.00 Y-3.00"
+    ]
+  },
+  "production": {
+    "serviceWorkers": [],
+    "offlineLoaded": false,
+    "offlineError": "Error: page.reload: net::ERR_INTERNET_DISCONNECTED"
+  },
+  "live": {
+    "status": 200,
+    "title": "תפארת — מתכנן דירה ונגרות"
+  },
+  "errors": []
+}

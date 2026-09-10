@@ -1,7 +1,7 @@
 import type { Apartment, Point, Project, RoomDimension } from '../types';
 import { wallLength } from '../geometry/wall-frame';
 
-export type ApartmentValidationCode =
+type ApartmentValidationCode =
   | 'INVALID_APARTMENT_ID'
   | 'INVALID_APARTMENT_NAME'
   | 'EMPTY_ROOMS'

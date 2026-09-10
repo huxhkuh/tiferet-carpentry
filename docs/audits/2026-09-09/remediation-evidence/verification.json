@@ -1,0 +1,109 @@
+{
+  "recordedAt": "2026-09-10T03:02:49.8965837+03:00",
+  "baseCommit": "c6817bc",
+  "appVersion": "5.32.0",
+  "environment": {
+    "platform": "Windows",
+    "publication": "Local working tree only; no commit, push or deployment",
+    "paidDesignServiceUsed": false,
+    "productionPreview": "http://127.0.0.1:4198/tiferet-carpentry/"
+  },
+  "audit": {
+    "total": 40,
+    "fixed": 32,
+    "partial": ["A07", "A12", "A18", "A20", "A21", "A25", "A35", "A38"],
+    "details": "../ACTION-BACKLOG.csv"
+  },
+  "quality": {
+    "command": "npm run quality:fast",
+    "status": "passed",
+    "log": "quality.log"
+  },
+  "unitTests": {
+    "command": "npx vitest run --coverage --maxWorkers=4 --reporter=json --outputFile=<TEMP>/tiferet-unit-final.json",
+    "status": "passed",
+    "passed": 4754,
+    "failed": 0,
+    "files": 297,
+    "sourceReport": "<TEMP>/tiferet-unit-final.json",
+    "coverageLog": "coverage.log"
+  },
+  "coveragePercent": {
+    "statements": 88.92,
+    "branches": 81.05,
+    "functions": 88.92,
+    "lines": 90.16,
+    "originalThresholdsUnchanged": true,
+    "includes": ["engine", "utils", "store", "hooks", "apartment", "site"]
+  },
+  "browserTests": {
+    "command": "npx playwright test",
+    "status": "passed",
+    "passed": 60,
+    "failed": 0,
+    "browsers": ["chromium", "firefox"],
+    "log": "browser-tests.log",
+    "snapshotsUpdatedWith": "npx playwright test visual-regression.spec.ts --update-snapshots=all",
+    "visualTestsPassed": 8,
+    "linuxRun": "not executed",
+    "productionAlsoCheckedSeparately": ["pdf-browser-proof.json", "ui-browser-proof.json"]
+  },
+  "build": {
+    "command": "npx vite build --outDir <TEMP>/tiferet-remediation-dist --emptyOutDir",
+    "status": "passed",
+    "log": "production-build.log"
+  },
+  "bundle": {
+    "command": "BUNDLE_DIST_DIR=<TEMP>/tiferet-remediation-dist node scripts/bundle-report.js",
+    "status": "passed",
+    "jsKB": 2836.7,
+    "jsBudgetKB": 2850,
+    "cssKB": 109.3,
+    "cssBudgetKB": 110,
+    "applicationKB": 3036.8,
+    "applicationBudgetKB": 3050,
+    "aggregateBudgetsUnchanged": true,
+    "log": "bundle-budget.log"
+  },
+  "benchmarks": {
+    "command": "npm run bench:check",
+    "status": "passed",
+    "withinBudget": 16,
+    "total": 16,
+    "log": "benchmark-budget.log",
+    "note": "Final benchmark check ran without a competing build/quality run."
+  },
+  "dependencyAudit": {
+    "command": "npm audit --json",
+    "status": "passed",
+    "reportedVulnerabilities": 0,
+    "evidence": "dependency-audit.json",
+    "note": "A point-in-time dependency advisory check, not proof of absence of application security issues."
+  },
+  "deadCode": {
+    "command": "npm run dead:check",
+    "status": "passed",
+    "configurationHints": 2,
+    "log": "dead-code.log"
+  },
+  "pdfExport": {
+    "status": "passed",
+    "bytes": 237577,
+    "browserErrors": 0,
+    "proof": "pdf-browser-proof.json",
+    "file": "verified-export.pdf"
+  },
+  "visualReview": {
+    "viewport": "390x844 mobile; desktop captured separately",
+    "mobileHorizontalOverflow": false,
+    "browserErrors": 0,
+    "proof": "ui-browser-proof.json",
+    "screenshots": ["mobile-edit.png", "mobile-3d.png", "desktop-3d.png"],
+    "method": "Local production browser capture and visual inspection"
+  },
+  "remaining": [
+    "Eight audit items are partial: advanced usage envelopes, machine profiles, architectural source verification, rendering and manipulation, full translations, business contact and approved prices.",
+    "Linux CI and remote deployment were not executed.",
+    "Professional manufacturing approval and verification of unknown source dimensions remain required for production use."
+  ]
+}

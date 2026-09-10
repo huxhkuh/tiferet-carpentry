@@ -1,3 +1,5 @@
+import { localeFallbackPlugin } from './scripts/vite-plugin-locale-fallback.ts';
+import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
@@ -43,6 +45,7 @@ export default defineConfig({
   cacheDir: resolve(os.tmpdir(), 'WoodworkingShop', '.vite_cache'),
   base: APP_BASE_PATH,
   plugins: [
+    localeFallbackPlugin(),
     react(),
     tailwindcss(),
     cloudflareAnalyticsPlugin(),
@@ -58,7 +61,7 @@ export default defineConfig({
         // without the user clicking "Update now" in the SwUpdateBanner.
         skipWaiting: false,
         clientsClaim: false,
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,ttf}'],
         navigateFallback: `${APP_BASE_PATH}index.html`,
         navigateFallbackDenylist: [new RegExp(`^${escapeRegExp(APP_BASE_PATH)}api/`)],
         // Sprint 149 — offline fallback for navigation requests when cache is empty
@@ -122,6 +125,10 @@ export default defineConfig({
     },
   },
   build: {
+    cssMinify: 'lightningcss',
+    // Use the supported browsers from package.json rather than expanding modern
+    // CSS for the much older browsers implied by the JavaScript ES2022 target.
+    cssTarget: browserslist().map((browser) => browser.replace(' ', '')),
     target: 'es2022',
     chunkSizeWarningLimit: 1600,
     // v3.24.0: inject modulepreload polyfill for Safari < 16.4 compatibility

@@ -1,6 +1,6 @@
 import { Page, Text, View } from '@react-pdf/renderer';
 import type { Part } from '../../../engine/types';
-import { getMaterial } from '../../../engine/materials';
+import { resolveMaterial } from '../../../engine/materials';
 import { s, C, partsColWidths } from '../pdf-tokens';
 import type { PdfCtx } from '../pdf-i18n';
 import { PageHeader, PageFooter } from './PageChrome';
@@ -41,7 +41,7 @@ export function PdfPartsPage({ ctx, parts }: PdfPartsPageProps) {
           <Text style={[s.tdText, { width: partsColWidths[1], fontFamily }]}>{p.name[lang]}</Text>
           <Text style={[s.tdText, { width: partsColWidths[2], textAlign: 'center' }]}>{p.qty}</Text>
           <Text style={[s.tdText, { width: partsColWidths[3], color: C.secondary, fontFamily }]}>
-            {getMaterial(p.material).name[lang]}
+            {resolveMaterial(p).name[lang]}
           </Text>
           <Text style={[s.tdText, { width: partsColWidths[4] }]}>{p.length}</Text>
           <Text style={[s.tdText, { width: partsColWidths[5] }]}>{p.width}</Text>

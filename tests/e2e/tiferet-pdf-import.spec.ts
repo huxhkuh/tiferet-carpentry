@@ -37,12 +37,14 @@ test('imports an architectural PDF and restores the edited design after reload',
   await expect(page).toHaveURL(/\/tiferet-carpentry\/design\/import-room-1\?apartment=imported-pdf-/u);
   await expect(page.getByText('חדר שינה מיובא', { exact: true }).first()).toBeVisible();
 
-  await page.locator('[data-testid^="wall-list-"]').first().click();
+  // This east wall has a verified free footprint in the imported raster-derived room.
+  // The first (north) wall is separated from that room polygon and must be rejected.
+  await page.getByTestId('wall-list-import-wall-22').click();
   await page.getByRole('button', { name: /^＋ הוסף ארון$/ }).click();
   await page.getByLabel('רוחב').fill('200');
   await expect(page.getByTestId(/cabinet-footprint-/)).toBeVisible();
   await page.getByRole('button', { name: 'שמור תכנון' }).click();
-  await expect(page.getByRole('status')).toContainText('נשמר');
+  await expect(page.getByRole('status', { name: 'מצב שמירה' })).toContainText('נשמר');
 
   await page.reload();
   await expect(page.getByText('ארון אחד בתכנון')).toBeVisible();

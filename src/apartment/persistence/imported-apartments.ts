@@ -34,9 +34,9 @@ function isApartmentCandidate(value: unknown): value is Apartment {
 }
 
 export function restoreImportedApartments(storage: DesignStorage): Apartment[] {
-  const serialized = storage.getItem(IMPORTED_APARTMENTS_STORAGE_KEY);
-  if (serialized === null) return [];
   try {
+    const serialized = storage.getItem(IMPORTED_APARTMENTS_STORAGE_KEY);
+    if (serialized === null) return [];
     const parsed: unknown = JSON.parse(serialized);
     if (!isRecord(parsed) || parsed.schemaVersion !== 1 || !Array.isArray(parsed.apartments)) return [];
     return parsed.apartments.filter(isApartmentCandidate);

@@ -9,6 +9,18 @@ import {
 import { mockSheet } from '../helpers';
 
 describe('cutSheetToGcode', () => {
+  it('does not let imported part labels become machine instructions', () => {
+    const gc = cutSheetToGcode({
+      ...mockSheet,
+      material: 'stock\r\nM99',
+      parts: [{ ...mockSheet.parts[0], partId: 'P01\nG91', label: 'Panel\r\nM99' }],
+    });
+    expect(gc).not.toMatch(/^M99|^G91/m);
+    expect(gc).toContain('; --- Cut: P01 G91 Panel  M99');
+  });
+  it.each([NaN, Infinity, 0, -1])('rejects invalid sheet bounds %s', (sheetWidth) => {
+    expect(() => cutSheetToGcode({ ...mockSheet, sheetWidth })).toThrow('Invalid CNC sheet');
+  });
   it('returns a string containing G-code header', () => {
     const gc = cutSheetToGcode(mockSheet);
     expect(gc).toContain('G21');
@@ -67,7 +79,7 @@ describe('cutSheetToGcode', () => {
   });
 
   it('generates rectangular profile (4 G1 moves per pass)', () => {
-    const gc = cutSheetToGcode(mockSheet, { cutDepth: 3, passDepth: 3 });
+    const gc = cutSheetToGcode(mockSheet, { cutDepth: 3, passDepth: 3, tabHeight: 0 });
     // 1 pass: plunge + 4 sides = 5 G1 lines total for the part
     const g1Lines = gc.split('\n').filter((l) => l.startsWith('G1'));
     expect(g1Lines.length).toBe(5); // 1 plunge + 4 rectangle sides
@@ -154,11 +166,8 @@ describe('circularPocketToGcode', () => {
     expect(gc).toContain('75.25');
   });
 
-  it('falls back to plunge-only when tool ≥ pocket radius', () => {
-    // toolDiameter = 40, radius = 10 → cutR = 10-20 < 0
-    const gc = circularPocketToGcode(0, 0, 10, { useArcs: true, toolDiameter: 40, cutDepth: 3, passDepth: 3 });
-    expect(gc).toContain('plunge only');
-    expect(gc).not.toContain('G2');
+  it('rejects a cutter larger than the requested pocket', () => {
+    expect(() => circularPocketToGcode(0, 0, 10, { toolDiameter: 40 })).toThrow('Pocket geometry');
   });
 
   it('polygon mode produces 36 G1 arc steps per pass', () => {

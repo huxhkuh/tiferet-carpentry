@@ -13,15 +13,15 @@ describe('computeDimensions', () => {
     const d = computeDimensions(DEFAULT_CONFIG);
     // plywood-17: thickness = 17
     expect(d.internalWidth).toBe(1000 - 2 * 17); // 966
-    expect(d.internalHeight).toBe(2000 - 2 * 17); // 1966
+    expect(d.internalHeight).toBe(2000 - 100 - 2 * 17); // overall height includes the plinth
     expect(d.shelfDepth).toBe(600 - 20); // 580
     expect(d.shelfWidth).toBe(966 - 2); // 964
   });
 
   it('computes door dimensions for double doors', () => {
     const d = computeDimensions(DEFAULT_CONFIG);
-    // doorHeight = H - 2*reveal = 2000 - 6 = 1994
-    expect(d.doorHeight).toBe(2000 - 3 - 3);
+    // doorHeight = H - plinth - 2*reveal = 1894
+    expect(d.doorHeight).toBe(2000 - 100 - 3 - 3);
     // doorWidth = (W - r - r - (r-1)) / 2 = (1000-3-3-2)/2 = 496
     expect(d.doorWidth).toBe((1000 - 3 - 3 - 2) / 2);
   });
@@ -34,7 +34,7 @@ describe('computeDimensions', () => {
 
   it('computes back panel dimensions', () => {
     const d = computeDimensions(DEFAULT_CONFIG);
-    expect(d.backPanelHeight).toBe(1980);
+    expect(d.backPanelHeight).toBe(1880);
     expect(d.backPanelWidth).toBe(980);
   });
 
@@ -42,7 +42,7 @@ describe('computeDimensions', () => {
     const cfg = { ...DEFAULT_CONFIG, carcassMaterial: 'melamine-16' };
     const d = computeDimensions(cfg);
     expect(d.internalWidth).toBe(1000 - 2 * 16); // 968
-    expect(d.internalHeight).toBe(2000 - 2 * 16); // 1968
+    expect(d.internalHeight).toBe(2000 - 100 - 2 * 16);
   });
 });
 

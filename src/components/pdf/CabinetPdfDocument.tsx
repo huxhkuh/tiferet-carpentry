@@ -92,8 +92,8 @@ export function CabinetPdfDocument({
     ? (allCabinetsData?.reduce((sum, c) => sum + c.edgeBandingTotal, 0) ?? edgeBandingTotal)
     : edgeBandingTotal;
 
-  const cMat = getMaterial(config.carcassMaterial);
-  const bMat = getMaterial(config.backPanelMaterial);
+  const cMat = getMaterial(config.carcassMaterial, config.materialCatalog);
+  const bMat = getMaterial(config.backPanelMaterial, config.materialCatalog);
   const dateLocale = isRTL ? 'he-IL' : 'en-GB';
   const date = new Date().toLocaleDateString(dateLocale, { day: '2-digit', month: 'short', year: 'numeric' });
   const coverTitle = projectName?.trim() ? projectName.trim() : T.coverTitle;
@@ -159,7 +159,12 @@ export function CabinetPdfDocument({
         />
       ))}
 
-      <PdfDrillingPage ctx={ctx} d={d} backPanelMaterial={config.backPanelMaterial} />
+      <PdfDrillingPage
+        ctx={ctx}
+        d={d}
+        backPanelMaterial={config.backPanelMaterial}
+        materialCatalog={config.materialCatalog}
+      />
       <PdfExplodedPage ctx={ctx} config={config} d={d} cMatName={cMat.name[lang]} bMatName={bMat.name[lang]} />
       <PdfAssemblyPage ctx={ctx} config={config} d={d} cMatName={cMat.name[lang]} bMatName={bMat.name[lang]} />
       <PdfShoppingPage

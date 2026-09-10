@@ -25,7 +25,7 @@ import DxfWorker from '../../workers/dxf-export.worker?worker';
 import type { DxfWorkerOutput } from '../../workers/dxf-export.worker';
 import { BulkReplaceModal } from './BulkReplaceModal';
 import { idbLoadOffcuts, idbSaveOffcut, idbDeleteOffcut } from '../../utils/indexed-db-storage';
-import type { Lang, CutSheet } from '../../engine/types';
+import type { CutSheet } from '../../engine/types';
 import { SheetCard } from './SheetCard';
 import { OptimizerExplainerPanel } from './OptimizerExplainerPanel';
 import { OffcutsPanel } from './optimizer-offcuts-panel';
@@ -55,7 +55,7 @@ export function OptimizerView() {
     addDefectZone,
     removeDefectZone,
   } = useCabinetStore();
-  const lang = i18n.language as Lang;
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
   // Phase 12 / Sprint 12 — load saved offcut catalog from IDB on first mount.
   useEffect(() => {
     const { setOffcutCatalog } = useCabinetStore.getState();

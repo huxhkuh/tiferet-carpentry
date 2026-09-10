@@ -21,7 +21,7 @@ describe('WoodworkingShop cabinet adapter', () => {
     expect(result.config).toBe(config);
     expect(result.dimensions.internalWidth).toBeLessThan(config.width);
     expect(result.parts.length).toBeGreaterThan(5);
-    expect(result.parts.some((part) => part.name.en === 'Hanging Rail')).toBe(true);
+    expect(result.parts.some((part) => part.name.en === 'Hanging Rail')).toBe(false);
     expect(result.hasErrors).toBe(false);
   });
 

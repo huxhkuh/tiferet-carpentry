@@ -2,7 +2,7 @@
  * Visual regression tests for key Cabinet Planner views.
  *
  * On first run (no baseline snapshots), Playwright creates reference images
- * in `tests/e2e/__screenshots__/`. Subsequent runs compare against those
+ * in `tests/e2e/visual-regression.spec.ts-snapshots/`. Subsequent runs compare against those
  * baselines with a 5 % pixel diff threshold to handle font rendering
  * differences across OS/CI environments.
  *
@@ -42,7 +42,7 @@ test('preview tab — cabinet SVG screenshot', async ({ page }) => {
   await page.waitForLoadState('networkidle');
 
   // Navigate to Preview (Alt+2) and wait for the SVG to render.
-  await page.keyboard.press('Alt+2');
+  await page.getByRole('tab', { name: 'Preview', exact: true }).click();
   await expect(page.locator('[role="main"] svg[role="img"]').first()).toBeVisible({ timeout: 8_000 });
 
   await expect(page).toHaveScreenshot('preview-tab.png', {
@@ -56,7 +56,7 @@ test('optimizer tab — cut sheets screenshot', async ({ page }) => {
   await page.waitForLoadState('networkidle');
 
   // Navigate to Optimizer (Alt+3).
-  await page.keyboard.press('Alt+3');
+  await page.getByRole('tab', { name: 'Cut Sheets', exact: true }).click();
   // Wait for the optimizer content area to appear.
   await expect(page.locator('[role="main"]')).toBeVisible({ timeout: 8_000 });
 

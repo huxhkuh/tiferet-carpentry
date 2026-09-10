@@ -14,7 +14,7 @@
 import { readdirSync, statSync, readFileSync } from 'node:fs';
 import { join, extname, basename } from 'node:path';
 
-const DIST_DIR = 'dist';
+const DIST_DIR = process.env.BUNDLE_DIST_DIR || 'dist';
 const BUDGET_FILE = 'config/bundle-budget.json';
 
 const budget = JSON.parse(readFileSync(BUDGET_FILE, 'utf8'));
@@ -24,7 +24,7 @@ function normalizePath(path) {
 }
 
 function isOnDemandDocument(path) {
-  const normalized = normalizePath(path).toLowerCase();
+  const normalized = normalizePath(path).replace(normalizePath(DIST_DIR), 'dist').toLowerCase();
   const prefixes = budget.onDemandDocuments?.pathPrefixes ?? [];
   return prefixes.some((prefix) => normalized.startsWith(normalizePath(prefix).toLowerCase()));
 }

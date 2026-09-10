@@ -88,7 +88,7 @@ export function estimateScenario(label: string, config: CabinetConfig): Scenario
     }, 0);
   const estimate = estimateCost(optimization, hwList, edgeBandingTotal);
 
-  const mat = getMaterial(config.carcassMaterial);
+  const mat = getMaterial(config.carcassMaterial, config.materialCatalog);
   const materialKey = config.carcassMaterial;
   const currencyCode = (mat as { currencyCode?: string } | null)?.currencyCode ?? 'USD';
 

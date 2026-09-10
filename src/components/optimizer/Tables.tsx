@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCabinetStore } from '../../store/cabinet-store';
-import { getMaterial } from '../../engine/materials';
+import { resolveMaterial } from '../../engine/materials';
 import type { Lang, Part } from '../../engine/types';
 
 type SortKey = 'id' | 'name' | 'qty' | 'material' | 'length' | 'width' | 'thickness';
@@ -21,7 +21,7 @@ function sortParts(parts: Part[], key: SortKey, dir: SortDir, lang: Lang): Part[
         cmp = a.qty - b.qty;
         break;
       case 'material':
-        cmp = getMaterial(a.material).name[lang].localeCompare(getMaterial(b.material).name[lang]);
+        cmp = resolveMaterial(a).name[lang].localeCompare(resolveMaterial(b).name[lang]);
         break;
       case 'length':
         cmp = a.length - b.length;
@@ -39,8 +39,8 @@ function sortParts(parts: Part[], key: SortKey, dir: SortDir, lang: Lang): Part[
 
 export function PartsTable() {
   const { t, i18n } = useTranslation();
-  const { parts } = useCabinetStore();
-  const lang = i18n.language as Lang;
+  const { parts, config, setConfig } = useCabinetStore();
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
   /** Sprint 171 — sortable column headers */
   const [sortKey, setSortKey] = useState<SortKey>('id');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
@@ -99,7 +99,7 @@ export function PartsTable() {
               {uniqueMaterials.map((mat) => {
                 let label = mat;
                 try {
-                  label = getMaterial(mat).name[lang];
+                  label = resolveMaterial(parts.find((part) => part.material === mat)!).name[lang];
                 } catch {
                   /* keep key */
                 }
@@ -117,6 +117,7 @@ export function PartsTable() {
         <thead>
           <tr className="bg-wood-100 dark:bg-wood-800 text-wood-700 dark:text-wood-300">
             {thBtn('id', t('parts.id'))}
+            <th>{t('parts.grainDirection')}</th>
             {thBtn('name', t('parts.name'))}
             {thBtn('qty', t('parts.qty'), 'text-end')}
             {thBtn('material', t('parts.material'))}
@@ -128,10 +129,27 @@ export function PartsTable() {
         </thead>
         <tbody>
           {sorted.map((p) => {
-            const mat = getMaterial(p.material);
+            const mat = resolveMaterial(p);
             return (
               <tr key={p.id} className="border-wood-100 dark:border-wood-800 border-b">
                 <td className="px-2 py-1 font-mono">{p.id}</td>
+                <td>
+                  <select
+                    aria-label={t('parts.grainFor', { id: p.id })}
+                    value={config.partGrainConstraints?.[p.id] ?? ''}
+                    onChange={(event) => {
+                      const constraints = { ...config.partGrainConstraints };
+                      const value = event.target.value;
+                      if (value === 'along-length' || value === 'along-width') constraints[p.id] = value;
+                      else delete constraints[p.id];
+                      setConfig({ partGrainConstraints: constraints });
+                    }}
+                  >
+                    <option value="">{t('parts.grainDefault')}</option>
+                    <option value="along-length">{t('parts.grainLength')}</option>
+                    <option value="along-width">{t('parts.grainWidth')}</option>
+                  </select>
+                </td>
                 <td className="px-2 py-1">{p.name[lang]}</td>
                 <td className="px-2 py-1 text-end">{p.qty}</td>
                 <td className="px-2 py-1">{mat.name[lang]}</td>
@@ -151,7 +169,7 @@ export function PartsTable() {
 export function HardwareTable() {
   const { t, i18n } = useTranslation();
   const { hardware, hardwareQtyOverrides, setHardwareQtyOverride } = useCabinetStore();
-  const lang = i18n.language as Lang;
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
 
   return (
     <div className="overflow-x-auto">

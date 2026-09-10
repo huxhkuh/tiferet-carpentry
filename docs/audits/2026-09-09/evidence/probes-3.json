@@ -1,0 +1,14 @@
+{
+  "galleryBefore": 6,
+  "galleryAfterKitchen": 6,
+  "modules": {
+    "importAccepted": true,
+    "emptyLoadError": "TypeError: Cannot read properties of undefined (reading 'config')"
+  },
+  "blankMaterialOptions": [],
+  "contextLoss": {
+    "supported": true,
+    "status": "ready",
+    "fallbackCount": 0
+  }
+}

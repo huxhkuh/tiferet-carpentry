@@ -8,10 +8,9 @@ import { useCabinetStore } from './store/cabinet-store';
 const PREFERENCES_KEY = 'woodworkingshop:prefs';
 
 function followsOperatingSystemTheme(): boolean {
-  const savedPreferences = window.localStorage.getItem(PREFERENCES_KEY);
-  if (!savedPreferences) return true;
-
   try {
+    const savedPreferences = window.localStorage.getItem(PREFERENCES_KEY);
+    if (!savedPreferences) return true;
     const parsedPreferences = JSON.parse(savedPreferences) as { darkMode?: unknown };
     return parsedPreferences.darkMode === undefined;
   } catch {

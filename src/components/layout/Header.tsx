@@ -132,9 +132,10 @@ export function Header() {
   const changeLang = (next: SupportedLang) => {
     void loadLocale(next).then(() => {
       i18n.changeLanguage(next);
+      document.documentElement.lang = next;
       document.documentElement.dir = RTL_LANGS.has(next) ? 'rtl' : 'ltr';
       // Engine-facing lang stays 'en'|'he' — AR/ES/DE/FR fall back to EN for BOM column headers.
-      const engineLang: 'en' | 'he' = next === 'he' || next === 'ar' ? 'he' : 'en';
+      const engineLang: 'en' | 'he' = next === 'he' ? 'he' : 'en';
       useCabinetStore.getState().setConfig({ lang: engineLang });
     });
   };

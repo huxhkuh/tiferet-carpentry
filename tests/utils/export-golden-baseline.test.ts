@@ -44,7 +44,7 @@ function buildGoldenArtifacts() {
 
   const parts = generateParts(project.config);
   const hardware = generateHardware(project.config);
-  const optimization = optimizeCutSheets(parts, 3);
+  const optimization = optimizeCutSheets(parts, 6);
   const firstSheet = optimization.sheets[0];
 
   if (!firstSheet) {

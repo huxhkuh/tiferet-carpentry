@@ -9,6 +9,8 @@ import type {
   DefectZone,
 } from '../engine/types';
 import { DEFAULT_CONFIG } from '../engine/materials';
+import { useCustomMaterialsStore } from './custom-materials-store';
+import { validateProjectCabinets } from '../utils/project-validation';
 import { computeDimensions } from '../engine/dimensions';
 import { generateParts, computeEdgeBandingTotal } from '../engine/parts';
 import { generateHardware } from '../engine/hardware';
@@ -52,6 +54,18 @@ import { createNamedExpressionsSlice, type NamedExpressionsSlice } from './slice
 
 const MAX_HISTORY = 50;
 
+function withCustomMaterials(config: CabinetConfig): CabinetConfig {
+  const definitions = [...(config.materialCatalog ?? []), ...useCustomMaterialsStore.getState().materials];
+  const catalog = [
+    ...new Map(
+      definitions
+        .filter((item) => item.key === config.carcassMaterial || item.key === config.backPanelMaterial)
+        .map((item) => [item.key, item]),
+    ).values(),
+  ];
+  return catalog.length ? { ...config, materialCatalog: catalog } : config;
+}
+
 // Phase 11 — UI preferences now live in uiSlice.ts.  Re-export so tests and
 // any external consumers that imported from cabinet-store still work.
 export { detectOsDarkModeUi as detectOsDarkMode } from './slices/uiSlice';
@@ -80,7 +94,16 @@ function loadSession(): SessionSnapshot | null {
   if (typeof window === 'undefined') return null;
   try {
     const raw = window.localStorage.getItem(SESSION_KEY);
-    return raw ? (JSON.parse(raw) as SessionSnapshot) : null;
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as SessionSnapshot;
+    const cabinets = validateProjectCabinets(parsed.cabinets);
+    if (
+      !Number.isInteger(parsed.activeCabinetIndex) ||
+      parsed.activeCabinetIndex < 0 ||
+      parsed.activeCabinetIndex >= cabinets.length
+    )
+      return null;
+    return { ...parsed, cabinets };
   } catch {
     return null;
   }
@@ -126,6 +149,9 @@ export type CabinetState = {
   optimizationPending: boolean;
   costPending: boolean;
   assemblyPending: boolean;
+  optimizationError?: string | null;
+  costError?: string | null;
+  assemblyError?: string | null;
   _past: CabinetEntry[][];
   _future: CabinetEntry[][];
   canUndo: boolean;
@@ -373,9 +399,10 @@ export const useCabinetStore = create<CabinetState>((set, get) => {
     // ── Config actions (inline) ────────────────────────────────────────────
     setConfig: (patch) =>
       set((state) => {
-        const cabinets = state.cabinets.map((cab, i) =>
-          i === state.activeCabinetIndex ? { ...cab, config: { ...cab.config, ...patch } } : cab,
-        );
+        const cabinets = state.cabinets.map((cab, i) => ({
+          ...cab,
+          config: withCustomMaterials({ ...cab.config, ...(i === state.activeCabinetIndex ? patch : {}) }),
+        }));
         pushConfigToUrl(cabinets[state.activeCabinetIndex].config);
         // Sprint 20 — notify plugins that config changed.
         pluginEventBus.emit('config:change', { config: cabinets[state.activeCabinetIndex].config });
@@ -638,10 +665,7 @@ export const useCabinetStore = create<CabinetState>((set, get) => {
     loadProject: (cabinets) =>
       set((state) => {
         const past = [...state._past, state.cabinets].slice(-MAX_HISTORY);
-        const migrated = cabinets.map((c) => ({
-          ...c,
-          config: { ...DEFAULT_CONFIG, ...c.config },
-        }));
+        const migrated = validateProjectCabinets(cabinets);
         const base = deriveBaseProject(migrated, 0);
         scheduleOptimization(base.parts, base.allParts, state.sawKerf, state.sheetSizeOverrides);
         scheduleAssembly(base.config);

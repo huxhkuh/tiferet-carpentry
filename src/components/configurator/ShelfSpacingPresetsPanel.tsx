@@ -16,7 +16,7 @@ export function ShelfSpacingPresetsPanel() {
   const lang = i18n.language === 'he' ? 'he' : 'en';
   const presets = getShelfPresets();
 
-  const carcassMat = getMaterial(config.carcassMaterial);
+  const carcassMat = getMaterial(config.carcassMaterial, config.materialCatalog);
   const matThickness = carcassMat?.thickness ?? 18;
 
   // Internal height = external height − 2× carcass panel thickness (top + bottom)

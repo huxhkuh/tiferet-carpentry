@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCabinetStore } from '../../store/cabinet-store';
 import { DEFAULT_LABOUR_RATE } from '../../engine/cost-estimator';
-import { getMaterial, computePartWeightKg } from '../../engine/materials';
-import type { Lang } from '../../engine/types';
+import { computePartWeightKg, resolveMaterial } from '../../engine/materials';
 
 const BAR_COLORS = ['#8B6F47', '#A0845C', '#C49A6C', '#6B8E23', '#4682B4'];
 
@@ -26,12 +25,12 @@ export function CostEstimatePanel() {
     finishCost,
     setFinishCost,
   } = useCabinetStore();
-  const lang = i18n.language as Lang;
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
 
   // Compute total panel weight from all parts across all cabinets
   const totalWeightKg = allParts.reduce((sum, p) => {
     try {
-      const mat = getMaterial(p.material);
+      const mat = resolveMaterial(p);
       return sum + computePartWeightKg(p.length, p.width, p.thickness, p.qty, mat.densityKgM3);
     } catch {
       return sum;
@@ -75,6 +74,12 @@ export function CostEstimatePanel() {
         {t('cost.title')}
       </h3>
 
+      <p className="text-xs text-stone-600 dark:text-stone-300">{t('cost.estimateBasis')}</p>
+      {!!cost.missingPrices?.length && (
+        <p role="status" className="text-sm text-amber-800 dark:text-amber-200">
+          {t('cost.missingPrices', { items: cost.missingPrices.join(', ') })}
+        </p>
+      )}
       {/* Visual cost breakdown bar */}
       {totalNonZero && (
         <div className="space-y-1">
@@ -104,7 +109,9 @@ export function CostEstimatePanel() {
         {cost.sheetCosts.map((sc, i) => {
           const isEditing = editingPrice === sc.material;
           const hasOverride = sc.material in materialPriceOverrides;
-          const defaultPrice = getMaterial(sc.material).pricePerSheet ?? 0;
+          const defaultPrice =
+            resolveMaterial(allParts.find((part) => part.material === sc.material) ?? { material: sc.material })
+              .pricePerSheet ?? 0;
           return (
             <div key={i} className="flex items-center justify-between gap-2 text-xs">
               <span className="text-wood-600 dark:text-wood-300 flex-1 truncate">
@@ -154,7 +161,8 @@ export function CostEstimatePanel() {
                   className={`shrink-0 font-medium hover:underline ${hasOverride ? 'text-amber-800 dark:text-amber-300' : 'text-wood-700 dark:text-wood-200'}`}
                   title={t('cost.editPrice')}
                 >
-                  ₪{sc.subtotal} {hasOverride && <span className="text-[10px]">✎</span>}
+                  {sc.priceMissing ? t('cost.priceMissing') : `₪${sc.subtotal}`}{' '}
+                  {hasOverride && <span className="text-[10px]">✎</span>}
                 </button>
               )}
             </div>
@@ -259,7 +267,7 @@ export function CostEstimatePanel() {
                     className={`shrink-0 font-medium hover:underline ${hasHwOverride ? 'text-amber-800 dark:text-amber-300' : 'text-wood-700 dark:text-wood-200'}`}
                     title={t('cost.editPrice')}
                   >
-                    ₪{hw.subtotal}
+                    {hw.priceMissing ? t('cost.priceMissing') : `₪${hw.subtotal}`}
                     {hasHwOverride && <span className="text-[10px]"> ✎</span>}
                   </button>
                 )}

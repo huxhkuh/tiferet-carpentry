@@ -40,7 +40,7 @@ function groupParallelSteps(steps: AssemblyStep[]): AssemblyStep[][] {
 export function AssemblyGuide() {
   const { t, i18n } = useTranslation();
   const { assemblySteps: steps, parts, hardware, cabinets, activeCabinetIndex } = useCabinetStore();
-  const lang = i18n.language as Lang;
+  const lang = i18n.resolvedLanguage?.startsWith('he') ? 'he' : 'en';
   const [activeStep, setActiveStep] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('all');
   // Sprint 84 — show/hide tips toggle (only applies in all-steps view)

@@ -1,5 +1,5 @@
 import { Page, Text } from '@react-pdf/renderer';
-import type { DerivedDimensions } from '../../../engine/types';
+import type { DerivedDimensions, Material } from '../../../engine/types';
 import { getMaterial } from '../../../engine/materials';
 import { s } from '../pdf-tokens';
 import type { PdfCtx } from '../pdf-i18n';
@@ -9,11 +9,12 @@ interface PdfDrillingPageProps {
   ctx: PdfCtx;
   d: DerivedDimensions;
   backPanelMaterial: string;
+  materialCatalog?: Material[];
 }
 
-export function PdfDrillingPage({ ctx, d, backPanelMaterial }: PdfDrillingPageProps) {
+export function PdfDrillingPage({ ctx, d, backPanelMaterial, materialCatalog }: PdfDrillingPageProps) {
   const { T, fontFamily, fontFamilyBold, textAlign, isRTL, lang, date, coverTitle, pageSize, orientation } = ctx;
-  const bMat = getMaterial(backPanelMaterial);
+  const bMat = getMaterial(backPanelMaterial, materialCatalog);
   return (
     <Page size={pageSize} orientation={orientation} style={[s.page, { fontFamily }]}>
       <PageHeader section={`🔧  ${T.drillingGuide}`} projectName={coverTitle} lang={lang} />

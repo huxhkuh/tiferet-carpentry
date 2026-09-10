@@ -1,4 +1,6 @@
 import type { CabinetConfig, ValidationIssue } from '../types';
+import { buildPartInstances } from '../part-instances';
+import { HINGE_ARM_CLEARANCE_MM } from '../layout-constants';
 import { computeDimensions } from '../dimensions';
 import { VENDOR_HINGE_PROFILES } from '../hardware';
 
@@ -48,13 +50,6 @@ const MIN_PRACTICAL_DOOR_HEIGHT_MM = 200;
  * side the cup boring is structurally unsafe.
  */
 const MIN_HINGE_CUP_EDGE_DISTANCE_MM = 22;
-
-/**
- * Minimum clearance (mm) between a hinge arm mounting point and the nearest
- * shelf panel.  The hinge arm projects ~30 mm into the carcass; a shelf within
- * this radius obstructs the arm and must be notched or repositioned.
- */
-const HINGE_ARM_CLEARANCE_MM = 35;
 
 /** Minimum cabinet depth for a door-hung carcass (Sprint 75). */
 const MIN_DEPTH_FOR_DOORS_MM = 250;
@@ -183,22 +178,29 @@ export function checkHingeShelfInterference(
   config: CabinetConfig,
   dims: ReturnType<typeof computeDimensions>,
   t: number,
+  instances?: ReturnType<typeof buildPartInstances>,
 ): ValidationIssue[] {
-  if (config.doorStyle === 'none' || config.shelfCount === 0 || dims.hingePositions.length === 0) {
+  if (
+    (config.furnitureType !== 'cabinet' && config.furnitureType !== 'wardrobe') ||
+    config.doorStyle === 'none' ||
+    config.shelfCount === 0 ||
+    dims.hingePositions.length === 0
+  ) {
     return [];
   }
-  const doorTopInsetMm = Math.max(0, t - config.doorReveal);
-  const hingeArmsFromBottom = dims.hingePositions.map((pos) => dims.internalHeight - (pos - doorTopInsetMm));
-  const shelfPositions: number[] =
-    config.shelfSpacing === 'custom' && config.customShelfPositions.length === config.shelfCount
-      ? config.customShelfPositions
-      : Array.from({ length: config.shelfCount }, (_, i) =>
-          Math.round((dims.internalHeight * (i + 1)) / (config.shelfCount + 1)),
-        );
+  const plinth =
+    config.furnitureType === 'cabinet' || config.furnitureType === 'wardrobe' ? (config.kickHeight ?? 0) : 0;
+  const interiorBottom = plinth + t;
+  const hingeArmsFromBottom = dims.hingePositions.map(
+    (pos) => config.height - config.doorReveal - pos - interiorBottom,
+  );
+  const shelfPositions = (instances ?? buildPartInstances(config))
+    .filter((instance) => instance.part.name.en.includes('Shelf'))
+    .map((instance) => instance.center[1] - interiorBottom);
 
   for (const hPos of hingeArmsFromBottom) {
     for (const sPos of shelfPositions) {
-      const gap = Math.abs(hPos - sPos);
+      const gap = Math.max(0, Math.abs(hPos - sPos) - t / 2);
       if (gap < HINGE_ARM_CLEARANCE_MM) {
         return [
           {
