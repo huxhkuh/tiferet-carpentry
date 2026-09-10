@@ -24,8 +24,8 @@ describe('Tiferet planner UI', () => {
   it('locks cabinet edits and deletion, with undo and redo for the lock', () => {
     render(<PlannerApp initialStarted initialRoomId="bedroom" />);
     fireEvent.click(screen.getByTestId('wall-list-bed-e'));
-    fireEvent.click(screen.getByRole('button', { name: '＋ הוסף ארון', exact: true }));
-    fireEvent.click(screen.getByRole('button', { name: 'נעילת הפריט', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: '＋ הוסף ארון' }));
+    fireEvent.click(screen.getByRole('button', { name: 'נעילת הפריט' }));
     expect(screen.getByLabelText('רוחב', { exact: true })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'מחק ארון נבחר' })).toBeDisabled();
     fireEvent.change(screen.getByLabelText('רוחב', { exact: true }), { target: { value: '200' } });
@@ -39,10 +39,10 @@ describe('Tiferet planner UI', () => {
   it('blocks editing of locked furniture while keeping it selectable for unlocking', () => {
     render(<PlannerApp initialStarted initialRoomId="bedroom" />);
     fireEvent.click(screen.getByTestId('furniture-bedroom-bed-a'));
-    fireEvent.click(screen.getByRole('button', { name: 'נעילת הפריט', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'נעילת הפריט' }));
     expect(screen.getByRole('button', { name: 'הזז ימינה 10 ס״מ' })).toBeDisabled();
     expect(screen.getByTestId('furniture-bedroom-bed-a')).toHaveAttribute('data-locked', 'true');
-    fireEvent.click(screen.getByRole('button', { name: 'שחרור נעילת הפריט', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'שחרור נעילת הפריט' }));
     expect(screen.getByRole('button', { name: 'הזז ימינה 10 ס״מ' })).toBeEnabled();
   });
 
