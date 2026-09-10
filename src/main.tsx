@@ -22,9 +22,5 @@ function mountApp(): void {
   );
 }
 
-// Preserve one browser paint for the inline branded shell before React replaces it.
-// The timeout keeps background tabs functional because requestAnimationFrame pauses there.
-window.setTimeout(mountApp, 250);
-window.requestAnimationFrame(() => {
-  window.requestAnimationFrame(mountApp);
-});
+// The HTML shell is visible while modules load; start the application as soon as they are ready.
+mountApp();
