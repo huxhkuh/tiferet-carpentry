@@ -1,0 +1,7 @@
+
+> tiferet-carpentry@5.32.0 dead:check
+> knip
+
+Configuration hints (2)
+src/env.d.ts    package.json  Remove from ignore
+.css            package.json  Compiled extension excluded by project (imports not followed)

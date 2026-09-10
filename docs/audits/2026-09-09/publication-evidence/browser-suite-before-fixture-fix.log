@@ -1,0 +1,135 @@
+
+Running 62 tests using 1 worker
+
+(node:8144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium] › tests\e2e\accessibility.spec.ts:26:1 › homepage passes axe WCAG 2.1 AA checks (6.0s)
+  ok  2 [chromium] › tests\e2e\accessibility.spec.ts:51:1 › configurator tab passes axe WCAG 2.1 AA checks (3.8s)
+  ok  3 [chromium] › tests\e2e\optimizer-visual.spec.ts:18:1 › optimizer view exposes a yield meter for at least one sheet (2.7s)
+  x   4 [chromium] › tests\e2e\remediation.spec.ts:5:1 › cabinet and furniture locks survive reload and portable export (34.7s)
+(node:33928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  5 [chromium] › tests\e2e\remediation.spec.ts:31:1 › all workshop locale choices retain text and the correct reading direction (3.1s)
+  ok  6 [chromium] › tests\e2e\remediation.spec.ts:45:1 › mobile editing keeps the model visible and summary reads the current draft (4.0s)
+  ok  7 [chromium] › tests\e2e\remediation.spec.ts:74:1 › blocked storage gives a recoverable draft and never reports successful saving (1.8s)
+  ok  8 [chromium] › tests\e2e\remediation.spec.ts:93:1 › 3D context loss exposes a working 2D recovery action (2.7s)
+  ok  9 [chromium] › tests\e2e\remediation.spec.ts:105:1 › the registered site shell opens the planner while offline (3.9s)
+  ok 10 [chromium] › tests\e2e\remediation.spec.ts:120:1 › portable JSON restores its apartment and live draft in an empty browser (6.1s)
+  ok 11 [chromium] › tests\e2e\smoke.spec.ts:28:1 › app boots and renders header (1.9s)
+  ok 12 [chromium] › tests\e2e\smoke.spec.ts:34:1 › configurator tab is reachable and renders dimension controls (2.2s)
+  ok 13 [chromium] › tests\e2e\smoke.spec.ts:43:1 › keyboard shortcut Alt+2 switches to preview (1.7s)
+  ok 14 [chromium] › tests\e2e\smoke.spec.ts:52:1 › PWA service worker registers (2.2s)
+  ok 15 [chromium] › tests\e2e\smoke.spec.ts:68:1 › PDF panel renders generate button and content summary (2.4s)
+  ok 16 [chromium] › tests\e2e\smoke.spec.ts:86:1 › mobile workshop assets resolve under the deployment base path (1.7s)
+  ok 17 [chromium] › tests\e2e\tiferet-pdf-import.spec.ts:7:1 › imports an architectural PDF and restores the edited design after reload (4.4s)
+  ok 18 [chromium] › tests\e2e\tiferet-planner.spec.ts:20:1 › Tiferet wardrobe happy path persists after reload (4.2s)
+  ok 19 [chromium] › tests\e2e\tiferet-planner.spec.ts:61:1 › Tiferet furniture, layers and camera persist as one design (3.5s)
+  ok 20 [chromium] › tests\e2e\tiferet-planner.spec.ts:96:1 › Tiferet furniture catalogue adds, edits and restores a new item in 2D and 3D (4.2s)
+  ok 21 [chromium] › tests\e2e\tiferet-planner.spec.ts:146:1 › Tiferet picker and planner pass WCAG 2.1 AA checks (6.1s)
+  ok 22 [chromium] › tests\e2e\tiferet-planner.spec.ts:165:1 › Tiferet planner has no horizontal overflow on a mobile viewport (1.9s)
+  ok 23 [chromium] › tests\e2e\tiferet-planner.spec.ts:172:1 › Tiferet furnished rooms switch between two beds, kitchen and an empty planning view (1.5s)
+  ok 24 [chromium] › tests\e2e\tiferet-planner.spec.ts:191:1 › Tiferet complete view serves the untouched full-resolution source sheet (2.5s)
+  ok 25 [chromium] › tests\e2e\tiferet-planner.spec.ts:208:1 › Tiferet clean-plan layers and source audit expose architectural evidence (2.3s)
+  ok 26 [chromium] › tests\e2e\tiferet-site.spec.ts:5:1 › homepage stays within the viewport at every required responsive width (5.9s)
+  ok 27 [chromium] › tests\e2e\tiferet-site.spec.ts:14:1 › mobile navigation covers the viewport and closes with Escape (1.9s)
+  ok 28 [chromium] › tests\e2e\visual-regression.spec.ts:26:1 › configurator tab — default view screenshot (3.2s)
+  ok 29 [chromium] › tests\e2e\visual-regression.spec.ts:40:1 › preview tab — cabinet SVG screenshot (2.9s)
+  ok 30 [chromium] › tests\e2e\visual-regression.spec.ts:54:1 › optimizer tab — cut sheets screenshot (6.7s)
+  ok 31 [chromium] › tests\e2e\visual-regression.spec.ts:69:1 › dark mode toggle — header appearance (2.8s)
+(node:31576) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 32 [firefox] › tests\e2e\accessibility.spec.ts:26:1 › homepage passes axe WCAG 2.1 AA checks (14.4s)
+  ok 33 [firefox] › tests\e2e\accessibility.spec.ts:51:1 › configurator tab passes axe WCAG 2.1 AA checks (9.6s)
+  ok 34 [firefox] › tests\e2e\optimizer-visual.spec.ts:18:1 › optimizer view exposes a yield meter for at least one sheet (4.8s)
+  x  35 [firefox] › tests\e2e\remediation.spec.ts:5:1 › cabinet and furniture locks survive reload and portable export (30.7s)
+(node:22872) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 36 [firefox] › tests\e2e\remediation.spec.ts:31:1 › all workshop locale choices retain text and the correct reading direction (10.0s)
+  ok 37 [firefox] › tests\e2e\remediation.spec.ts:45:1 › mobile editing keeps the model visible and summary reads the current draft (8.1s)
+  ok 38 [firefox] › tests\e2e\remediation.spec.ts:74:1 › blocked storage gives a recoverable draft and never reports successful saving (4.5s)
+  ok 39 [firefox] › tests\e2e\remediation.spec.ts:93:1 › 3D context loss exposes a working 2D recovery action (3.2s)
+  ok 40 [firefox] › tests\e2e\remediation.spec.ts:105:1 › the registered site shell opens the planner while offline (11.2s)
+  ok 41 [firefox] › tests\e2e\remediation.spec.ts:120:1 › portable JSON restores its apartment and live draft in an empty browser (10.9s)
+  ok 42 [firefox] › tests\e2e\smoke.spec.ts:28:1 › app boots and renders header (2.5s)
+  ok 43 [firefox] › tests\e2e\smoke.spec.ts:34:1 › configurator tab is reachable and renders dimension controls (2.6s)
+  ok 44 [firefox] › tests\e2e\smoke.spec.ts:43:1 › keyboard shortcut Alt+2 switches to preview (5.5s)
+  ok 45 [firefox] › tests\e2e\smoke.spec.ts:52:1 › PWA service worker registers (4.6s)
+  ok 46 [firefox] › tests\e2e\smoke.spec.ts:68:1 › PDF panel renders generate button and content summary (4.9s)
+  ok 47 [firefox] › tests\e2e\smoke.spec.ts:86:1 › mobile workshop assets resolve under the deployment base path (3.6s)
+  ok 48 [firefox] › tests\e2e\tiferet-pdf-import.spec.ts:7:1 › imports an architectural PDF and restores the edited design after reload (10.7s)
+  ok 49 [firefox] › tests\e2e\tiferet-planner.spec.ts:20:1 › Tiferet wardrobe happy path persists after reload (8.2s)
+  ok 50 [firefox] › tests\e2e\tiferet-planner.spec.ts:61:1 › Tiferet furniture, layers and camera persist as one design (5.5s)
+  ok 51 [firefox] › tests\e2e\tiferet-planner.spec.ts:96:1 › Tiferet furniture catalogue adds, edits and restores a new item in 2D and 3D (7.8s)
+  ok 52 [firefox] › tests\e2e\tiferet-planner.spec.ts:146:1 › Tiferet picker and planner pass WCAG 2.1 AA checks (10.3s)
+  ok 53 [firefox] › tests\e2e\tiferet-planner.spec.ts:165:1 › Tiferet planner has no horizontal overflow on a mobile viewport (1.1s)
+  ok 54 [firefox] › tests\e2e\tiferet-planner.spec.ts:172:1 › Tiferet furnished rooms switch between two beds, kitchen and an empty planning view (6.5s)
+  ok 55 [firefox] › tests\e2e\tiferet-planner.spec.ts:191:1 › Tiferet complete view serves the untouched full-resolution source sheet (3.2s)
+  ok 56 [firefox] › tests\e2e\tiferet-planner.spec.ts:208:1 › Tiferet clean-plan layers and source audit expose architectural evidence (4.8s)
+  ok 57 [firefox] › tests\e2e\tiferet-site.spec.ts:5:1 › homepage stays within the viewport at every required responsive width (5.5s)
+  ok 58 [firefox] › tests\e2e\tiferet-site.spec.ts:14:1 › mobile navigation covers the viewport and closes with Escape (1.8s)
+  ok 59 [firefox] › tests\e2e\visual-regression.spec.ts:26:1 › configurator tab — default view screenshot (2.7s)
+  ok 60 [firefox] › tests\e2e\visual-regression.spec.ts:40:1 › preview tab — cabinet SVG screenshot (3.4s)
+  ok 61 [firefox] › tests\e2e\visual-regression.spec.ts:54:1 › optimizer tab — cut sheets screenshot (2.2s)
+  ok 62 [firefox] › tests\e2e\visual-regression.spec.ts:69:1 › dark mode toggle — header appearance (2.0s)
+
+
+  1) [chromium] › tests\e2e\remediation.spec.ts:5:1 › cabinet and furniture locks survive reload and portable export
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByTestId('wall-list-bed-e')
+
+
+       8 |   await page.getByRole('button', { name: 'נעילת הפריט', exact: true }).click();
+       9 |   await expect(page.getByRole('button', { name: 'הזז ימינה 10 ס״מ' })).toBeDisabled();
+    > 10 |   await page.getByTestId('wall-list-bed-e').click();
+         |                                             ^
+      11 |   await page.getByRole('button', { name: /^＋ הוסף ארון$/ }).click();
+      12 |   await page.getByRole('button', { name: 'נעילת הפריט', exact: true }).click();
+      13 |   await expect(page.getByLabel('רוחב', { exact: true })).toBeDisabled();
+        at C:\Users\yosi\Downloads\DFDF\tests\e2e\remediation.spec.ts:10:45
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\AppData\Local\Temp\WoodworkingShop\test-results\remediation-cabinet-and-fu-f4063--reload-and-portable-export-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\AppData\Local\Temp\WoodworkingShop\test-results\remediation-cabinet-and-fu-f4063--reload-and-portable-export-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\AppData\Local\Temp\WoodworkingShop\test-results\remediation-cabinet-and-fu-f4063--reload-and-portable-export-chromium\error-context.md
+
+  2) [firefox] › tests\e2e\remediation.spec.ts:5:1 › cabinet and furniture locks survive reload and portable export
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByTestId('wall-list-bed-e')
+
+
+       8 |   await page.getByRole('button', { name: 'נעילת הפריט', exact: true }).click();
+       9 |   await expect(page.getByRole('button', { name: 'הזז ימינה 10 ס״מ' })).toBeDisabled();
+    > 10 |   await page.getByTestId('room-select-bedroom').click();
+         |                                             ^
+      11 |   await page.getByTestId('wall-list-bed-e').click();
+      12 |   await page.getByRole('button', { name: /^＋ הוסף ארון$/ }).click();
+      13 |   await page.getByRole('button', { name: 'נעילת הפריט', exact: true }).click();
+        at C:\Users\yosi\Downloads\DFDF\tests\e2e\remediation.spec.ts:10:45
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\AppData\Local\Temp\WoodworkingShop\test-results\remediation-cabinet-and-fu-f4063--reload-and-portable-export-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\AppData\Local\Temp\WoodworkingShop\test-results\remediation-cabinet-and-fu-f4063--reload-and-portable-export-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\AppData\Local\Temp\WoodworkingShop\test-results\remediation-cabinet-and-fu-f4063--reload-and-portable-export-firefox\error-context.md
+
+  2 failed
+    [chromium] › tests\e2e\remediation.spec.ts:5:1 › cabinet and furniture locks survive reload and portable export
+    [firefox] › tests\e2e\remediation.spec.ts:5:1 › cabinet and furniture locks survive reload and portable export
+  60 passed (6.1m)

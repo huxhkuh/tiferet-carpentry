@@ -1,0 +1,18 @@
+{
+  "measurements": {
+    "canvas": {
+      "x": 0,
+      "y": 194.234375,
+      "width": 390,
+      "height": 357.375
+    },
+    "inspector": {
+      "x": 0,
+      "y": 551.609375,
+      "width": 390,
+      "height": 292.390625
+    },
+    "scrollWidth": 390
+  },
+  "errors": []
+}

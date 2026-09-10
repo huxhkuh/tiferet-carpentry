@@ -1,0 +1,83 @@
+{
+  "recordedAt": "2026-09-10T08:40:46.6032622+03:00",
+  "scope": "Continuation after the first remediation; Windows local verification before the authorized Pages publication",
+  "applicationSourceCommit": "da00316",
+  "upstreamIntegrated": "af62b22",
+  "quality": {
+    "command": "npm run quality:fast",
+    "status": "passed",
+    "proof": "quality.log",
+    "followup": "The output-directory option and final docs/test fixture also passed targeted lint and formatting; the pre-push hook reruns typecheck, tests and build."
+  },
+  "unitTests": {
+    "command": "npx vitest run --coverage --maxWorkers=4 --reporter=json",
+    "status": "passed",
+    "passed": 4761,
+    "failed": 0,
+    "files": 298,
+    "proof": "coverage.log"
+  },
+  "coveragePercent": {
+    "statements": 88.95,
+    "branches": 81.13,
+    "functions": 88.94,
+    "lines": 90.18
+  },
+  "browsers": {
+    "projects": ["chromium", "firefox"],
+    "existingTestsPassed": 60,
+    "newLockTestsPassedAfterFixtureFix": 2,
+    "proofs": ["browser-suite-before-fixture-fix.log", "browser-locks-fixed.log"],
+    "note": "The full run passed the 60 existing cases and failed two new cases because the fixture tried to access wall controls while furniture was selected. After selecting the room first, both new cases passed. Pages runs all 62 cases again on Linux."
+  },
+  "build": {
+    "status": "passed",
+    "proof": "build.log",
+    "output": "<TEMP>/tiferet-publish-dist"
+  },
+  "bundle": {
+    "status": "passed",
+    "jsKB": 2779.7,
+    "cssKB": 109.3,
+    "applicationKB": 2979.8,
+    "budgetsUnchanged": true,
+    "proof": "bundle.log"
+  },
+  "benchmarks": {
+    "status": "passed",
+    "withinBudget": 16,
+    "proof": "benchmarks.log"
+  },
+  "dependencyAudit": {
+    "reportedVulnerabilities": 0,
+    "proof": "dependency-audit.json"
+  },
+  "deadCode": {
+    "status": "passed",
+    "configurationHints": 2,
+    "proof": "dead-code.log"
+  },
+  "pdf": {
+    "bytes": 237577,
+    "browserErrors": 0,
+    "proof": "pdf-proof.json"
+  },
+  "mobile": {
+    "viewport": "390x844",
+    "horizontalOverflow": false,
+    "browserErrors": 0,
+    "proof": "mobile-proof.json",
+    "screenshot": "mobile-edit.png"
+  },
+  "publication": {
+    "authorized": true,
+    "target": "https://huxhkuh.github.io/tiferet-carpentry/",
+    "workflow": "https://github.com/huxhkuh/tiferet-carpentry/actions/workflows/pages.yml",
+    "status": "Prepared for publication; see GitHub Actions for the final deployment result."
+  },
+  "limitations": [
+    "Eight original audit items remain partial; see ../ACTION-BACKLOG.csv and ../PUBLICATION.he.md.",
+    "No paid design service was used.",
+    "An earlier unit run overlapped dependency-merge conflict markers; the clean final run above passed all tests."
+  ]
+}

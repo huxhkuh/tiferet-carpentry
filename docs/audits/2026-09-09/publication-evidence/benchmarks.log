@@ -1,0 +1,98 @@
+
+> tiferet-carpentry@5.32.0 bench:check
+> node scripts/bench-check.js
+
+⏱  Running engine benchmarks…
+
+Benchmarking is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+
+ RUN  v4.1.11 C:/Users/yosi/Downloads/DFDF
+
+
+ ✓ tests/bench/engine.bench.ts > dimensions 1161ms
+     name                                      hz     min     max    mean     p75     p99    p995    p999     rme  samples
+   · computeDimensions — base cabinet  810,267.16  0.0010  0.3490  0.0012  0.0011  0.0024  0.0026  0.0081  ±0.75%   162054
+   · computeDimensions — wardrobe      901,185.94  0.0010  0.2900  0.0011  0.0011  0.0012  0.0015  0.0035  ±0.52%   180238
+   · computeDimensions — desk          913,924.54  0.0010  2.8185  0.0011  0.0011  0.0014  0.0017  0.0023  ±2.79%   182785
+
+ ✓ tests/bench/engine.bench.ts > parts 2866ms
+     name                                                 hz     min     max    mean     p75     p99    p995    p999     rme  samples
+   · generateParts — base cabinet               1,328,229.69  0.0005  0.2905  0.0008  0.0009  0.0011  0.0012  0.0021  ±0.53%   265647
+   · generateParts — wardrobe 4-shelf 2-drawer  1,168,433.25  0.0007  1.2701  0.0009  0.0008  0.0015  0.0018  0.0024  ±1.52%   233687
+   · generateParts — desk 2-drawer              1,197,699.61  0.0007  0.5761  0.0008  0.0008  0.0010  0.0011  0.0024  ±0.95%   239541
+   · computeEdgeBandingTotal — base cabinet     4,948,547.53  0.0001  7.0706  0.0002  0.0002  0.0004  0.0004  0.0006  ±7.26%   989710
+
+ ✓ tests/bench/engine.bench.ts > cut optimizer 618ms
+     name                                                    hz     min      max    mean     p75     p99    p995    p999      rme  samples
+   · optimizeCutSheets — base cabinet (9 part types)  14,488.12  0.0391  10.9854  0.0690  0.0633  0.2384  0.3344  1.4670  ±11.25%     2898
+   · optimizeCutSheets — wardrobe (17 part types)     19,834.26  0.0356   0.7887  0.0504  0.0552  0.0961  0.1223  0.4333   ±1.64%     3967
+
+ ✓ tests/bench/engine.bench.ts > hardware 655ms
+     name                                     hz     min     max    mean     p75     p99    p995    p999     rme  samples
+   · generateHardware — base cabinet  149,900.73  0.0046  0.4908  0.0067  0.0065  0.0124  0.0157  0.0307  ±0.85%    29981
+   · generateHardware — wardrobe      130,782.64  0.0049  0.5833  0.0076  0.0092  0.0146  0.0199  0.0409  ±1.14%    26161
+
+ ✓ tests/bench/engine.bench.ts > cost estimator 647ms
+     name                                 hz     min     max    mean     p75     p99    p995    p999     rme  samples
+   · estimateCost — base cabinet  158,696.51  0.0037  0.8031  0.0063  0.0063  0.0155  0.0180  0.0443  ±1.48%    31740
+   · estimateCost — wardrobe       76,303.74  0.0119  0.4863  0.0131  0.0131  0.0220  0.0253  0.0342  ±0.94%    15261
+
+ ✓ tests/bench/engine.bench.ts > smart optimizer 613ms
+     name                                                       hz     min     max    mean     p75     p99    p995    p999     rme  samples
+   · findOptimizations — base cabinet (default strategies)  349.04  1.9207  5.1126  2.8650  3.0602  4.6517  5.1126  5.1126  ±2.96%      175
+
+ ✓ tests/bench/engine.bench.ts > validation 624ms
+     name                                        hz     min     max    mean     p75     p99    p995    p999     rme  samples
+   · validateConfig — valid base cabinet  47,485.56  0.0157  0.5375  0.0211  0.0208  0.0349  0.0454  0.1058  ±0.93%     9498
+   · validateConfig — valid wardrobe      37,731.15  0.0220  0.4347  0.0265  0.0262  0.0373  0.0409  0.0801  ±0.79%     7547
+
+ BENCH  Summary
+
+  computeDimensions — desk - tests/bench/engine.bench.ts > dimensions
+    1.01x faster than computeDimensions — wardrobe
+    1.13x faster than computeDimensions — base cabinet
+
+  computeEdgeBandingTotal — base cabinet - tests/bench/engine.bench.ts > parts
+    3.73x faster than generateParts — base cabinet
+    4.13x faster than generateParts — desk 2-drawer
+    4.24x faster than generateParts — wardrobe 4-shelf 2-drawer
+
+  optimizeCutSheets — wardrobe (17 part types) - tests/bench/engine.bench.ts > cut optimizer
+    1.37x faster than optimizeCutSheets — base cabinet (9 part types)
+
+  generateHardware — base cabinet - tests/bench/engine.bench.ts > hardware
+    1.15x faster than generateHardware — wardrobe
+
+  estimateCost — base cabinet - tests/bench/engine.bench.ts > cost estimator
+    2.08x faster than estimateCost — wardrobe
+
+  findOptimizations — base cabinet (default strategies) - tests/bench/engine.bench.ts > smart optimizer
+
+  validateConfig — valid base cabinet - tests/bench/engine.bench.ts > validation
+    1.26x faster than validateConfig — valid wardrobe
+
+Benchmark report written to C:/Users/yosi/AppData/Local/Temp/WoodworkingShop/bench-results.json
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Group                   Benchmark                                            Mean ms        Ops/sec     p99 ms  Status
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+smart optimizer         findOptimizations — base cabinet (default strate     2.86496            349    4.65170  ✓  2% of budget
+cut optimizer           optimizeCutSheets — base cabinet (9 part types)      0.06902         14,488    0.23840  ✓  6% of budget
+cut optimizer           optimizeCutSheets — wardrobe (17 part types)         0.05042         19,834    0.09610    (no budget set)
+validation              validateConfig — valid wardrobe                      0.02650         37,731    0.03730  ✓  16% of budget
+validation              validateConfig — valid base cabinet                  0.02106         47,486    0.03490  ✓  21% of budget
+cost estimator          estimateCost — wardrobe                              0.01311         76,304    0.02200  ✓  12% of budget
+hardware                generateHardware — wardrobe                          0.00765        130,783    0.01460  ✓  10% of budget
+hardware                generateHardware — base cabinet                      0.00667        149,901    0.01240  ✓  11% of budget
+cost estimator          estimateCost — base cabinet                          0.00630        158,697    0.01550  ✓  5% of budget
+dimensions              computeDimensions — base cabinet                     0.00123        810,267    0.00240  ✓  1% of budget
+dimensions              computeDimensions — wardrobe                         0.00111        901,186    0.00120  ✓  1% of budget
+dimensions              computeDimensions — desk                             0.00109        913,925    0.00140  ✓  1% of budget
+parts                   generateParts — wardrobe 4-shelf 2-drawer            0.00086      1,168,433    0.00150  ✓  3% of budget
+parts                   generateParts — desk 2-drawer                        0.00083      1,197,700    0.00100  ✓  2% of budget
+parts                   generateParts — base cabinet                         0.00075      1,328,230    0.00110  ✓  2% of budget
+parts                   computeEdgeBandingTotal — base cabinet               0.00020      4,948,548    0.00040  ✓  7% of budget
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+✅  All 16 benchmarks within budget.

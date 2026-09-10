@@ -1,0 +1,81 @@
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 464 modules transformed.
+rendering chunks...
+computing gzip size...
+../../AppData/Local/Temp/tiferet-publish-dist/assets/dxf-export.worker-DAQKOsiJ.js             5.69 kB
+../../AppData/Local/Temp/tiferet-publish-dist/index.html                                       6.90 kB │ gzip:  2.51 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/cost-estimator.worker-D7wbkqlY.js        10.31 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/bom-export.worker-Bc2U8Z8S.js            10.54 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/pdf-import.worker-K2xBWFEv.js            12.76 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/banner-CiAHE4uj.svg                      16.26 kB │ gzip:  3.57 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/cut-optimizer.worker-DygM7kVN.js         17.39 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/assembly.worker-CIuj3mP6.js              29.89 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/pdf-export.worker-COY3UG29.js         1,272.93 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/PlannerApp-UwrCJuCf.css                   3.00 kB │ gzip:  0.95 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/TiferetSite-CwUkUC--.css                 31.47 kB │ gzip:  6.74 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/src-B_6DeLrI.css                         77.44 kB │ gzip: 14.40 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/display-DuHeHM96.js                       0.14 kB │ gzip:  0.14 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/download-BJ-QxWDb.js                      0.17 kB │ gzip:  0.16 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/useDialogFocus-Rm9Hn1y8.js                0.18 kB │ gzip:  0.16 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/NotFoundPage-Cexm9hdg.js                  0.40 kB │ gzip:  0.29 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/imported-apartments-DW7NU8Nq.js           0.86 kB │ gzip:  0.51 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/wall-frame-DZ8uEk9I.js                    1.41 kB │ gzip:  0.80 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/ApartmentThumbnail-5qcdIbZv.js            1.54 kB │ gzip:  0.79 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/useFocusTrap-UB-FRvik.js                  1.59 kB │ gzip:  0.79 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/MyApartmentPage-CInf-2EV.js               1.76 kB │ gzip:  0.76 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/zip-writer-B47MJ3lz.js                    2.03 kB │ gzip:  1.05 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/ContactPage-Ck8giDuA.js                   2.76 kB │ gzip:  1.22 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/planning-document-BENpdL2x.js             3.57 kB │ gzip:  1.35 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/gcode-export-FoxHQxBM.js                  4.21 kB │ gzip:  1.83 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/SectionHeading-SRYBuxWm.js                4.32 kB │ gzip:  1.49 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/worker-request-CTwBFt1n.js                4.49 kB │ gzip:  1.93 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/dxf-export-B9xMcAGn.js                    4.91 kB │ gzip:  1.78 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/RoomLayoutView-vW8pxFcY.js                4.95 kB │ gzip:  1.75 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/workbox-window.prod.es5-Bd17z0YL.js       5.65 kB │ gzip:  2.20 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/HomeDetails-Qm5RGIxI.js                   5.84 kB │ gzip:  1.98 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/SummaryPage-F0FKyUxl.js                   6.15 kB │ gzip:  2.40 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/EditorialPages-Zo7ywOP7.js                7.05 kB │ gzip:  2.26 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/apartment-DVyw8Hmy.js                     7.33 kB │ gzip:  2.33 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/ApartmentsPage-DUbZEW7c.js                7.73 kB │ gzip:  2.57 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/middleware-DWaNGYo2.js                    8.13 kB │ gzip:  3.77 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/pdf-import-service-QQyuw2I9.js            9.44 kB │ gzip:  4.02 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/hardware-DTn1IEyU.js                     18.76 kB │ gzip:  5.17 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/Plan2D-D6xgMM5v.js                       19.29 kB │ gzip:  6.15 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/TiferetSite-pmFt7DNZ.js                  22.34 kB │ gzip:  7.42 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/de-DjoMzUvt.js                           24.29 kB │ gzip:  9.14 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/es-DSuc-AQj.js                           24.58 kB │ gzip:  9.26 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/ImportApartmentPage-DPInD44t.js          24.67 kB │ gzip:  8.33 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/fr-C8vRD5GA.js                           24.96 kB │ gzip:  9.35 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/PdfExportPanel-B7q60aZw.js               25.46 kB │ gzip:  7.86 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/ar-CghOM36c.js                           25.90 kB │ gzip:  8.92 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/AssemblyGuide-o5My3Z6f.js                28.06 kB │ gzip:  7.45 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/tiferet-CqlB0zDs.js                      29.21 kB │ gzip: 10.00 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/validation-CqCjbzpW.js                   30.69 kB │ gzip:  9.64 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/tiferet-source-inventory-c5Derq-W.js     42.21 kB │ gzip:  5.76 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/cabinet-store-DVqdfDnh.js                62.45 kB │ gzip: 18.48 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/ErrorBoundary-CwB_78yk.js                69.69 kB │ gzip: 20.75 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/he-D7Gp7Vr1.js                           83.95 kB │ gzip: 26.50 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/OptimizerView-CB4AWlWE.js                97.48 kB │ gzip: 22.93 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/PlannerApp-_3bPrmAb.js                  106.03 kB │ gzip: 31.30 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/CalculatorsPanel-DjHgDP9i.js            113.57 kB │ gzip: 13.96 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/index-B2mk5aLj.js                       199.01 kB │ gzip: 63.69 kB
+../../AppData/Local/Temp/tiferet-publish-dist/assets/WorkshopMode-CAovU1p8.js                289.88 kB │ gzip: 78.38 kB
+
+✓ built in 5.32s
+
+PWA v1.3.0
+mode      generateSW
+precache  69 entries (4083.08 KiB)
+files generated
+  ../../AppData/Local/Temp/tiferet-publish-dist/sw.js
+  ../../AppData/Local/Temp/tiferet-publish-dist/workbox-af8685ab.js
+[PLUGIN_TIMINGS] Your build spent 100% of 5.3s inside plugin hooks (36.9s).
+Measured inside the callback, so queue time is excluded and time the callback itself awaited is not:
+  - vite-plugin-pwa:build closeBundle (100%, 32.8s, 1 call)
+  - vite-plugin-pwa load (26%, 1.4s, 1 call)
+  - vite:asset load (25%, 1.3s, 1 call)
+Those rows are 100% of the build; the rest of the 100% is below.
+Not measurable — 1 hook whose calls overlap, so elapsed time covers work other calls were doing. Profile with `node --cpu-prof`:
+  - vite:worker load (7 calls)
+See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.

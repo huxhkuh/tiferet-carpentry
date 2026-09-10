@@ -125,6 +125,8 @@ export default defineConfig({
     },
   },
   build: {
+    // Share the report's output-directory override with local/pre-push builds.
+    outDir: process.env['BUNDLE_DIST_DIR'] ?? 'dist',
     cssMinify: 'lightningcss',
     // Use the supported browsers from package.json rather than expanding modern
     // CSS for the much older browsers implied by the JavaScript ES2022 target.

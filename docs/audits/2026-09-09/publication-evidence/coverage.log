@@ -1,0 +1,355 @@
+(node:25928) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37460) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25044) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10532) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+(node:22568) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+(node:5276) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+(node:37184) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+Not implemented: Window's scrollTo() method
+(node:32816) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31936) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4892) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32668) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25124) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2056) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Not implemented: Window's scrollTo() method
+(node:37308) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2928) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25488) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27892) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35544) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36692) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24688) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17868) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11500) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5840) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33596) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11292) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9784) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+JSON report written to C:/Users/yosi/AppData/Local/Temp/tiferet-publish-unit-final.json
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   88.95 |    81.13 |   88.94 |   90.18 |
+ apartment         |   65.71 |    77.77 |   31.25 |   66.66 |
+  PlannerApp.tsx   |   65.71 |    77.77 |   31.25 |   66.66 | 76-106,111-141
+ apartment/cabinet |   95.83 |    93.02 |     100 |     100 |
+  adapter.ts       |   95.83 |    93.02 |     100 |     100 | 84,88,176
+ ...ent/components |   74.83 |    75.23 |   76.23 |   78.81 |
+  ...Thumbnail.tsx |   95.65 |    58.33 |   93.75 |   94.44 | 72
+  ...Fixture2D.tsx |     100 |    94.44 |     100 |     100 | 115
+  ...Opening2D.tsx |     100 |    83.33 |     100 |     100 | 6,44
+  ...raryPanel.tsx |   68.42 |       72 |   66.66 |   70.58 | 43-45,109,157
+  ...ourcePlan.tsx |    87.5 |      100 |   66.66 |    87.5 | 22
+  ...alogPanel.tsx |   88.88 |    79.16 |     100 |    90.9 | 35,41
+  ...ureEditor.tsx |   97.36 |      100 |   95.65 |   97.36 | 275
+  ...eSymbol2D.tsx |     100 |    94.73 |     100 |     100 | 144-145
+  Plan2D.tsx       |   86.78 |    85.71 |   88.23 |   92.56 | ...13-417,506-509
+  ...nvasPanel.tsx |   25.86 |    40.47 |    23.8 |   27.08 | ...2,72-76,86-139
+  ...textPanel.tsx |   69.04 |    93.75 |   65.51 |   71.05 | ...30-178,226-263
+  ...nerHeader.tsx |   65.38 |    68.96 |      50 |   66.66 | ...,78,99,125,146
+  ...erLanding.tsx |   22.22 |    17.64 |   41.66 |   28.57 | ...,87-91,110-111
+  ...oomsPanel.tsx |   77.27 |    84.61 |   86.66 |   79.48 | 47-50,118-120,135
+  Room3D.tsx       |   66.03 |    54.54 |      66 |   70.99 | ...53,377,393-401
+  ...yersPanel.tsx |     100 |       90 |     100 |     100 | 34
+  ...risonPlan.tsx |   96.55 |    56.25 |     100 |     100 | 16-64
+ apartment/data    |   92.68 |    72.34 |   97.14 |   94.44 |
+  ...t-registry.ts |   68.42 |       50 |    87.5 |   73.33 | 16-18,33
+  ...ource-plan.ts |     100 |     62.5 |     100 |     100 | 58-67
+  tiferet.ts       |     100 |    78.26 |     100 |     100 | 34,131-190,200
+ ...ment/furniture |    97.5 |    92.18 |     100 |     100 |
+  transform.ts     |   93.33 |    72.22 |     100 |     100 | 25-27,36-55
+ ...tment/geometry |   90.75 |    82.18 |   91.26 |   93.67 |
+  intervals.ts     |   96.82 |     92.3 |     100 |     100 | 29,44,57,100,110
+  ...-envelopes.ts |   97.22 |       90 |     100 |     100 | 51
+  placement.ts     |      80 |      100 |   66.66 |     100 |
+  polygon.ts       |   93.02 |    87.69 |   96.15 |   95.14 | 87-94
+  ...-collision.ts |   84.78 |    80.67 |   89.28 |   86.84 | ...58,164,216-222
+  ...-clearance.ts |   68.75 |    51.51 |    62.5 |      72 | 22-25,30,50-62
+  wall-frame.ts    |   96.36 |    85.71 |   88.88 |     100 | 34,63,92,98
+ apartment/import  |   84.26 |    75.63 |   82.78 |   86.94 |
+  geometry.ts      |    82.2 |    75.72 |   71.66 |   85.65 | ...23,195,262-317
+  model.ts         |   94.02 |     87.5 |     100 |   98.24 | 149
+  ...rt-service.ts |   33.33 |     37.5 |   42.85 |   33.33 | 15-19,26,33-37
+  pdf-import.ts    |   88.88 |    57.14 |     100 |   92.59 | 75-76
+  ...tor-parser.ts |   87.33 |    76.96 |     100 |   88.54 | ...42,349,379-380
+ ...nt/persistence |   88.16 |    87.39 |   93.97 |   92.92 |
+  ...gn-library.ts |      75 |    72.54 |   83.33 |   84.21 | 37,55,76-79,102
+  design.ts        |   94.26 |    91.73 |     100 |   95.09 | ...18,125,133,235
+  ...apartments.ts |   90.62 |    92.85 |     100 |   96.15 | 32
+  ...g-document.ts |   85.71 |     77.5 |   84.61 |   93.47 | 30,38,55
+ apartment/planner |   69.01 |    58.46 |   81.75 |   69.41 |
+  design-state.ts  |   95.65 |    96.42 |    92.3 |   94.44 | 90
+  ...validation.ts |      85 |       72 |     100 |     100 | ...10-11,18,26-28
+  ...ersistence.ts |   76.92 |       50 |      80 |   76.92 | 20-22,27-29
+  ...controller.ts |   66.14 |    53.14 |   79.09 |   66.27 | ...13-815,821-822
+ apartment/three   |      73 |    48.48 |   77.92 |   75.95 |
+  furniture.ts     |   44.44 |    28.26 |   56.25 |   43.66 | ...36-238,245-274
+  picking.ts       |    6.97 |        0 |       0 |    8.57 | 21-59
+  renderer.ts      |   81.81 |     57.5 |     100 |   86.45 | ...50-151,172-174
+  scene.ts         |   87.27 |    58.91 |   93.02 |   90.94 | ...85,655,674,683
+ ...ent/validation |   91.05 |    88.71 |     100 |   91.15 |
+  apartment.ts     |   91.05 |    88.71 |     100 |   91.15 | ...53,167,174,278
+ engine            |    96.5 |    89.46 |   98.44 |   96.88 |
+  ai-assistant.ts  |    92.3 |    83.13 |     100 |   91.96 | ...32-342,464-467
+  analytics.ts     |   97.77 |    92.59 |   94.44 |    97.5 | 214
+  ...-clearance.ts |    98.5 |       96 |     100 |   98.11 | 172
+  assembly-dag.ts  |   99.13 |    68.05 |   96.55 |   98.92 | 115
+  assembly.ts      |   97.56 |    83.82 |     100 |   97.26 | 276,338
+  audit-trail.ts   |     100 |       90 |     100 |     100 | 157
+  bandsaw-speed.ts |   96.42 |    93.75 |     100 |   96.42 | 109
+  batch-export.ts  |    97.5 |     92.3 |   96.42 |   98.33 | 414
+  biscuit-joint.ts |   97.14 |    95.83 |     100 |   96.87 | 112
+  bom-filter.ts    |     100 |     97.5 |     100 |     100 | 75
+  box-joint.ts     |   95.23 |    92.85 |     100 |     100 | 50
+  cabinet-door.ts  |   89.36 |    90.38 |     100 |   89.36 | ...14,159,165,168
+  cabinet-notes.ts |   96.55 |    92.59 |     100 |   97.77 | 112
+  ...p-pressure.ts |     100 |    84.61 |     100 |     100 | 108-110
+  cloud-sync.ts    |   95.77 |    93.84 |     100 |   95.38 | 302,308,311
+  cnc-job-queue.ts |   98.61 |    93.18 |     100 |   98.18 | 220
+  ...int-solver.ts |   95.58 |    91.89 |     100 |     100 | 159,183,310
+  ...ary-export.ts |    92.3 |       80 |     100 |   91.66 | 114
+  crdt-sync.ts     |     100 |    88.88 |     100 |     100 | 97
+  ...n-moulding.ts |   94.44 |    91.66 |     100 |   94.44 | 42
+  ...t-grouping.ts |   98.73 |    92.68 |     100 |     100 | 114-115,208
+  cut-optimizer.ts |    94.2 |     85.5 |     100 |    94.8 | ...11-315,320-321
+  ...an-summary.ts |     100 |       80 |     100 |     100 | 75,97-124,134
+  dado-rabbet.ts   |   95.45 |    94.73 |     100 |     100 | 65
+  ...comparison.ts |     100 |    82.97 |     100 |     100 | ...17-221,284-290
+  dimensions.ts    |     100 |    94.59 |     100 |     100 | 34,41
+  ...ail-layout.ts |   95.65 |    94.11 |     100 |   95.55 | 136,146
+  dowel-joint.ts   |   97.56 |    83.87 |     100 |    97.5 | 136
+  drawer-box.ts    |   91.17 |       80 |     100 |   89.65 | 102,108,114
+  drawer-runner.ts |      96 |     87.5 |     100 |   95.83 | 118
+  drawer-slide.ts  |   97.14 |    95.65 |     100 |   97.14 | 126
+  ...collection.ts |   96.72 |    89.65 |     100 |   96.36 | 236,272
+  erp-export.ts    |    98.3 |     92.3 |     100 |   98.27 | 312
+  face-frame.ts    |   96.42 |    86.36 |     100 |   95.83 | 82
+  finger-joint.ts  |   97.36 |    95.65 |     100 |     100 | 94
+  ...calculator.ts |   87.87 |       60 |     100 |   90.32 | 107-109
+  frame-panel.ts   |     100 |    94.73 |     100 |     100 | 60
+  ...e-toolpath.ts |     100 |    94.23 |     100 |     100 | 90,106,113
+  ...-validator.ts |   97.82 |    96.59 |     100 |   98.75 | 177
+  gltf-export.ts   |   88.75 |       50 |     100 |   92.85 | 113-117
+  glue-up-time.ts  |     100 |       92 |     100 |     100 | 90,92
+  grain-report.ts  |     100 |    91.66 |     100 |     100 | 168
+  hardware-spec.ts |     100 |    94.44 |     100 |     100 | 163
+  hardware.ts      |   93.33 |    84.21 |     100 |   92.85 | 218,349-355
+  hinge-bore.ts    |     100 |    92.85 |     100 |     100 | 235
+  honing-guide.ts  |   94.44 |    93.33 |     100 |   94.44 | 29
+  i18n-audit.ts    |   83.72 |    81.81 |   85.71 |   86.84 | ...24-125,128-129
+  iso7171.ts       |   98.03 |    91.25 |     100 |    97.4 | 151,177
+  joint-detail.ts  |   92.59 |    93.75 |     100 |    92.3 | 251-252
+  kerf-bending.ts  |     100 |    92.85 |     100 |     100 | 89
+  ...-optimizer.ts |   98.68 |    97.14 |     100 |     100 | 88
+  ...uggestions.ts |     100 |    93.65 |     100 |     100 | 96,179,190,209
+  lazy-features.ts |   96.96 |    93.75 |    92.3 |      96 | 55
+  ...e-profiles.ts |      75 |      100 |      50 |      75 | 274
+  machining-job.ts |     100 |    91.42 |     100 |     100 | 241-252
+  ...-scheduler.ts |   96.72 |       92 |     100 |   96.29 | 98-100
+  ...er-catalog.ts |   98.61 |    93.68 |     100 |     100 | 139-140,184-187
+  ...st-tracker.ts |     100 |    87.09 |     100 |     100 | 70-77,102,182
+  ...l-textures.ts |     100 |    96.96 |     100 |     100 | 265
+  ...age-report.ts |     100 |    85.18 |     100 |     100 | 126-148,179,187
+  ...rial-yield.ts |   98.78 |    89.36 |     100 |   98.64 | 154
+  materials.ts     |   84.84 |    83.78 |   81.81 |   88.88 | 296-298
+  ...-assistant.ts |   53.65 |    28.57 |   83.33 |   51.28 | ...54-163,174-184
+  memo.ts          |     100 |    83.33 |     100 |     100 | 30
+  mobile-sync.ts   |   98.18 |    93.54 |      95 |     100 | 161,212
+  mortise-tenon.ts |   97.43 |    97.14 |     100 |   97.43 | 107
+  multi-machine.ts |   96.15 |    88.88 |     100 |   96.82 | 221-222
+  ...-optimizer.ts |   96.29 |    79.16 |     100 |      96 | 53,119
+  ...g-patterns.ts |   95.18 |    91.48 |   92.85 |   97.05 | 359,371
+  ...xpressions.ts |   96.29 |    72.72 |     100 |   96.05 | 141,144,160
+  ...c-template.ts |    91.3 |    84.55 |     100 |   92.03 | ...26-531,547-549
+  ...-instances.ts |   97.67 |    94.25 |     100 |   98.76 | 66
+  part-labeling.ts |   90.32 |    81.25 |     100 |   92.59 | 64-65
+  part-sort.ts     |   73.07 |     61.9 |     100 |   69.56 | 74-76,80-82,86-89
+  parts.ts         |     100 |    85.22 |     100 |     100 | ...02,212-217,238
+  pilot-hole.ts    |   93.75 |    88.88 |     100 |   93.75 | 86
+  planer-passes.ts |     100 |    92.85 |     100 |     100 | 50
+  ...arketplace.ts |   97.29 |    89.18 |     100 |     100 | 168,195,231
+  plugin-v2.ts     |   93.67 |    77.08 |     100 |   93.15 | 233-238,262-266
+  plugin.ts        |    93.1 |    87.09 |   95.65 |    92.5 | 294-300,437
+  pocket-hole.ts   |   93.75 |    91.42 |     100 |   93.75 | 91-93
+  ...n-schedule.ts |   97.81 |    78.26 |      96 |   99.17 | 366
+  ...ct-library.ts |   93.75 |    91.54 |   94.11 |   94.44 | 130,180-181
+  ...t-settings.ts |   86.66 |       70 |     100 |   86.66 | 76,81
+  ...ct-sharing.ts |   89.47 |      100 |   95.23 |   90.38 | 122-127
+  project-sync.ts  |     100 |    96.55 |     100 |     100 | 215
+  room-planner.ts  |   98.83 |    96.49 |     100 |     100 | 219,267
+  router-circle.ts |   94.44 |    93.33 |     100 |   94.44 | 39
+  router-depth.ts  |   97.67 |    95.65 |     100 |   97.67 | 195
+  screw-pullout.ts |     100 |     87.5 |     100 |     100 | 67
+  ...deflection.ts |     100 |    94.44 |     100 |     100 | 121,179
+  shelf-pin.ts     |     100 |    96.96 |     100 |     100 | 116
+  shelf-spacing.ts |     100 |    91.66 |     100 |     100 | 174
+  ...-optimizer.ts |   94.35 |    77.66 |     100 |   96.29 | 131,195,335-336
+  snapshot-diff.ts |     100 |    95.23 |     100 |     100 | 65
+  snapshot-tags.ts |   94.73 |    81.25 |     100 |   93.54 | 106,115
+  ...management.ts |   97.39 |    81.13 |     100 |   97.24 | 196,199,235
+  stock-tracker.ts |     100 |    94.44 |     100 |     100 | 125
+  substitution.ts  |   97.82 |    87.75 |     100 |   97.72 | 26
+  template-dsl.ts  |   94.49 |    89.23 |     100 |   98.96 | 148
+  templates.ts     |     100 |    92.85 |     100 |     100 | 52
+  ...-estimator.ts |   97.95 |    86.66 |     100 |     100 | 112-114
+  tool-wear.ts     |   93.75 |    90.24 |     100 |    94.2 | 190,277,324-325
+  validation.ts    |   98.79 |    91.42 |     100 |   98.63 | 295
+  veneer-calc.ts   |     100 |    95.23 |     100 |     100 | 138
+  ...on-history.ts |    95.2 |    83.75 |   92.85 |   96.42 | ...02,422,452,482
+  ...-analytics.ts |     100 |    85.71 |     100 |     100 | 112,148
+  ...-predictor.ts |   98.03 |    86.95 |     100 |     100 | 102,136-138
+  webgl-probe.ts   |      70 |       70 |     100 |   68.42 | 27-28,37-38,46-47
+  ...u-renderer.ts |   99.12 |    97.77 |     100 |     100 | 360
+  webserial-v2.ts  |   97.76 |    89.47 |     100 |   97.74 | 264,297-298
+  webserial.ts     |    8.69 |     12.5 |      20 |      10 | 71-126
+  wood-drying.ts   |   93.47 |    86.95 |     100 |   95.34 | 154-155
+  ...hop-safety.ts |     100 |       95 |     100 |     100 | 176
+  workspace.ts     |   97.22 |     87.5 |     100 |   98.14 | 221
+ engine/export     |   99.69 |    55.17 |     100 |     100 |
+  gltf-export.ts   |     100 |    47.36 |     100 |     100 | 181-282
+  step-export.ts   |    99.2 |     62.5 |     100 |     100 | 18-101
+ engine/validation |   96.27 |    85.26 |     100 |   96.12 |
+  ...sion-rules.ts |     100 |       96 |     100 |     100 | 71,203
+  door-rules.ts    |     100 |     92.3 |     100 |     100 | 80,167,192-197
+  shelf-rules.ts   |   90.47 |       72 |     100 |   90.16 | ...47,260,273,286
+ hooks             |   70.14 |    60.29 |    82.5 |   69.06 |
+  useCamera.ts     |   25.49 |    10.71 |   16.66 |   27.08 | ...,58-96,101-111
+  useFocusTrap.ts  |     100 |    95.91 |     100 |     100 | 59-66
+  useHaptics.ts    |      60 |    46.15 |      75 |      60 | 54-57,63,65,71,73
+  ...ionVisible.ts |   90.47 |    69.23 |     100 |   89.47 | 46-47
+  ...leHandlers.ts |   36.84 |       25 |      75 |   35.29 | 52-64
+ site              |   86.33 |    78.04 |   73.33 |   88.99 |
+  TiferetSite.tsx  |   82.65 |    75.67 |   70.73 |   84.93 | ...21-128,164-166
+  router.ts        |   94.44 |       80 |     100 |   96.77 | 52
+ site/components   |   73.33 |    74.46 |    82.6 |   76.05 |
+  ...rialImage.tsx |     100 |    88.88 |     100 |     100 | 32,50
+  ...onHeading.tsx |     100 |       60 |     100 |     100 | 16-22
+  SiteHeader.tsx   |   53.65 |     38.7 |      60 |   55.26 | 27-43,63,113
+  SiteLink.tsx     |   85.71 |    85.71 |     100 |     100 | 17
+ site/pages        |    42.6 |    36.36 |   53.84 |   43.93 |
+  ...mentsPage.tsx |   95.55 |    60.86 |   94.11 |   97.56 | 213
+  ContactPage.tsx  |   22.22 |       50 |   33.33 |   22.22 | 19-29
+  ...rialPages.tsx |   81.81 |       80 |   73.33 |   88.88 | 48-62
+  ...tmentPage.tsx |       0 |        0 |       0 |       0 | 21-406
+  NotFoundPage.tsx |       0 |      100 |       0 |       0 | 5
+  SummaryPage.tsx  |   81.48 |    76.92 |   61.11 |   78.26 | ...30,158-161,198
+ store             |   60.71 |    47.82 |    61.7 |   62.86 |
+  cabinet-store.ts |   66.66 |    61.53 |   66.23 |   69.37 | ...17,735-768,804
+  ...ance-store.ts |   22.22 |      100 |   16.66 |      25 | 16-23
+  ...ials-store.ts |   71.42 |    44.44 |   89.47 |   70.83 | 8,50-58
+  room-store.ts    |   46.42 |    26.19 |      50 |   51.35 | 55-85,122-133
+  ...cker-store.ts |      20 |      100 |   11.11 |   28.57 | 24-33
+  ...r-schedule.ts |   53.69 |    40.81 |   60.71 |   54.47 | ...26,369,377-398
+ store/slices      |   76.38 |    61.31 |   78.94 |   79.47 |
+  ...sionsSlice.ts |   95.65 |    88.88 |     100 |     100 | 67,81,111
+  ...tingsSlice.ts |   90.19 |    45.16 |   93.75 |   90.19 | 178-193
+  snapshotSlice.ts |   93.33 |       80 |     100 |     100 | 17,27
+  uiSlice.ts       |    52.8 |    63.15 |   53.12 |   56.41 | ...,87-89,229-271
+ utils             |   89.68 |    77.81 |   93.23 |   90.77 |
+  ai-assistant.ts  |   90.47 |    80.95 |   76.92 |     100 | ...81,203-215,234
+  app-mode.ts      |     100 |    83.33 |     100 |     100 | 12
+  ar-placement.ts  |     100 |    93.33 |     100 |     100 | 245
+  audit-log.ts     |   89.36 |    88.88 |     100 |      90 | 192-196
+  batch-export.ts  |    93.1 |       75 |     100 |      92 | 124-132
+  bom-export.ts    |   96.87 |       90 |   94.11 |   96.66 | 132,229,327-328
+  ...ser-compat.ts |   76.36 |    48.57 |     100 |      80 | 21,38-41,47-52
+  ...log-import.ts |      10 |        0 |       0 |   10.52 | 22-60
+  ...nd-palette.ts |    92.5 |    84.61 |     100 |   98.33 | 161
+  ...ty-catalog.ts |   97.82 |    93.54 |     100 |     100 | 91,142
+  ...comparison.ts |   96.96 |    65.85 |     100 |   98.24 | 196
+  dxf-export.ts    |   98.24 |     87.5 |     100 |   98.21 | 76
+  erp-export.ts    |   93.93 |    85.71 |   85.71 |   93.54 | 201-202
+  gcode-export.ts  |   85.92 |    83.33 |     100 |    87.2 | ...37-142,287-295
+  gltf-download.ts |       0 |        0 |       0 |       0 | 12-21
+  ifc-download.ts  |       0 |        0 |       0 |       0 | 18-25
+  ifc-export.ts    |     100 |    81.25 |     100 |     100 | 148,207
+  ...db-storage.ts |    80.3 |    56.66 |      70 |   79.68 | ...41-150,210-223
+  pdf-export.ts    |       0 |        0 |       0 |       0 | 8-14
+  ...arketplace.ts |   96.72 |    94.11 |     100 |   96.36 | 97,200
+  price-history.ts |     100 |    95.23 |     100 |     100 | 137
+  ...-branching.ts |     100 |    82.92 |     100 |     100 | 130-145,206-213
+  ...ct-storage.ts |   71.14 |    61.16 |   72.41 |   70.71 | ...36,245,296-319
+  ...validation.ts |   73.91 |       85 |     100 |      80 | 11,21,29,48
+  step-download.ts |       0 |        0 |       0 |       0 | 17-24
+  units.ts         |   94.73 |    91.66 |     100 |     100 | 13
+  url-state.ts     |   88.55 |    76.16 |   94.44 |   94.26 | ...99,190,286-288
+  ...annotation.ts |   95.55 |       68 |   96.96 |   97.18 | 106-107
+  webserial-cnc.ts |   97.61 |    95.65 |     100 |   97.29 | 164
+  ...er-request.ts |      92 |      100 |    87.5 |   91.66 | 37-38
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 88.95% ( 13698/15399 )
+Branches     : 81.13% ( 7943/9790 )
+Functions    : 88.94% ( 2930/3294 )
+Lines        : 90.18% ( 12178/13503 )
+================================================================================

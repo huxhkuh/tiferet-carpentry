@@ -1,0 +1,25 @@
+
+Running 8 tests using 1 worker
+
+(node:18572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+C:\Users\yosi\Downloads\DFDF\tests\e2e\visual-regression.spec.ts-snapshots\configurator-default-chromium.png is re-generated, writing actual.
+C:\Users\yosi\Downloads\DFDF\tests\e2e\visual-regression.spec.ts-snapshots\configurator-default-chromium.png is re-generated, writing actual.
+  ok 1 [chromium] › tests\e2e\visual-regression.spec.ts:26:1 › configurator tab — default view screenshot (2.2s)
+C:\Users\yosi\Downloads\DFDF\tests\e2e\visual-regression.spec.ts-snapshots\preview-tab-chromium.png is re-generated, writing actual.
+C:\Users\yosi\Downloads\DFDF\tests\e2e\visual-regression.spec.ts-snapshots\preview-tab-chromium.png is re-generated, writing actual.
+  ok 2 [chromium] › tests\e2e\visual-regression.spec.ts:40:1 › preview tab — cabinet SVG screenshot (2.3s)
+C:\Users\yosi\Downloads\DFDF\tests\e2e\visual-regression.spec.ts-snapshots\optimizer-tab-chromium.png is re-generated, writing actual.
+C:\Users\yosi\Downloads\DFDF\tests\e2e\visual-regression.spec.ts-snapshots\optimizer-tab-chromium.png is re-generated, writing actual.
+  ok 3 [chromium] › tests\e2e\visual-regression.spec.ts:54:1 › optimizer tab — cut sheets screenshot (3.4s)
+  ok 4 [chromium] › tests\e2e\visual-regression.spec.ts:69:1 › dark mode toggle — header appearance (2.3s)
+(node:13080) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 5 [firefox] › tests\e2e\visual-regression.spec.ts:26:1 › configurator tab — default view screenshot (3.8s)
+  ok 6 [firefox] › tests\e2e\visual-regression.spec.ts:40:1 › preview tab — cabinet SVG screenshot (3.7s)
+C:\Users\yosi\Downloads\DFDF\tests\e2e\visual-regression.spec.ts-snapshots\optimizer-tab-firefox.png is re-generated, writing actual.
+C:\Users\yosi\Downloads\DFDF\tests\e2e\visual-regression.spec.ts-snapshots\optimizer-tab-firefox.png is re-generated, writing actual.
+  ok 7 [firefox] › tests\e2e\visual-regression.spec.ts:54:1 › optimizer tab — cut sheets screenshot (2.9s)
+  ok 8 [firefox] › tests\e2e\visual-regression.spec.ts:69:1 › dark mode toggle — header appearance (2.7s)
+
+  8 passed (29.6s)

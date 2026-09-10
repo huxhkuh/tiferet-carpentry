@@ -1,0 +1,387 @@
+📦 Bundle Size Report
+============================================================
+
+JS (55 files):
+   1302.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/pdf-export.worker-DoFoIzu_.js
+    283.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/WorkshopMode-CFz5XNZy.js
+    194.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/index-ICTA72AI.js
+    110.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/CalculatorsPanel-D-sUc2r2.js
+    101.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/PlannerApp-DxjUs_Ao.js
+     95.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/OptimizerView-CLIQITJU.js
+     82.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/he-D7Gp7Vr1.js
+     67.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ErrorBoundary-Ox3YGQEl.js
+     61.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/cabinet-store-DjHp9ubD.js
+     41.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/tiferet-source-inventory-c5Derq-W.js
+     30.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/validation-Cft-Slta.js
+     29.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/assembly.worker-CIuj3mP6.js
+     28.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/tiferet-CqlB0zDs.js
+     27.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/AssemblyGuide-DMcQUiRM.js
+     25.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ar-CghOM36c.js
+     24.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/PdfExportPanel-Cf0qX9LI.js
+     24.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/fr-C8vRD5GA.js
+     24.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ImportApartmentPage-D2n67jI_.js
+     24.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/es-DSuc-AQj.js
+     23.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/de-DjoMzUvt.js
+     21.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/TiferetSite-bkyInVkk.js
+     21.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/workbox-af8685ab.js
+     18.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/Plan2D-BeP4nMxz.js
+     18.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/hardware-Cj859dNP.js
+     17.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/cut-optimizer.worker-DygM7kVN.js
+     12.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/pdf-import.worker-K2xBWFEv.js
+     10.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/bom-export.worker-Bc2U8Z8S.js
+     10.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/cost-estimator.worker-D7wbkqlY.js
+      9.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/pdf-import-service-QQyuw2I9.js
+      7.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/middleware-D06T7__K.js
+      7.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ApartmentsPage-BexAKx1Z.js
+      7.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/apartment-DVyw8Hmy.js
+      6.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/EditorialPages-BO0TV_D5.js
+      6.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/SummaryPage-Dn2xRO3-.js
+      5.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/HomeDetails-Bz7g1jUU.js
+      5.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/sw.js
+      5.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/dxf-export.worker-DAQKOsiJ.js
+      5.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/workbox-window.prod.es5-Bd17z0YL.js
+      4.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/RoomLayoutView-sSZp-Mya.js
+      4.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/dxf-export-DxE2_swI.js
+      4.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/worker-request-CTwBFt1n.js
+      4.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/SectionHeading-B_99CrUk.js
+      4.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/gcode-export-DGml3maE.js
+      3.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/planning-document-CmtSmynT.js
+      2.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ContactPage-4VxJ1-1O.js
+      2.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/zip-writer-DRvrDklZ.js
+      1.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/MyApartmentPage-BoyX0MpM.js
+      1.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/useFocusTrap-BnTti2iq.js
+      1.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ApartmentThumbnail-_LLKcdzf.js
+      1.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/wall-frame-DZ8uEk9I.js
+      0.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/imported-apartments-DW7NU8Nq.js
+      0.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/NotFoundPage-BwekmCnm.js
+      0.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/useDialogFocus-CMcQoo1M.js
+      0.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/download-BJ-QxWDb.js
+      0.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/display-DuHeHM96.js
+
+CSS (3 files):
+     75.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/src-Cfq6Wo9q.css
+     30.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/TiferetSite-CwUkUC--.css
+      2.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/PlannerApp-UwrCJuCf.css
+
+HTML (3 files):
+      6.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/index.html
+      1.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/offline.html
+      0.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/404.html
+
+OTHER (127 files):
+   1134.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/sheet-5-1-full.png
+    563.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/text-evidence.json
+    548.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-wardrobe.jpg
+    497.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-children.jpg
+    365.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1bWMrzQaMQmZSEr80cO5Asx1fGe8co1e6.json
+    337.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1ZHjuDqTFRDzGQD9-78kbNXk3OVt-ezaA.json
+    321.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Gky54yp8Yh9GOq87BzeW2zqG8kEuD3rk.json
+    317.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-niches.jpg
+    313.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/12H5bOAZv8vv-_XhMBEuWg5VWO1ySnECv.json
+    282.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/11ltC7cD5PDoVJa5erLUqU30bNUpA7LXM.json
+    271.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Y1CTPmsAAd9-pY3ukD7RVnAX6dEAPS6O.json
+    270.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1qtR73fhYK8kunq7W8ED2LocNb6itzSvs.json
+    270.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/19CFXTtSpnr1vzUoODSFdXdWSvLa6Bh4i.json
+    269.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1jsQev2LtaYwBDpA94dq-xZTqbj7IqEEX.json
+    268.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Qf7QGGKPyQuikWc4ebRqYq-tPFrT0WEw.json
+    267.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1y5CCbMo1a4SlOERSpREx5oKOw9P_a-qq.json
+    264.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1qowSvvELibpQt6yUMM5UH1uO-c1UIMUo.json
+    264.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Kq93XinK6RIneCXgWSBZu7gwAi1h3jwu.json
+    264.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1ZHjuDqTFRDzGQD9-78kbNXk3OVt-ezaA.pdf
+    264.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1s4qNtbwjeCNDrNOmlwtjuVCbrAjBcot7.json
+    263.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/10-67G0G5CrNpZS0pfXh3PIiEOPGzKEy4.json
+    263.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1ntH26aD4oEVCck3svau3YIOpCTFr_QMh.json
+    263.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1VFzL9Tou4_MzDVv9t_8PrrL6qGvppKUP.json
+    263.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Gky54yp8Yh9GOq87BzeW2zqG8kEuD3rk.pdf
+    263.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1bFCAINpQBZ4UCmm9R46wboIMlUMwSTqT.json
+    262.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1n9BSQ3DSB7Me8CotWqRYOiVAfAhZA7lU.json
+    262.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/12H5bOAZv8vv-_XhMBEuWg5VWO1ySnECv.pdf
+    262.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1CHnx-KWp2RFJt0O64iRIO8IM97x6DbXr.json
+    262.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1TvNEbtV2BDm7shPqGpNqtzYkSWtPWk6U.json
+    261.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1lv0tRcN3yb3igkL8J3N4_oWlPjZt8Jqp.json
+    261.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1ArZYsWDlJ4Hb4D6fbbkLPZHdCQA-qtqO.json
+    261.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/12_Pq5KszSbSnv__1Jtoc24-umHPNhpYm.json
+    261.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1obkResD-OKaLrdGqUhBWBYWS-oH-7fWp.json
+    261.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1GvFpGaJlxP_ZCNJJdfKl3focivQNNwmt.json
+    260.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1VGkfbJ_ax7RurAX2PVN7UQ3ZurtniI93.json
+    260.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/11vRxbyuHeaq2eDMnmLppy3VVOnEt2iE-.json
+    255.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1FCZR8xrr2IQVf6Y950CS3LSS_w-8Snpo.json
+    254.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1audL5PG-msxygGRiFqP-tQP8WaMpEUnr.json
+    254.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1forZ2T9hDZoawwclAwRzEo0KKds1yMN1.json
+    253.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/109zuZrJnGNAapKiK_5PQoDg7LHF6Eh8O.json
+    253.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1nTYDwbOQpeXM4XiDCjIl_w9vTtvBQtwg.json
+    253.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1I9bnGnIYmoR4EiojGgA-ioTNt1B2Skqs.json
+    252.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/17c59VvTR3qoFjJv7tko1mgKOdQu0dMJZ.json
+    252.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/10t2CWGIJ29U9K9Tl3d0w39gvh8AybHVN.json
+    252.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/18vTL2qreb5PBQN2jT98s42u5C2-A0F9x.json
+    252.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Jd5lCqTUx066EQqSVrxt2T_qohafyQ6Z.json
+    251.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1-UMMgTwBmexXPEBPjwkWIoBcWyECKaIr.json
+    251.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Dx1wG18E2vxA3R5ONWFsBxSasSvQ4uJH.json
+    250.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1LBdbRLhkMqfphfd6uTY7ZYq0zqaHrYGQ.json
+    250.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1a_qOpcR5afIUlf0oa9HbEWim59vDbEVG.json
+    249.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1RTrFsQ1eBTVzudl3wC0Ocv5DirPh6tBq.json
+    249.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1nzjVgtKSEY-YILvz0jb67p4eucItNQgo.json
+    243.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-kitchen.jpg
+    230.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1dcjFOLEhadppP1e7vlhQDAs-jd6yb9JI.json
+    228.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1sWFWRCA3Q6LZxGc6fvjid9EBnFgZktsw.json
+    226.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1veZC1FoVjXfG5erCnXNcb39gh07nWZHQ.json
+    225.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1qHg0NUyRztzKbrKkdGaucXhcmf8gyW2z.json
+    200.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry.jpg
+    187.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-media.jpg
+    171.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-bedroom.jpg
+    160.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/source-inventory.json
+    137.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1bWMrzQaMQmZSEr80cO5Asx1fGe8co1e6.pdf
+    128.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1FCZR8xrr2IQVf6Y950CS3LSS_w-8Snpo.pdf
+    128.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1audL5PG-msxygGRiFqP-tQP8WaMpEUnr.pdf
+    128.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/18vTL2qreb5PBQN2jT98s42u5C2-A0F9x.pdf
+    128.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Jd5lCqTUx066EQqSVrxt2T_qohafyQ6Z.pdf
+    128.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/10t2CWGIJ29U9K9Tl3d0w39gvh8AybHVN.pdf
+    128.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/109zuZrJnGNAapKiK_5PQoDg7LHF6Eh8O.pdf
+    128.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/17c59VvTR3qoFjJv7tko1mgKOdQu0dMJZ.pdf
+    128.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1forZ2T9hDZoawwclAwRzEo0KKds1yMN1.pdf
+    128.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1I9bnGnIYmoR4EiojGgA-ioTNt1B2Skqs.pdf
+    128.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1nTYDwbOQpeXM4XiDCjIl_w9vTtvBQtwg.pdf
+    127.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1ntH26aD4oEVCck3svau3YIOpCTFr_QMh.pdf
+    127.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1GvFpGaJlxP_ZCNJJdfKl3focivQNNwmt.pdf
+    127.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/12_Pq5KszSbSnv__1Jtoc24-umHPNhpYm.pdf
+    127.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/11vRxbyuHeaq2eDMnmLppy3VVOnEt2iE-.pdf
+    127.0 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1lv0tRcN3yb3igkL8J3N4_oWlPjZt8Jqp.pdf
+    126.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1ArZYsWDlJ4Hb4D6fbbkLPZHdCQA-qtqO.pdf
+    126.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1VGkfbJ_ax7RurAX2PVN7UQ3ZurtniI93.pdf
+    126.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Y1CTPmsAAd9-pY3ukD7RVnAX6dEAPS6O.pdf
+    126.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/19CFXTtSpnr1vzUoODSFdXdWSvLa6Bh4i.pdf
+    126.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1VFzL9Tou4_MzDVv9t_8PrrL6qGvppKUP.pdf
+    125.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1TvNEbtV2BDm7shPqGpNqtzYkSWtPWk6U.pdf
+    125.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Qf7QGGKPyQuikWc4ebRqYq-tPFrT0WEw.pdf
+    125.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1jsQev2LtaYwBDpA94dq-xZTqbj7IqEEX.pdf
+    125.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1qtR73fhYK8kunq7W8ED2LocNb6itzSvs.pdf
+    125.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/10-67G0G5CrNpZS0pfXh3PIiEOPGzKEy4.pdf
+    125.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1LBdbRLhkMqfphfd6uTY7ZYq0zqaHrYGQ.pdf
+    125.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Kq93XinK6RIneCXgWSBZu7gwAi1h3jwu.pdf
+    125.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Dx1wG18E2vxA3R5ONWFsBxSasSvQ4uJH.pdf
+    124.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/sheet-5-1-original.pdf
+    124.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1RTrFsQ1eBTVzudl3wC0Ocv5DirPh6tBq.pdf
+    124.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1a_qOpcR5afIUlf0oa9HbEWim59vDbEVG.pdf
+    124.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1-UMMgTwBmexXPEBPjwkWIoBcWyECKaIr.pdf
+    124.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1nzjVgtKSEY-YILvz0jb67p4eucItNQgo.pdf
+    123.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1dcjFOLEhadppP1e7vlhQDAs-jd6yb9JI.pdf
+    123.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1sWFWRCA3Q6LZxGc6fvjid9EBnFgZktsw.pdf
+    122.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1veZC1FoVjXfG5erCnXNcb39gh07nWZHQ.pdf
+    122.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1qHg0NUyRztzKbrKkdGaucXhcmf8gyW2z.pdf
+    120.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1y5CCbMo1a4SlOERSpREx5oKOw9P_a-qq.pdf
+    120.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/11ltC7cD5PDoVJa5erLUqU30bNUpA7LXM.pdf
+    120.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1qowSvvELibpQt6yUMM5UH1uO-c1UIMUo.pdf
+    119.4 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1s4qNtbwjeCNDrNOmlwtjuVCbrAjBcot7.pdf
+    119.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1CHnx-KWp2RFJt0O64iRIO8IM97x6DbXr.pdf
+    119.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1n9BSQ3DSB7Me8CotWqRYOiVAfAhZA7lU.pdf
+    119.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1obkResD-OKaLrdGqUhBWBYWS-oH-7fWp.pdf
+    119.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1bFCAINpQBZ4UCmm9R46wboIMlUMwSTqT.pdf
+    111.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry-1200.jpg
+    101.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/titleblock-evidence.json
+     64.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vector-evidence.json
+     44.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry-720.jpg
+     39.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry-1200.webp
+     26.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/fonts/NotoSansHebrew-Bold.ttf
+     26.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/fonts/NotoSansHebrew-Regular.ttf
+     16.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry-720.webp
+     15.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/banner-CiAHE4uj.svg
+      4.7 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/icon-512.png
+      1.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/_headers
+      1.6 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/manifest.json
+      1.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/shop-badge.svg
+      0.9 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/icon-192.png
+      0.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/favicon.svg
+      0.8 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/woodgrain-spark.svg
+      0.5 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tab-sparkle.svg
+      0.3 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/sitemap.xml
+      0.2 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/_redirects
+      0.1 KB  C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/robots.txt
+
+============================================================
+Total JS:     2836.7 KB    Budget: 2850 KB
+Total CSS:     109.3 KB    Budget: 110 KB
+App total:   3036.8 KB    Budget: 3050 KB
+Documents:  23611.0 KB    Budget: 24000 KB
+
+Per-file checks (JS):
+  ✅  1302.3 KB / 1600 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/pdf-export.worker-DoFoIzu_.js
+  ✅   283.1 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/WorkshopMode-CFz5XNZy.js
+  ✅   194.3 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/index-ICTA72AI.js
+  ✅   110.9 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/CalculatorsPanel-D-sUc2r2.js
+  ✅   101.5 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/PlannerApp-DxjUs_Ao.js
+  ✅    95.2 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/OptimizerView-CLIQITJU.js
+  ✅    82.0 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/he-D7Gp7Vr1.js
+  ✅    67.9 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ErrorBoundary-Ox3YGQEl.js
+  ✅    61.0 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/cabinet-store-DjHp9ubD.js
+  ✅    41.2 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/tiferet-source-inventory-c5Derq-W.js
+  ✅    30.0 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/validation-Cft-Slta.js
+  ✅    29.2 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/assembly.worker-CIuj3mP6.js
+  ✅    28.5 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/tiferet-CqlB0zDs.js
+  ✅    27.4 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/AssemblyGuide-DMcQUiRM.js
+  ✅    25.3 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ar-CghOM36c.js
+  ✅    24.9 KB / 1600 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/PdfExportPanel-Cf0qX9LI.js
+  ✅    24.4 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/fr-C8vRD5GA.js
+  ✅    24.1 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ImportApartmentPage-D2n67jI_.js
+  ✅    24.0 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/es-DSuc-AQj.js
+  ✅    23.7 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/de-DjoMzUvt.js
+  ✅    21.8 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/TiferetSite-bkyInVkk.js
+  ✅    21.3 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/workbox-af8685ab.js
+  ✅    18.8 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/Plan2D-BeP4nMxz.js
+  ✅    18.3 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/hardware-Cj859dNP.js
+  ✅    17.0 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/cut-optimizer.worker-DygM7kVN.js
+  ✅    12.5 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/pdf-import.worker-K2xBWFEv.js
+  ✅    10.3 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/bom-export.worker-Bc2U8Z8S.js
+  ✅    10.1 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/cost-estimator.worker-D7wbkqlY.js
+  ✅     9.2 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/pdf-import-service-QQyuw2I9.js
+  ✅     7.9 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/middleware-D06T7__K.js
+  ✅     7.6 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ApartmentsPage-BexAKx1Z.js
+  ✅     7.2 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/apartment-DVyw8Hmy.js
+  ✅     6.9 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/EditorialPages-BO0TV_D5.js
+  ✅     6.0 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/SummaryPage-Dn2xRO3-.js
+  ✅     5.7 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/HomeDetails-Bz7g1jUU.js
+  ✅     5.7 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/sw.js
+  ✅     5.6 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/dxf-export.worker-DAQKOsiJ.js
+  ✅     5.5 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/workbox-window.prod.es5-Bd17z0YL.js
+  ✅     4.8 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/RoomLayoutView-sSZp-Mya.js
+  ✅     4.8 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/dxf-export-DxE2_swI.js
+  ✅     4.4 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/worker-request-CTwBFt1n.js
+  ✅     4.2 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/SectionHeading-B_99CrUk.js
+  ✅     4.1 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/gcode-export-DGml3maE.js
+  ✅     3.5 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/planning-document-CmtSmynT.js
+  ✅     2.7 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ContactPage-4VxJ1-1O.js
+  ✅     2.0 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/zip-writer-DRvrDklZ.js
+  ✅     1.7 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/MyApartmentPage-BoyX0MpM.js
+  ✅     1.6 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/useFocusTrap-BnTti2iq.js
+  ✅     1.5 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/ApartmentThumbnail-_LLKcdzf.js
+  ✅     1.4 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/wall-frame-DZ8uEk9I.js
+  ✅     0.8 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/imported-apartments-DW7NU8Nq.js
+  ✅     0.4 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/NotFoundPage-BwekmCnm.js
+  ✅     0.2 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/useDialogFocus-CMcQoo1M.js
+  ✅     0.2 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/download-BJ-QxWDb.js
+  ✅     0.1 KB / 530 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/display-DuHeHM96.js
+
+Per-asset checks (images/icons):
+  ✅    15.9 KB / 50 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/assets/banner-CiAHE4uj.svg
+  ✅     4.7 KB / 10 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/icon-512.png
+  ✅     1.2 KB / 50 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/shop-badge.svg
+  ✅     0.9 KB / 5 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/icon-192.png
+  ✅     0.8 KB / 5 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/favicon.svg
+  ✅     0.8 KB / 50 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/woodgrain-spark.svg
+  ✅     0.5 KB / 50 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tab-sparkle.svg
+
+Per-file checks (on-demand source documents):
+  ✅  1134.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/sheet-5-1-full.png
+  ✅   563.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/text-evidence.json
+  ✅   548.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-wardrobe.jpg
+  ✅   497.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-children.jpg
+  ✅   365.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1bWMrzQaMQmZSEr80cO5Asx1fGe8co1e6.json
+  ✅   337.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1ZHjuDqTFRDzGQD9-78kbNXk3OVt-ezaA.json
+  ✅   321.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Gky54yp8Yh9GOq87BzeW2zqG8kEuD3rk.json
+  ✅   317.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-niches.jpg
+  ✅   313.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/12H5bOAZv8vv-_XhMBEuWg5VWO1ySnECv.json
+  ✅   282.0 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/11ltC7cD5PDoVJa5erLUqU30bNUpA7LXM.json
+  ✅   271.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Y1CTPmsAAd9-pY3ukD7RVnAX6dEAPS6O.json
+  ✅   270.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1qtR73fhYK8kunq7W8ED2LocNb6itzSvs.json
+  ✅   270.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/19CFXTtSpnr1vzUoODSFdXdWSvLa6Bh4i.json
+  ✅   269.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1jsQev2LtaYwBDpA94dq-xZTqbj7IqEEX.json
+  ✅   268.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Qf7QGGKPyQuikWc4ebRqYq-tPFrT0WEw.json
+  ✅   267.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1y5CCbMo1a4SlOERSpREx5oKOw9P_a-qq.json
+  ✅   264.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1qowSvvELibpQt6yUMM5UH1uO-c1UIMUo.json
+  ✅   264.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Kq93XinK6RIneCXgWSBZu7gwAi1h3jwu.json
+  ✅   264.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1ZHjuDqTFRDzGQD9-78kbNXk3OVt-ezaA.pdf
+  ✅   264.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1s4qNtbwjeCNDrNOmlwtjuVCbrAjBcot7.json
+  ✅   263.6 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/10-67G0G5CrNpZS0pfXh3PIiEOPGzKEy4.json
+  ✅   263.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1ntH26aD4oEVCck3svau3YIOpCTFr_QMh.json
+  ✅   263.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1VFzL9Tou4_MzDVv9t_8PrrL6qGvppKUP.json
+  ✅   263.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Gky54yp8Yh9GOq87BzeW2zqG8kEuD3rk.pdf
+  ✅   263.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1bFCAINpQBZ4UCmm9R46wboIMlUMwSTqT.json
+  ✅   262.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1n9BSQ3DSB7Me8CotWqRYOiVAfAhZA7lU.json
+  ✅   262.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/12H5bOAZv8vv-_XhMBEuWg5VWO1ySnECv.pdf
+  ✅   262.6 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1CHnx-KWp2RFJt0O64iRIO8IM97x6DbXr.json
+  ✅   262.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1TvNEbtV2BDm7shPqGpNqtzYkSWtPWk6U.json
+  ✅   261.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1lv0tRcN3yb3igkL8J3N4_oWlPjZt8Jqp.json
+  ✅   261.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1ArZYsWDlJ4Hb4D6fbbkLPZHdCQA-qtqO.json
+  ✅   261.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/12_Pq5KszSbSnv__1Jtoc24-umHPNhpYm.json
+  ✅   261.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1obkResD-OKaLrdGqUhBWBYWS-oH-7fWp.json
+  ✅   261.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1GvFpGaJlxP_ZCNJJdfKl3focivQNNwmt.json
+  ✅   260.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1VGkfbJ_ax7RurAX2PVN7UQ3ZurtniI93.json
+  ✅   260.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/11vRxbyuHeaq2eDMnmLppy3VVOnEt2iE-.json
+  ✅   255.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1FCZR8xrr2IQVf6Y950CS3LSS_w-8Snpo.json
+  ✅   254.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1audL5PG-msxygGRiFqP-tQP8WaMpEUnr.json
+  ✅   254.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1forZ2T9hDZoawwclAwRzEo0KKds1yMN1.json
+  ✅   253.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/109zuZrJnGNAapKiK_5PQoDg7LHF6Eh8O.json
+  ✅   253.6 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1nTYDwbOQpeXM4XiDCjIl_w9vTtvBQtwg.json
+  ✅   253.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1I9bnGnIYmoR4EiojGgA-ioTNt1B2Skqs.json
+  ✅   252.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/17c59VvTR3qoFjJv7tko1mgKOdQu0dMJZ.json
+  ✅   252.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/10t2CWGIJ29U9K9Tl3d0w39gvh8AybHVN.json
+  ✅   252.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/18vTL2qreb5PBQN2jT98s42u5C2-A0F9x.json
+  ✅   252.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Jd5lCqTUx066EQqSVrxt2T_qohafyQ6Z.json
+  ✅   251.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1-UMMgTwBmexXPEBPjwkWIoBcWyECKaIr.json
+  ✅   251.6 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1Dx1wG18E2vxA3R5ONWFsBxSasSvQ4uJH.json
+  ✅   250.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1LBdbRLhkMqfphfd6uTY7ZYq0zqaHrYGQ.json
+  ✅   250.0 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1a_qOpcR5afIUlf0oa9HbEWim59vDbEVG.json
+  ✅   249.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1RTrFsQ1eBTVzudl3wC0Ocv5DirPh6tBq.json
+  ✅   249.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1nzjVgtKSEY-YILvz0jb67p4eucItNQgo.json
+  ✅   243.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-kitchen.jpg
+  ✅   230.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1dcjFOLEhadppP1e7vlhQDAs-jd6yb9JI.json
+  ✅   228.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1sWFWRCA3Q6LZxGc6fvjid9EBnFgZktsw.json
+  ✅   226.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1veZC1FoVjXfG5erCnXNcb39gh07nWZHQ.json
+  ✅   225.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vectors/1qHg0NUyRztzKbrKkdGaucXhcmf8gyW2z.json
+  ✅   200.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry.jpg
+  ✅   187.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-media.jpg
+  ✅   171.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/space-bedroom.jpg
+  ✅   160.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/source-inventory.json
+  ✅   137.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1bWMrzQaMQmZSEr80cO5Asx1fGe8co1e6.pdf
+  ✅   128.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1FCZR8xrr2IQVf6Y950CS3LSS_w-8Snpo.pdf
+  ✅   128.6 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1audL5PG-msxygGRiFqP-tQP8WaMpEUnr.pdf
+  ✅   128.5 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/18vTL2qreb5PBQN2jT98s42u5C2-A0F9x.pdf
+  ✅   128.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Jd5lCqTUx066EQqSVrxt2T_qohafyQ6Z.pdf
+  ✅   128.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/10t2CWGIJ29U9K9Tl3d0w39gvh8AybHVN.pdf
+  ✅   128.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/109zuZrJnGNAapKiK_5PQoDg7LHF6Eh8O.pdf
+  ✅   128.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/17c59VvTR3qoFjJv7tko1mgKOdQu0dMJZ.pdf
+  ✅   128.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1forZ2T9hDZoawwclAwRzEo0KKds1yMN1.pdf
+  ✅   128.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1I9bnGnIYmoR4EiojGgA-ioTNt1B2Skqs.pdf
+  ✅   128.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1nTYDwbOQpeXM4XiDCjIl_w9vTtvBQtwg.pdf
+  ✅   127.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1ntH26aD4oEVCck3svau3YIOpCTFr_QMh.pdf
+  ✅   127.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1GvFpGaJlxP_ZCNJJdfKl3focivQNNwmt.pdf
+  ✅   127.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/12_Pq5KszSbSnv__1Jtoc24-umHPNhpYm.pdf
+  ✅   127.0 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/11vRxbyuHeaq2eDMnmLppy3VVOnEt2iE-.pdf
+  ✅   127.0 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1lv0tRcN3yb3igkL8J3N4_oWlPjZt8Jqp.pdf
+  ✅   126.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1ArZYsWDlJ4Hb4D6fbbkLPZHdCQA-qtqO.pdf
+  ✅   126.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1VGkfbJ_ax7RurAX2PVN7UQ3ZurtniI93.pdf
+  ✅   126.6 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Y1CTPmsAAd9-pY3ukD7RVnAX6dEAPS6O.pdf
+  ✅   126.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/19CFXTtSpnr1vzUoODSFdXdWSvLa6Bh4i.pdf
+  ✅   126.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1VFzL9Tou4_MzDVv9t_8PrrL6qGvppKUP.pdf
+  ✅   125.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1TvNEbtV2BDm7shPqGpNqtzYkSWtPWk6U.pdf
+  ✅   125.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Qf7QGGKPyQuikWc4ebRqYq-tPFrT0WEw.pdf
+  ✅   125.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1jsQev2LtaYwBDpA94dq-xZTqbj7IqEEX.pdf
+  ✅   125.6 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1qtR73fhYK8kunq7W8ED2LocNb6itzSvs.pdf
+  ✅   125.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/10-67G0G5CrNpZS0pfXh3PIiEOPGzKEy4.pdf
+  ✅   125.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1LBdbRLhkMqfphfd6uTY7ZYq0zqaHrYGQ.pdf
+  ✅   125.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Kq93XinK6RIneCXgWSBZu7gwAi1h3jwu.pdf
+  ✅   125.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1Dx1wG18E2vxA3R5ONWFsBxSasSvQ4uJH.pdf
+  ✅   124.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/sheet-5-1-original.pdf
+  ✅   124.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1RTrFsQ1eBTVzudl3wC0Ocv5DirPh6tBq.pdf
+  ✅   124.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1a_qOpcR5afIUlf0oa9HbEWim59vDbEVG.pdf
+  ✅   124.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1-UMMgTwBmexXPEBPjwkWIoBcWyECKaIr.pdf
+  ✅   124.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1nzjVgtKSEY-YILvz0jb67p4eucItNQgo.pdf
+  ✅   123.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1dcjFOLEhadppP1e7vlhQDAs-jd6yb9JI.pdf
+  ✅   123.7 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1sWFWRCA3Q6LZxGc6fvjid9EBnFgZktsw.pdf
+  ✅   122.6 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1veZC1FoVjXfG5erCnXNcb39gh07nWZHQ.pdf
+  ✅   122.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1qHg0NUyRztzKbrKkdGaucXhcmf8gyW2z.pdf
+  ✅   120.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1y5CCbMo1a4SlOERSpREx5oKOw9P_a-qq.pdf
+  ✅   120.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/11ltC7cD5PDoVJa5erLUqU30bNUpA7LXM.pdf
+  ✅   120.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1qowSvvELibpQt6yUMM5UH1uO-c1UIMUo.pdf
+  ✅   119.4 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1s4qNtbwjeCNDrNOmlwtjuVCbrAjBcot7.pdf
+  ✅   119.3 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1CHnx-KWp2RFJt0O64iRIO8IM97x6DbXr.pdf
+  ✅   119.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1n9BSQ3DSB7Me8CotWqRYOiVAfAhZA7lU.pdf
+  ✅   119.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1obkResD-OKaLrdGqUhBWBYWS-oH-7fWp.pdf
+  ✅   119.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/source-pdfs/1bFCAINpQBZ4UCmm9R46wboIMlUMwSTqT.pdf
+  ✅   111.6 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry-1200.jpg
+  ✅   101.1 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/titleblock-evidence.json
+  ✅    64.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/catalog/vector-evidence.json
+  ✅    44.2 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry-720.jpg
+  ✅    39.9 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry-1200.webp
+  ✅    16.8 KB / 1250 KB    C:/Users/yosi/AppData/Local/Temp/tiferet-remediation-dist/tiferet/brand/hero-bedroom-cabinetry-720.webp
+
+✅ All budgets within limits.

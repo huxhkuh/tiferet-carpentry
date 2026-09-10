@@ -7,6 +7,7 @@ test('cabinet and furniture locks survive reload and portable export', async ({ 
   await page.getByTestId('furniture-bedroom-bed-a').click();
   await page.getByRole('button', { name: 'נעילת הפריט', exact: true }).click();
   await expect(page.getByRole('button', { name: 'הזז ימינה 10 ס״מ' })).toBeDisabled();
+  await page.getByTestId('room-select-bedroom').click();
   await page.getByTestId('wall-list-bed-e').click();
   await page.getByRole('button', { name: /^＋ הוסף ארון$/ }).click();
   await page.getByRole('button', { name: 'נעילת הפריט', exact: true }).click();

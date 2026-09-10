@@ -51,7 +51,9 @@ a mounted product feature. New features need a named UI entry, persistent input 
 Run `npm run quality:fast`, `npm test`, `npm run test:coverage`, `npm run build`, `npm run bundle:check`,
 `npm run bench:check`, `npm run dead:check`, and the relevant Playwright scenarios. Avoid running the same full
 suite repeatedly unless changes/failures require it. Put local production builds in `$TEMP`; set `BUNDLE_DIST_DIR`
-to check that build. Do not overwrite the Playwright output directory with parallel independent runs.
+for both the Vite build and its budget report, including when a Git hook runs the build.
+`VITEST_MAX_WORKERS=4` bounds local test concurrency without skipping tests.
+Do not overwrite the Playwright output directory with parallel independent runs.
 
 Review changed visual baselines before accepting them. Baselines are browser-specific and shared across OSes
 using bundled fonts plus the existing five-percent rendering tolerance; Linux CI still needs its own execution.

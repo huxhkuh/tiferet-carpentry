@@ -1,0 +1,111 @@
+
+> tiferet-carpentry@5.32.0 quality:fast
+> node scripts/parallel-quality.js
+
+
+> tiferet-carpentry@5.32.0 typecheck
+> tsc -b --noEmit
+
+
+> tiferet-carpentry@5.32.0 lint:css
+> node scripts/lint-css.js
+
+
+> tiferet-carpentry@5.32.0 lint:md
+> markdownlint-cli2 "*.md" "docs/**/*.md" ".github/**/*.md"
+
+
+> tiferet-carpentry@5.32.0 lint
+> node scripts/lint.js
+
+
+> tiferet-carpentry@5.32.0 format:check
+> prettier --check .
+
+
+> tiferet-carpentry@5.32.0 i18n:coverage
+> node scripts/i18n-coverage.js
+
+
+> tiferet-carpentry@5.32.0 agents:validate
+> node scripts/validate-agent-contracts.js
+
+
+> tiferet-carpentry@5.32.0 prompts:validate
+> node scripts/validate-prompt-contracts.js
+
+
+> tiferet-carpentry@5.32.0 instructions:validate
+> node scripts/validate-instruction-frontmatter.js
+
+
+> tiferet-carpentry@5.32.0 vscode:extensions:validate
+> node scripts/validate-vscode-extensions-policy.js
+
+
+> tiferet-carpentry@5.32.0 workflows:validate
+> node scripts/validate-workflow-governance.js
+
+
+> tiferet-carpentry@5.32.0 ai:context:validate
+> node scripts/validate-ai-context-versions.js
+
+
+> tiferet-carpentry@5.32.0 components:budget
+> node scripts/check-component-budgets.js
+
+🌐 i18n Coverage Report
+==================================================
+EN keys: 2179
+HE keys: 2179
+Parity:  ✅ Match
+
+✅ No empty translation values found.
+
+📊 Coverage: 100.0%
+Agent contract validation passed (9 agent files verified).
+
+> tiferet-carpentry@5.32.0 mcp:metadata:validate
+> node scripts/validate-mcp-metadata.js
+
+
+> tiferet-carpentry@5.32.0 template:sync:validate
+> node scripts/validate-template-sync-manifest.js
+
+
+> tiferet-carpentry@5.32.0 hooks:validate
+> node scripts/validate-hook-governance.js
+
+Prompt contract validation passed (22 prompt files verified).
+Instruction frontmatter validation passed (9 instruction files verified).
+Checking formatting...
+Workflow governance validation passed (5 workflows verified).
+AI context version validation passed (version v5.32.0).
+Template sync manifest validation passed (11 assets verified).
+Hook governance validation passed (simple-git-hooks + lint-staged contracts verified).
+Component budget check passed (150 files, default max 600 lines, explicit exceptions 1).
+VS Code extensions policy validation passed (29 recommendations, 80 unwanted).
+Unable to load your Tailwind CSS v3 config: C:\Users\yosi\Downloads\tailwind.config.js
+MCP metadata validation passed (10 servers verified).
+Unable to load your Tailwind CSS v3 config: C:\Users\yosi\Downloads\tailwind.config.js
+markdownlint-cli2 v0.23.2 (markdownlint v0.41.1)
+Finding: *.md docs/**/*.md .github/**/*.md
+Linting: 76 files
+Summary: 0 issues in 0 files
+All matched files use Prettier code style!
+
+> tiferet-carpentry@5.32.0 pdf:budget
+> vitest run tests/utils/pdf-rendering-budget.test.tsx
+
+
+ RUN  v4.1.11 C:/Users/yosi/Downloads/DFDF
+
+(node:31992) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  08:26:05
+   Duration  5.44s (transform 1.05s, setup 378ms, import 2.23s, tests 1.01s, environment 1.57s)
+
+All quality checks passed
