@@ -51,7 +51,7 @@ test('preview tab — cabinet SVG screenshot', async ({ page }) => {
   });
 });
 
-test('optimizer tab — cut sheets screenshot', async ({ page }) => {
+test('optimizer tab — cut sheets screenshot', async ({ page, browserName }) => {
   await page.goto('/?app=workshop');
   await page.waitForLoadState('networkidle');
 
@@ -63,7 +63,11 @@ test('optimizer tab — cut sheets screenshot', async ({ page }) => {
   await expect(sheet).toBeVisible({ timeout: 30_000 });
   await page.locator('[role="main"]').evaluate((element) => element.scrollIntoView());
 
-  await expect(page).toHaveScreenshot('optimizer-tab.png', {
+  // Chromium's native Latin font and form controls differ on Linux. The dense
+  // table needs its own reviewed baseline; retain the same comparison tolerance.
+  const controlsSnapshot =
+    browserName === 'chromium' && process.platform === 'linux' ? 'optimizer-tab-linux.png' : 'optimizer-tab.png';
+  await expect(page).toHaveScreenshot(controlsSnapshot, {
     maxDiffPixelRatio: 0.05,
     animations: 'disabled',
   });

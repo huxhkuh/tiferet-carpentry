@@ -55,8 +55,10 @@ for both the Vite build and its budget report, including when a Git hook runs th
 `VITEST_MAX_WORKERS=4` bounds local test concurrency without skipping tests.
 Do not overwrite the Playwright output directory with parallel independent runs.
 
-Review changed visual baselines before accepting them. Baselines are browser-specific and shared across OSes
-using bundled fonts plus the existing five-percent rendering tolerance; Linux CI still needs its own execution.
+Review changed visual baselines before accepting them. Baselines are browser-specific. Most share the existing
+five-percent rendering tolerance across OSes; the Chromium optimizer controls have a separate reviewed Linux
+baseline because the workshop uses native Latin fonts and form controls. The Hebrew fonts are bundled.
+Linux CI still needs its own execution.
 Pages now runs the quality/unit/browser/bundle/performance gates before uploading a deployment artifact.
 Editing the workflow does not mean it has run remotely.
 
