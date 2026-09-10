@@ -2,9 +2,9 @@ import { useSwUpdate } from './hooks/useSwUpdate';
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 
 import { buildAppModeUrl, readAppMode, type AppMode } from './utils/app-mode';
+import { TiferetSite } from './site/TiferetSite';
 
 const WorkshopMode = lazy(() => import('./WorkshopMode'));
-const TiferetSite = lazy(() => import('./site/TiferetSite').then((module) => ({ default: module.TiferetSite })));
 
 function SiteOfflineStatus() {
   const { updateAvailable, offlineReady, reload } = useSwUpdate();

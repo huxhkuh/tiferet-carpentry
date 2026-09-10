@@ -73,7 +73,7 @@ jobs:
       - run: npx playwright install --with-deps chromium firefox
       - uses: actions/download-artifact@v4
         with: { name: dist, path: dist }
-      - run: npx playwright test --ignore-snapshots
+      - run: npm run test:e2e
       - if: always()
         uses: actions/upload-artifact@v4
         with: { name: playwright-report, path: playwright-report/, retention-days: 7 }
@@ -89,4 +89,11 @@ jobs:
         env: { LHCI_GITHUB_APP_TOKEN: '${{ secrets.LHCI_GITHUB_APP_TOKEN }}' }
       - if: always()
         uses: actions/upload-artifact@v4
-        with: { name: lighthouse-report, path: .lighthouseci/, retention-days: 7 }
+        with:
+          {
+            name: lighthouse-report,
+            path: .lighthouseci/,
+            retention-days: 7,
+            include-hidden-files: true,
+            if-no-files-found: error,
+          }

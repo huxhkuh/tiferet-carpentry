@@ -20,7 +20,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  updateSnapshots: 'missing',
+  updateSnapshots: process.env.CI ? 'none' : 'missing',
   // Project fonts are bundled. Share reviewed baselines with Linux CI; individual
   // screenshot assertions allow a small rendering tolerance across platforms.
   snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}',

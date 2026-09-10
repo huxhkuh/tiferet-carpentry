@@ -319,7 +319,7 @@ export function Room3D({
           }
         }}
       />
-      {rendererStatus === 'ready' && onObjectSelect && roomFurniture.length > 0 ? (
+      {onObjectSelect && roomFurniture.length > 0 ? (
         <div
           className="absolute start-4 bottom-20 z-10 flex max-w-[70%] gap-1.5 overflow-x-auto rounded-2xl bg-white/90 p-2 shadow-lg backdrop-blur"
           role="listbox"

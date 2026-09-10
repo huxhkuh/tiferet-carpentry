@@ -45,6 +45,14 @@ jobs:
       - name: Browser regression gate
         run: npm run test:e2e
 
+      - name: Browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-playwright-report
+          path: playwright-report/
+          retention-days: 7
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

@@ -57,10 +57,21 @@ test('optimizer tab — cut sheets screenshot', async ({ page }) => {
 
   // Navigate to Optimizer (Alt+3).
   await page.getByRole('tab', { name: 'Cut Sheets', exact: true }).click();
-  // Wait for the optimizer content area to appear.
-  await expect(page.locator('[role="main"]')).toBeVisible({ timeout: 8_000 });
+  // The main landmark is already present while the lazy optimizer is loading.
+  // Wait for its computed sheets before capturing the controls and parts list.
+  const sheet = page.getByTestId('virtual-sheet-wrapper').first();
+  await expect(sheet).toBeVisible({ timeout: 30_000 });
+  await page.locator('[role="main"]').evaluate((element) => element.scrollIntoView());
 
   await expect(page).toHaveScreenshot('optimizer-tab.png', {
+    maxDiffPixelRatio: 0.05,
+    animations: 'disabled',
+  });
+
+  // Sheets are virtualized below the controls. Capture an actual cutting diagram too.
+  await sheet.scrollIntoViewIfNeeded();
+  await expect(sheet.locator('[role="meter"]')).toBeVisible();
+  await expect(sheet).toHaveScreenshot('optimizer-first-sheet.png', {
     maxDiffPixelRatio: 0.05,
     animations: 'disabled',
   });

@@ -93,11 +93,16 @@ describe('Room3D', () => {
 
   it('מציג חלופה נגישה כאשר WebGL אינו זמין', () => {
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
+    const onObjectSelect = vi.fn();
 
-    render(<Room3D apartment={TIFERET_5_1} roomId="bedroom" placements={[]} />);
+    render(<Room3D apartment={TIFERET_5_1} roomId="bedroom" placements={[]} onObjectSelect={onObjectSelect} />);
 
     expect(screen.getByTestId('apartment-3d-fallback')).toHaveTextContent('הדמיית התלת־ממד אינה זמינה');
     expect(screen.getByTestId('apartment-3d-canvas')).toHaveAttribute('data-renderer-status', 'unavailable');
+    const item = TIFERET_5_1.furniture?.find((candidate) => candidate.roomId === 'bedroom');
+    expect(item).toBeDefined();
+    fireEvent.click(screen.getByRole('option', { name: new RegExp(`^עריכת ${item!.label}, פריט 1$`) }));
+    expect(onObjectSelect).toHaveBeenCalledWith(item!.id);
   });
 
   it('מרנדר את רצפת החדר, קירותיו והארון באמצעות WebGL', () => {
