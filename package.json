@@ -171,7 +171,7 @@
     "idb-keyval": "6.3.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "react-i18next": "^17.0.20",
+    "react-i18next": "^17.1.5",
     "zustand": "^5.0.16"
   },
   "devDependencies": {
