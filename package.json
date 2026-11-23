@@ -202,7 +202,7 @@
     "fast-check": "4.10.2",
     "jsdom": "^29.1.1",
     "knip": "6.47.0",
-    "lint-staged": "^17.6.0",
+    "lint-staged": "^17.6.1",
     "markdownlint-cli2": "^0.24.2",
     "prettier": "^3.10.1",
     "prettier-plugin-tailwindcss": "0.8.1",
